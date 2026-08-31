@@ -1,0 +1,6 @@
+@ADAProjectVerticalSlice_HostAddress = http://localhost:5142
+
+GET {{ADAProjectVerticalSlice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
