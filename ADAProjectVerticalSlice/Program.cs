@@ -12,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+    o.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 var assembly = typeof(Program).Assembly;
 

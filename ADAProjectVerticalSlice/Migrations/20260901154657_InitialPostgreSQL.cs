@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class InitialPostgreSQL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,10 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Assessments",
                 columns: table => new
                 {
-                    AssessmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AssessmentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AssessmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssessmentName = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
