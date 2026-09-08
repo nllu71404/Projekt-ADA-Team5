@@ -5,8 +5,9 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using ADAProjectAPIVerticalSlice.Shared;
 using ADAProjectAPIVerticalSlice.Database;
+using ADAProjectAPIVerticalSlice.Entities;
 
-namespace ADAProjectAPIVerticalSlice.Features.Assessment.CreateAssessment
+namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
     public class CreateAssessment
     {
@@ -19,6 +20,10 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessment.CreateAssessment
             public DateTime StartDate { get; set; }
 
             public DateTime EndDate { get; set; }
+
+            public string ApplicationName { get; set; } = string.Empty;
+
+            
         }
 
 
@@ -57,7 +62,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessment.CreateAssessment
                 Command request,
                 CancellationToken cancellationToken)
             {
-                var validationResult = _validator.Validate(request);
+                var validationResult =  _validator.Validate(request);
 
                 if (!validationResult.IsValid)
                 {
@@ -66,13 +71,38 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessment.CreateAssessment
                         validationResult.ToString()));
                 }
 
+                // Find eller opret Application
+                var application = await _dbContext.Applications
+                    .FirstOrDefaultAsync(
+                        a => a.ApplicationName == request.ApplicationName,
+                        cancellationToken);
+
+                if (application == null)
+                {
+                    application = new Application
+                    {
+                        ApplicationId = Guid.NewGuid(),
+                        ApplicationName = request.ApplicationName
+                    };
+
+                    _dbContext.Applications.Add(application);
+                }
+
+                var currentUserId = "1f1fb844-6fa0-4270-b5f5-56acca0fcb79"; // Placeholder, skal erstattes med den faktiske bruger-ID, når vi får sat JWT token eller session op.
+
                 // Hvis valideringen lykkes, opretter vi en Assessment entity. Her går vi fra vores Command-model til den model, der repræsenterer data, som skal gemmes i databasen.
                 var assessment = new Assessment
                 {
                     AssessmentId = Guid.NewGuid(),
                     AssessmentName = request.AssessmentName,
                     StartDate = request.StartDate,
-                    EndDate = request.EndDate
+                    EndDate = request.EndDate,
+
+                    ApplicationId = application.ApplicationId,
+
+                    //Skal komme fra den autentificerede bruger, som sender requesten. 
+                    //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
+                    UserId = currentUserId 
                 };
 
                 _dbContext.Add(assessment);
