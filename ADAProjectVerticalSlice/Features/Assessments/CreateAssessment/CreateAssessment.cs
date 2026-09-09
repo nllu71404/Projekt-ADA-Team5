@@ -23,7 +23,13 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             public string ApplicationName { get; set; } = string.Empty;
 
-            
+            public List<string> RoleNames { get; set; } = new List<string>();
+
+            public List<Guid> RegionIds { get; set; } = new List<Guid>();
+
+            public List<Experience> Experiences { get; set; } = new List<Experience>();
+
+
         }
 
 
@@ -37,6 +43,14 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 RuleFor(c => c.EndDate)
                     .GreaterThan(c => c.StartDate)
                     .WithMessage("Slutdato skal være efter startdato.");
+                RuleFor(c => c.RoleNames).NotEmpty()
+                    .WithMessage("Mindst én rolle skal være valgt.");
+                RuleFor(c => c.RegionIds).NotEmpty()
+                    .WithMessage("Mindst én region skal være valgt.");
+                RuleFor(c => c.Experiences).NotEmpty()
+                    .WithMessage("Mindst ét erfaringsinterval skal være valgt.");
+                RuleFor(c => c.ApplicationName).NotEmpty()
+                    .WithMessage("Applikationsnavnet må ikke være tomt.");
             }
         }
 
@@ -88,29 +102,66 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     _dbContext.Applications.Add(application);
                 }
 
+                // Find eller opret Roles
+                var roles = new List<Role>();
+
+                foreach (var roleName in request.RoleNames)
+                {
+                    var role = await _dbContext.Roles
+                        .FirstOrDefaultAsync(
+                            r => r.RoleName == roleName,
+                            cancellationToken);
+
+                    if (role == null)
+                    {
+                        role = new Role
+                        {
+                            RoleId = Guid.NewGuid(),
+                            RoleName = roleName
+                        };
+
+                        _dbContext.Roles.Add(role);
+                    }
+
+                    roles.Add(role);
+                }
+
+                //Find Regions
+                var regions = await _dbContext.Regions
+                    .Where(r => request.RegionIds.Contains(r.RegionId))
+                    .ToListAsync(cancellationToken);
+
+
+
+
                 var currentUserId = "1f1fb844-6fa0-4270-b5f5-56acca0fcb79"; // Placeholder, skal erstattes med den faktiske bruger-ID, når vi får sat JWT token eller session op.
 
-                // Hvis valideringen lykkes, opretter vi en Assessment entity. Her går vi fra vores Command-model til den model, der repræsenterer data, som skal gemmes i databasen.
+                // Opret Assessment objektet og sæt de nødvendige properties
                 var assessment = new Assessment
                 {
                     AssessmentId = Guid.NewGuid(),
                     AssessmentName = request.AssessmentName,
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
-
                     ApplicationId = application.ApplicationId,
+                    Roles = roles,
+                    Experiences = request.Experiences,
+                    Regions = regions,
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
                     //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
                     UserId = currentUserId 
                 };
 
-                _dbContext.Add(assessment);
+               
 
-                // EF Core oversætter operationen til SQL, som derefter sendes til SQL Server.
+                // Tilføj Assessment til databasen
+                _dbContext.Assessments.Add(assessment);
+
+                // Gem Assessment, eventuelle nye Applications og Roles til databasen
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-               // Fordi Handleren returnerer Result<Guid>, bliver Guid'en automatisk pakket ind som et Success Result.
+                // 6. Returner ID på den nye Assessment
                 return assessment.AssessmentId;
             }
         }

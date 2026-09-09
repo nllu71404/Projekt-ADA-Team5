@@ -18,6 +18,10 @@ namespace ADAProjectAPIVerticalSlice.Database
 
         public DbSet<Company> Companies { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<Region> Regions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,6 +48,24 @@ namespace ADAProjectAPIVerticalSlice.Database
                 .WithMany()
                 .HasForeignKey(a => a.ApplicationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            //Assessment <-> Role
+            modelBuilder.Entity<Assessment>()
+                .HasMany(a => a.Roles)
+                .WithMany();
+
+            //Assessment <-> Region
+            modelBuilder.Entity<Assessment>()
+                .HasMany(a => a.Regions)
+                .WithMany();
+
+            //Region
+            modelBuilder.Entity<Region>()
+                 .HasIndex(r => r.RegionName)
+                 .IsUnique();
+
+
         }
     }
 }
