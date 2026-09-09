@@ -60,6 +60,7 @@ namespace ADAProjectAPIVerticalSlice.Database
                 .HasMany(a => a.Regions)
                 .WithMany();
 
+
             //Region
             modelBuilder.Entity<Region>()
                  .HasIndex(r => r.RegionName)

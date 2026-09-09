@@ -296,5 +296,61 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 "Employee",
                 roles[0].RoleName);
         }
+
+        [TestMethod]
+        public async Task Handle_MultipleExperiencesSelected_AddsAllExperiencesToAssessment()
+        {
+            // Arrange
+            var command = new CreateAssessment.Command
+            {
+                AssessmentName = "ADA Measurement 2026",
+                StartDate = new DateTime(2026, 9, 10),
+                EndDate = new DateTime(2026, 10, 10),
+                ApplicationName = "Microsoft Teams",
+
+                RoleNames = new List<string>
+        {
+            "Employee"
+        },
+
+                RegionIds = new List<Guid>
+        {
+            _region.RegionId
+        },
+
+                Experiences = new List<Experience>
+        {
+            Experience.LessThan1Year,
+            Experience.From1To2Years,
+            Experience.From3To5Years
+        }
+            };
+
+            // Act
+            var result = await _handler.Handle(
+                command,
+                CancellationToken.None);
+
+            // Assert
+            Assert.IsTrue(result.IsSuccess);
+
+            var assessment = await _dbContext.Assessments
+                .FirstOrDefaultAsync();
+
+            Assert.IsNotNull(assessment);
+
+            Assert.AreEqual(
+                3,
+                assessment.Experiences.Count);
+
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+            Experience.LessThan1Year,
+            Experience.From1To2Years,
+            Experience.From3To5Years
+                },
+                assessment.Experiences);
+        }
     }
 }
