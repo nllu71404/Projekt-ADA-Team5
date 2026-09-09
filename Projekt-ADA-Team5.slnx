@@ -3,4 +3,5 @@
     <File Path=".gitignore" />
   </Folder>
   <Project Path="ADAProjectVerticalSlice/ADAProjectAPIVerticalSlice.csproj" />
+  <Project Path="Tests/Tests.csproj" Id="d8bd059f-0dc1-4adf-b4a6-9486fba20048" />
 </Solution>

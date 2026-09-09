@@ -56,7 +56,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
         // HANDLER = Handleren indeholder den konkrete logik for Command'en.
         // Denne Handler håndterer CreateAssessment.Command og returnerer et Result<Guid>.
-        internal sealed class Handler : IRequestHandler<Command, Result<Guid>>
+        public class Handler : IRequestHandler<Command, Result<Guid>>
         {
             private readonly ApplicationDbContext _dbContext;
 
