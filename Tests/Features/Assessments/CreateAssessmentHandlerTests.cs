@@ -1,6 +1,6 @@
-﻿using ADAProjectAPIVerticalSlice.Database;
-using ADAProjectAPIVerticalSlice.Entities;
+﻿using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

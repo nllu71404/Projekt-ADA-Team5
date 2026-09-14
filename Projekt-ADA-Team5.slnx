@@ -2,6 +2,8 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
+  <Project Path="ADA-Consumer/ADA-Consumer.csproj" Id="4b1e9d47-30f9-4309-8f0a-ff5146335e5d" />
+  <Project Path="ADA-Contracts/ADA-Contracts.csproj" Id="b6462b0c-e939-43a9-9bd7-0c00ad7a1c8e" />
   <Project Path="ADAProjectVerticalSlice/ADAProjectAPIVerticalSlice.csproj" />
   <Project Path="Tests/Tests.csproj" Id="d8bd059f-0dc1-4adf-b4a6-9486fba20048" />
 </Solution>

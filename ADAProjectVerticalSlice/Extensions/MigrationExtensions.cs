@@ -1,4 +1,4 @@
-﻿using ADAProjectAPIVerticalSlice.Database;
+﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace ADAProjectAPIVerticalSlice.Extensions;

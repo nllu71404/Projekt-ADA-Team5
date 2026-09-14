@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ADAProjectAPIVerticalSlice.Entities;
 
 
-namespace ADAProjectAPIVerticalSlice.Database
+namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {

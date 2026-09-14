@@ -1,7 +1,7 @@
 ﻿using ADAProjectAPIVerticalSlice.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ADAProjectAPIVerticalSlice.Database
+namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 {
     public static class SeedData
     {

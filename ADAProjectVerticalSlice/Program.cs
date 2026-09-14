@@ -1,6 +1,7 @@
-using ADAProjectAPIVerticalSlice.Database;
 using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Extensions;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using Carter;
 using FluentValidation;
 using MediatR;
@@ -37,6 +38,8 @@ builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assemb
 builder.Services.AddCarter();
 
 builder.Services.AddValidatorsFromAssembly(assembly);
+
+builder.Services.AddSingleton<RabbitMqPublisher>();
 
 var app = builder.Build();
 

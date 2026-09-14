@@ -4,8 +4,10 @@ using FluentValidation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using ADAProjectAPIVerticalSlice.Shared;
-using ADAProjectAPIVerticalSlice.Database;
 using ADAProjectAPIVerticalSlice.Entities;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
+using ADA_Contracts.Events;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
@@ -63,12 +65,16 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             // Validatoren bliver injected via Dependency Injection. Den bruges til at kontrollere, om Command'en er gyldig.
             private readonly IValidator<Command> _validator;
 
+            private readonly RabbitMqPublisher _publisher;
+
             public Handler(
                 ApplicationDbContext dbContext,
-                IValidator<Command> validator)
+                IValidator<Command> validator,
+                RabbitMqPublisher publisher)
             {
                 _dbContext = dbContext;
                 _validator = validator;
+                _publisher = publisher;
             }
 
             // Handle() bliver automatisk kaldt af MediatR, når en CreateAssessment.Command bliver sendt.
@@ -161,7 +167,20 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // Gem Assessment, eventuelle nye Applications og Roles til databasen
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                // 6. Returner ID på den nye Assessment
+                //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
+                //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "assessment-created" routing key.
+                var @event = new AssessmentCreated(
+                    assessment.AssessmentId,
+                    assessment.AssessmentName,
+                    assessment.StartDate,
+                    assessment.EndDate);
+
+                await _publisher.PublishAsync(
+                    @event,
+                    "assessment-created",
+                    cancellationToken);
+
+                // Returner ID på den nye Assessment
                 return assessment.AssessmentId;
             }
         }
