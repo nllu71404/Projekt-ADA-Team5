@@ -139,8 +139,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
 
 
-
-                var currentUserId = "1f1fb844-6fa0-4270-b5f5-56acca0fcb79"; // Placeholder, skal erstattes med den faktiske bruger-ID, når vi får sat JWT token eller session op.
+                var currentUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == "test@test.dk", cancellationToken);
+                // var currentUserId = "196eebd3-5c1a-4888-a11b-f0dd5fe5cea4"; // Placeholder, skal erstattes med den faktiske bruger-ID, når vi får sat JWT token eller session op.
 
                 // Opret Assessment objektet og sæt de nødvendige properties
                 var assessment = new Assessment
@@ -156,7 +156,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
                     //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
-                    UserId = currentUserId 
+                    UserId = currentUser.Id 
                 };
 
                

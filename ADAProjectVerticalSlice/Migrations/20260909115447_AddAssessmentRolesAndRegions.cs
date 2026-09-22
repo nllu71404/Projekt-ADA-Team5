@@ -1,16 +1,18 @@
-﻿using System;
+﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 #nullable disable
 
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
-    /// <inheritdoc />
     public partial class AddAssessmentRolesAndRegions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.AddColumn<int[]>(
                 name: "Experiences",
                 table: "Assessments",
@@ -41,7 +43,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 {
                     table.PrimaryKey("PK_Roles", x => x.RoleId);
                 });
-
+            
             migrationBuilder.CreateTable(
                 name: "AssessmentRegion",
                 columns: table => new
@@ -66,6 +68,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+
+            
             migrationBuilder.CreateTable(
                 name: "AssessmentRole",
                 columns: table => new
@@ -89,6 +93,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         principalColumn: "RoleId",
                         onDelete: ReferentialAction.Cascade);
                 });
+            */
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentRegion_RegionsRegionId",
@@ -110,6 +115,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.DropTable(
                 name: "AssessmentRegion");
 
@@ -121,10 +127,11 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
-
+            
             migrationBuilder.DropColumn(
                 name: "Experiences",
                 table: "Assessments");
+            */
         }
     }
 }

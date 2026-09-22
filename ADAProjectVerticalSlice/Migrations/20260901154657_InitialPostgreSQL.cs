@@ -11,6 +11,9 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
+
+            /*
             migrationBuilder.CreateTable(
                 name: "Assessments",
                 columns: table => new
@@ -23,14 +26,19 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Assessments", x => x.AssessmentId);
-                });
+                });*/
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.DropTable(
                 name: "Assessments");
+            */
+
         }
+
     }
 }
+

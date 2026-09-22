@@ -41,7 +41,25 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddSingleton<RabbitMqPublisher>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDevelopment", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyMigrations();
+}
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -52,9 +70,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    app.ApplyMigrations();
 }
+
+app.UseCors("AllowDevelopment");
 
 app.MapCarter();
 
