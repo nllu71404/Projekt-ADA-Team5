@@ -1,20 +1,37 @@
-using ADAProjectAPIVerticalSlice.Database;
+using ADAProjectAPIVerticalSlice.Entities;
+using ADAProjectAPIVerticalSlice.Extensions;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using Carter;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ADAProjectAPIVerticalSlice.Extensions;
+using Serilog;
 
+// Logging konfiguration
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Error) // Ignorer Microsoft-logs, medmindre de er fejl
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning) // Ignorer EF Core SQL-kommandoer
+    .WriteTo.File(
+        "logs/log-.txt",
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Host.UseSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+    o.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 var assembly = typeof(Program).Assembly;
+
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(assembly));
 
@@ -22,15 +39,40 @@ builder.Services.AddCarter();
 
 builder.Services.AddValidatorsFromAssembly(assembly);
 
+builder.Services.AddSingleton<RabbitMqPublisher>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDevelopment", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.ApplyMigrations();
+}
+
+
+using (var scope = app.Services.CreateScope())
+{
+    await SeedData.InitializeAsync(scope.ServiceProvider);
+}
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    app.ApplyMigrations();
 }
+
+app.UseCors("AllowDevelopment");
 
 app.MapCarter();
 

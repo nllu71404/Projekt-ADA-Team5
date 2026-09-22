@@ -3,6 +3,7 @@ using System;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260908172412_AddAssessmentRelations")]
+    partial class AddAssessmentRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,10 +56,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.PrimitiveCollection<int[]>("Experiences")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -86,39 +85,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.HasKey("CompanyId");
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Region", b =>
-                {
-                    b.Property<Guid>("RegionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("RegionName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("RegionId");
-
-                    b.HasIndex("RegionName")
-                        .IsUnique();
-
-                    b.ToTable("Regions");
-                });
-
-            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Role", b =>
-                {
-                    b.Property<Guid>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("RoleId");
-
-                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.User", b =>
@@ -192,36 +158,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AssessmentRegion", b =>
-                {
-                    b.Property<Guid>("AssessmentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RegionsRegionId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("AssessmentId", "RegionsRegionId");
-
-                    b.HasIndex("RegionsRegionId");
-
-                    b.ToTable("AssessmentRegion");
-                });
-
-            modelBuilder.Entity("AssessmentRole", b =>
-                {
-                    b.Property<Guid>("AssessmentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RolesRoleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("AssessmentId", "RolesRoleId");
-
-                    b.HasIndex("RolesRoleId");
-
-                    b.ToTable("AssessmentRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -384,36 +320,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("AssessmentRegion", b =>
-                {
-                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", null)
-                        .WithMany()
-                        .HasForeignKey("AssessmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Region", null)
-                        .WithMany()
-                        .HasForeignKey("RegionsRegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AssessmentRole", b =>
-                {
-                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", null)
-                        .WithMany()
-                        .HasForeignKey("AssessmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
