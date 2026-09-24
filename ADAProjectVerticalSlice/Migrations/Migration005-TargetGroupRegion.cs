@@ -45,8 +45,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
             migrationBuilder.DropTable(
                 name: "TargetGroupRegion");
 
-            migrationBuilder.DropTable(
-                name: "Regions");
+            //migrationBuilder.DropTable(
+            //    name: "Regions");
         }
 
     }

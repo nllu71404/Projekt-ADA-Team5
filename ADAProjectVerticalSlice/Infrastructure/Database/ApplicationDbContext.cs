@@ -22,9 +22,20 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
         public DbSet<Region> Regions { get; set; }
 
+        public DbSet<Survey> Surveys { get; set; }
+
+        public DbSet<Theme> Themes { get; set; }
+
+        public DbSet<Question> Questions { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Survey
+            modelBuilder.Entity<Survey>()
+                .ToTable("Survey");
 
             // User -> Company
             modelBuilder.Entity<User>()
