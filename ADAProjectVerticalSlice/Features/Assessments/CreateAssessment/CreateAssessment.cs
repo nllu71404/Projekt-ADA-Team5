@@ -67,12 +67,12 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             // Validatoren bliver injected via Dependency Injection. Den bruges til at kontrollere, om Command'en er gyldig.
             private readonly IValidator<Command> _validator;
 
-            private readonly RabbitMqPublisher _publisher;
+            private readonly IRabbitMqPublisher _publisher;
 
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
-                RabbitMqPublisher publisher)
+                IRabbitMqPublisher publisher)
             {
                 _dbContext = dbContext;
                 _validator = validator;

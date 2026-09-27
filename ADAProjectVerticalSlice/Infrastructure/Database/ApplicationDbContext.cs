@@ -20,6 +20,10 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
         public DbSet<Role> Role { get; set; }
 
+        public DbSet<Survey> Survey { get; set; }
+
+
+
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
