@@ -27,7 +27,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             public List<string> RoleNames { get; set; } = new List<string>();
 
-            public List<Guid> RegionIds { get; set; } = new List<Guid>();
+            public List<Region> Regions { get; set; } = new List<Region>();
 
             public List<Experience> Experiences { get; set; } = new List<Experience>();
 
@@ -47,7 +47,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     .WithMessage("Slutdato skal være efter startdato.");
                 RuleFor(c => c.RoleNames).NotEmpty()
                     .WithMessage("Mindst én rolle skal være valgt.");
-                RuleFor(c => c.RegionIds).NotEmpty()
+                RuleFor(c => c.Regions).NotEmpty()
                     .WithMessage("Mindst én region skal være valgt.");
                 RuleFor(c => c.Experiences).NotEmpty()
                     .WithMessage("Mindst ét erfaringsinterval skal være valgt.");
@@ -92,7 +92,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 }
 
                 // Find eller opret Application
-                var application = await _dbContext.Applications
+                var application = await _dbContext.Application
                     .FirstOrDefaultAsync(
                         a => a.ApplicationName == request.ApplicationName,
                         cancellationToken);
@@ -105,7 +105,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         ApplicationName = request.ApplicationName
                     };
 
-                    _dbContext.Applications.Add(application);
+                    _dbContext.Application.Add(application);
                 }
 
                 // Find eller opret Roles
@@ -113,7 +113,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
                 foreach (var roleName in request.RoleNames)
                 {
-                    var role = await _dbContext.Roles
+                    var role = await _dbContext.Role
                         .FirstOrDefaultAsync(
                             r => r.RoleName == roleName,
                             cancellationToken);
@@ -126,16 +126,13 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                             RoleName = roleName
                         };
 
-                        _dbContext.Roles.Add(role);
+                        _dbContext.Role.Add(role);
                     }
 
                     roles.Add(role);
                 }
 
-                //Find Regions
-                var regions = await _dbContext.Regions
-                    .Where(r => request.RegionIds.Contains(r.RegionId))
-                    .ToListAsync(cancellationToken);
+                
 
 
 
@@ -152,7 +149,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     ApplicationId = application.ApplicationId,
                     Roles = roles,
                     Experiences = request.Experiences,
-                    Regions = regions,
+                    Regions = request.Regions,
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
                     //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).

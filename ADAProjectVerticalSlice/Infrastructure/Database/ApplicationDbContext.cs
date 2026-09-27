@@ -14,13 +14,13 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
         public DbSet<Assessment> Assessments { get; set; }
 
-        public DbSet<Application> Applications { get; set; }
+        public DbSet<Application> Application { get; set; }
 
-        public DbSet<Company> Companies { get; set; }
+        public DbSet<Company> Company { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> Role { get; set; }
 
-        public DbSet<Region> Regions { get; set; }
+        public DbSet<Region> Region { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
