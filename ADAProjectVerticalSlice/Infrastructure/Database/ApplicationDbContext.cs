@@ -22,9 +22,11 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
         public DbSet<Survey> Survey { get; set; }
 
+        public DbSet<Comment> Comment { get; set; }
 
 
-        
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,7 +67,13 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 .HasMany(a => a.Roles)
                 .WithMany();
 
-           
+            // Theme -> Comments
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Theme)
+                .WithMany(t => t.Comments)
+                .HasForeignKey(c => c.ThemeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
 
         }
