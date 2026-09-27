@@ -15,7 +15,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             // 1. Opret test Company
             // ==========================================
 
-            var company = await dbContext.Companies
+            var company = await dbContext.Company
                 .FirstOrDefaultAsync(c =>
                     c.CompanyName == "Test Company");
 
@@ -27,7 +27,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                     CompanyName = "Test Company"
                 };
 
-                dbContext.Companies.Add(company);
+                dbContext.Company.Add(company);
 
                 await dbContext.SaveChangesAsync();
             }
@@ -59,41 +59,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 await dbContext.SaveChangesAsync();
             }
 
-            // ==========================================
-            // 3. Opret Regions
-            // ==========================================
-            
-                        var regions = new[]
-                        {
-                        "United Kingdom East",
-                        "Continental Europe",
-                        "United Kingdom West",
-                        "Americas",
-                        "Asia Pacific",
-                        "Middle East",
-                        "Africa",
-                        "Nordics",
-                        "Central Europe",
-                        "Southern Europe"
-                    };
 
-                        foreach (var regionName in regions)
-                        {
-                            var regionExists = await dbContext.Regions
-                                .AnyAsync(r => r.RegionName == regionName);
-
-                            if (!regionExists)
-                            {
-                                dbContext.Regions.Add(new Region
-                                {
-                                    RegionId = Guid.NewGuid(),
-                                    RegionName = regionName
-                                });
-                            }
-                        }
-
-                        await dbContext.SaveChangesAsync();
-                    }
         }
     }
-    
+}

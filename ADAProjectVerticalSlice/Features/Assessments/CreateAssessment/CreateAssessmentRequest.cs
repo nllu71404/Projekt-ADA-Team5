@@ -14,6 +14,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
         public string ApplicationName { get; set; } = string.Empty;
 
+        public Guid SurveyId { get; set; } 
+
         public List<string> RoleNames { get; set; } = new();
 
         public List<Region> Regions { get; set; } = new();

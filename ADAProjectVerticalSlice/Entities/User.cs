@@ -12,6 +12,6 @@ namespace ADAProjectAPIVerticalSlice.Entities
         public Guid CompanyId { get; set; }
 
         //Navigation property
-        public Company Company { get; set; } = null;
+        public Company Company { get; set; } = null!;
     }
 }
