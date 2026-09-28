@@ -8,8 +8,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
-    [Migration("20260919114200_Survey")]
-    public partial class Migration002_Survey : Migration
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20260919114120_Survey")]
+    public partial class Migration003_Survey : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,25 +18,15 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Survey",
                 columns: table => new
                 {
-                    SurveyId = table.Column<Guid>(
-                        type: "uuid",
-                        nullable: false),
-
-                    Title = table.Column<string>(
-                        type: "text",
-                        nullable: false),
-
-                    Description = table.Column<string>(
-                        type: "text",
-                        nullable: false)
+                    SurveyId = table.Column<Guid>(type: "uuid",nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text",nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey(
-                        "PK_Survey",
-                        x => x.SurveyId);
+                    table.PrimaryKey("PK_Survey",x => x.SurveyId);
                 });
-        }
+                }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {

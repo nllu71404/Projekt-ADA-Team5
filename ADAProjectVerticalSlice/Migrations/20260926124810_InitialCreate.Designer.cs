@@ -3,6 +3,7 @@ using System;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260926124810_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,7 +144,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.HasIndex("RegionName")
                         .IsUnique();
 
-                    b.ToTable("Regions", (string)null);
+                    b.ToTable("Region", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Role", b =>
@@ -156,7 +159,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Survey", b =>
@@ -288,14 +291,14 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Property<Guid>("AssessmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RegionId")
+                    b.Property<Guid>("RegionsRegionId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AssessmentId", "RegionId");
+                    b.HasKey("AssessmentId", "RegionsRegionId");
 
-                    b.HasIndex("RegionId");
+                    b.HasIndex("RegionsRegionId");
 
-                    b.ToTable("AssessmentRegion", (string)null);
+                    b.ToTable("AssessmentRegion");
                 });
 
             modelBuilder.Entity("AssessmentRole", b =>
@@ -303,14 +306,14 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Property<Guid>("AssessmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid>("RolesRoleId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AssessmentId", "RoleId");
+                    b.HasKey("AssessmentId", "RolesRoleId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RolesRoleId");
 
-                    b.ToTable("AssessmentRole", (string)null);
+                    b.ToTable("AssessmentRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -519,15 +522,13 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .WithMany()
                         .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AssessmentRegion_Assessment_AssessmentId");
+                        .IsRequired();
 
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Region", null)
                         .WithMany()
-                        .HasForeignKey("RegionId")
+                        .HasForeignKey("RegionsRegionId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AssessmentRegion_Regions_RegionId");
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AssessmentRole", b =>
@@ -536,15 +537,13 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .WithMany()
                         .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AssessmentRole_Assessment_AssessmentId");
+                        .IsRequired();
 
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Role", null)
                         .WithMany()
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("RolesRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AssessmentRole_Roles_RoleId");
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

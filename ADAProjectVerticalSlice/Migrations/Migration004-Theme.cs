@@ -5,37 +5,39 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114300_TargetGroup")]
-    public class Migration003_TargetGroup : Migration
+    [Migration("20260919114250_Theme")]
+    public class Migration004_Theme : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Target Group
+            // Themes
             migrationBuilder.CreateTable(
-                name: "TargetGroup",
+                name: "Theme",
                 columns: table => new
                 {
-                    TargetGroupId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SurveyId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ThemeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SurveyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Freeform = table.Column<string>(type: "text", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TargetGroupId", λ => λ.TargetGroupId);
+                    table.PrimaryKey("PK_Theme", λ => λ.ThemeId);
 
                     table.ForeignKey(
-                    name: "FK_TargetGroup_Survey_SurveyId",
+                    name: "FK_Theme_Survey_SurveyId",
                     column: λ => λ.SurveyId,
                     principalTable: "Survey",
                     principalColumn: "SurveyId",
                     onDelete: ReferentialAction.Cascade);
                 });
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TargetGroup");
+                name: "Theme");
         }
     }
 }

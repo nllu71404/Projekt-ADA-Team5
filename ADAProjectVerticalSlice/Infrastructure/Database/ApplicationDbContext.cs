@@ -33,6 +33,15 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Company>().ToTable("Company");
+            modelBuilder.Entity<Application>().ToTable("Application");
+            modelBuilder.Entity<Assessment>().ToTable("Assessment");
+            modelBuilder.Entity<Region>().ToTable("Regions");
+            modelBuilder.Entity<Role>().ToTable("Roles");
+            modelBuilder.Entity<Question>().ToTable("Question");
+            modelBuilder.Entity<Theme>().ToTable("Theme");
+            modelBuilder.Entity<Survey>().ToTable("Survey");
+
             // Survey
             modelBuilder.Entity<Survey>()
                 .ToTable("Survey");
@@ -62,15 +71,50 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
 
             //Assessment <-> Role
+            modelBuilder.Entity<Role>().ToTable("Roles");
+
             modelBuilder.Entity<Assessment>()
                 .HasMany(a => a.Roles)
-                .WithMany();
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "AssessmentRole",
+                    j => j
+                        .HasOne<Role>()
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .HasConstraintName("FK_AssessmentRole_Roles_RoleId"),
+                    j => j
+                        .HasOne<Assessment>()
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
+                        .HasConstraintName("FK_AssessmentRole_Assessment_AssessmentId"),
+                    j =>
+                    {
+                        j.HasKey("AssessmentId", "RoleId");
+                        j.ToTable("AssessmentRole");
+                    });
 
             //Assessment <-> Region
             modelBuilder.Entity<Assessment>()
                 .HasMany(a => a.Regions)
-                .WithMany();
-
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "AssessmentRegion",
+                    j => j
+                        .HasOne<Region>()
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .HasConstraintName("FK_AssessmentRegion_Regions_RegionId"),
+                    j => j
+                        .HasOne<Assessment>()
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
+                        .HasConstraintName("FK_AssessmentRegion_Assessment_AssessmentId"),
+                    j =>
+                    {
+                        j.HasKey("AssessmentId", "RegionId");
+                        j.ToTable("AssessmentRegion");
+                    });
 
             //Region
             modelBuilder.Entity<Region>()

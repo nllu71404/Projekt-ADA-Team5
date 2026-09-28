@@ -13,5 +13,7 @@
         // Navigation properties
         public Survey Survey { get; set; } = null!;
         public Theme Theme { get; set; } = null!;
+
+        public string QuestionType { get; set; } = string.Empty;
     }
 }

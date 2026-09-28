@@ -5,28 +5,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114600_TargetGroupExperience")]
-    public class Migration006_TargetGroupExperience : Migration
+    [Migration("20260919114253_Answer")]
+    public class Migration007_Answer : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Target Group Experience
+            // Answers
             migrationBuilder.CreateTable(
-                name: "TargetGroupExperience",
+                name: "Answer",
                 columns: table => new
                 {
-                    TargetGroupExperienceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TargetGroupId = table.Column<Guid>(type: "uuid", nullable: false)
+                    AnswerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Point = table.Column<int>(type: "integer", nullable: false), 
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TargetGroupExperienceId", λ => λ.TargetGroupExperienceId);
+                    table.PrimaryKey("PK_Answer", λ => λ.AnswerId);
 
                     table.ForeignKey(
-                    name: "FK_TargetGroupExperience_TargetGroup_TargetGroupId",
-                    column: λ => λ.TargetGroupId,
-                    principalTable: "TargetGroup",
-                    principalColumn: "TargetGroupId",
+                    name: "FK_Answer_Question_QuestionId",
+                    column: λ => λ.QuestionId,
+                    principalTable: "Question",
+                    principalColumn: "QuestionId",
                     onDelete: ReferentialAction.Cascade);
                 });
         }
@@ -34,7 +35,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TargetGroupExperience");
+                name: "Answer");
         }
     }
 }

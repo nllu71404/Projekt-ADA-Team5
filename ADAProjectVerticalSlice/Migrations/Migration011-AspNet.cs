@@ -6,86 +6,23 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919115600_Blandet")]
-    public class Migration016_Blandet : Migration
+    [Migration("20260919114149_AspNet")]
+    public class Migration011_AspNet : Migration
     {
-
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AssessmentRegion",
+                name: "AspNetRoles",
                 columns: table => new
                 {
-                    AssessmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RegionsRegionId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssessmentRegion", x => new { x.AssessmentId, x.RegionsRegionId });
-                    table.ForeignKey(
-                        name: "FK_AssessmentRegion_Assessments_AssessmentId",
-                        column: x => x.AssessmentId,
-                        principalTable: "Assessments",
-                        principalColumn: "AssessmentId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AssessmentRegion_Regions_RegionsRegionId",
-                        column: x => x.RegionsRegionId,
-                        principalTable: "Regions",
-                        principalColumn: "RegionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-
-
-            migrationBuilder.CreateTable(
-                name: "AssessmentRole",
-                columns: table => new
-                {
-                    AssessmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RolesRoleId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AssessmentRole", x => new { x.AssessmentId, x.RolesRoleId });
-                    table.ForeignKey(
-                        name: "FK_AssessmentRole_Assessments_AssessmentId",
-                        column: x => x.AssessmentId,
-                        principalTable: "Assessments",
-                        principalColumn: "AssessmentId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AssessmentRole_Roles_RolesRoleId",
-                        column: x => x.RolesRoleId,
-                        principalTable: "Roles",
-                        principalColumn: "RoleId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                 name: "AspNetRoles",
-                 columns: table => new
-                 {
-                     Id = table.Column<string>(type: "text", nullable: false),
-                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
-                 },
-                 constraints: table =>
-                 {
-                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                 });
-
-            migrationBuilder.CreateTable(
-                name: "Companies",
-                columns: table => new
-                {
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyName = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companies", x => x.CompanyId);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -115,7 +52,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     FullName = table.Column<string>(type: "text", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    JobTitle = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -129,15 +66,17 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Companies_CompanyId",
+                        name: "FK_AspNetUsers_Company_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        principalTable: "Company",
                         principalColumn: "CompanyId",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -226,17 +165,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Assessment_ApplicationId",
-                table: "Assessments",
-                column: "ApplicationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Assessment_UserId",
-                table: "Assessments",
-                column: "UserId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -269,49 +197,19 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CompanyId",
-                table: "AspNetUsers",
-                column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Assessment_Applications_ApplicationId",
-                table: "Assessments",
-                column: "ApplicationId",
-                principalTable: "Applications",
-                principalColumn: "ApplicationId",
-                onDelete: ReferentialAction.Restrict);
+            
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Assessment_AspNetUsers_UserId",
-                table: "Assessments",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
-
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Assessment_Applications_ApplicationId",
-                table: "Assessments");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Assessment_AspNetUsers_UserId",
-                table: "Assessments");
-
             migrationBuilder.DropTable(
-                name: "Applications");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
                 name: "AspNetUserClaims");
@@ -331,24 +229,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.DropTable(
-                name: "Companies");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Assessment_ApplicationId",
-                table: "Assessments");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Assessment_UserId",
-                table: "Assessments");
-
-            migrationBuilder.DropColumn(
-                name: "ApplicationId",
-                table: "Assessments");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "Assessments");
         }
     }
-} 
+}
+

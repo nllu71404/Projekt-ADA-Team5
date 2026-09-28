@@ -12,6 +12,7 @@
         // Navigation property
         public Survey Survey { get; set; } = null!;
 
+        public string Freeform { get; set; } = string.Empty;
 
     }
 }

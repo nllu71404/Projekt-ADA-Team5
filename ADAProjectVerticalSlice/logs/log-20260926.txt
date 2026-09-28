@@ -1,0 +1,111 @@
+2026-09-26 14:41:32.526 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-09-26 14:42:48.705 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-09-26 14:43:35.415 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-09-26 14:43:37.020 +02:00 [ERR] Failed executing DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Assessment" (
+    "AssessmentId" uuid NOT NULL,
+    "AssessmentName" text NOT NULL,
+    "StartDate" timestamp with time zone NOT NULL,
+    "EndDate" timestamp with time zone NOT NULL,
+    "UserId" text NOT NULL,
+    "ApplicationId" uuid NOT NULL,
+    "SurveyId" uuid NOT NULL,
+    "Experience" integer[] NOT NULL DEFAULT (ARRAY[]::integer[]),
+    CONSTRAINT "PK_Assessments" PRIMARY KEY ("AssessmentId"),
+    CONSTRAINT "FK_Assessment_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Assessment_Application_ApplicationId" FOREIGN KEY ("ApplicationId") REFERENCES "Application" ("ApplicationId") ON DELETE RESTRICT
+);
+2026-09-26 14:49:46.729 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-09-26 14:50:32.045 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-09-26 14:50:32.808 +02:00 [ERR] Failed executing DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Assessment" (
+    "AssessmentId" uuid NOT NULL,
+    "AssessmentName" text NOT NULL,
+    "StartDate" timestamp with time zone NOT NULL,
+    "EndDate" timestamp with time zone NOT NULL,
+    "UserId" text NOT NULL,
+    "ApplicationId" uuid NOT NULL,
+    "SurveyId" uuid NOT NULL,
+    "Experience" integer[] NOT NULL DEFAULT (ARRAY[]::integer[]),
+    CONSTRAINT "PK_Assessments" PRIMARY KEY ("AssessmentId"),
+    CONSTRAINT "FK_Assessment_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Assessment_Application_ApplicationId" FOREIGN KEY ("ApplicationId") REFERENCES "Application" ("ApplicationId") ON DELETE RESTRICT
+);
+2026-09-26 15:05:54.718 +02:00 [ERR] Failed executing DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetUsers" (
+    "Id" text NOT NULL,
+    "FullName" text NOT NULL,
+    "JobTitle" text NOT NULL,
+    "CompanyId" uuid NOT NULL,
+    "UserName" character varying(256),
+    "NormalizedUserName" character varying(256),
+    "Email" character varying(256),
+    "NormalizedEmail" character varying(256),
+    "EmailConfirmed" boolean NOT NULL,
+    "PasswordHash" text,
+    "SecurityStamp" text,
+    "ConcurrencyStamp" text,
+    "PhoneNumber" text,
+    "PhoneNumberConfirmed" boolean NOT NULL,
+    "TwoFactorEnabled" boolean NOT NULL,
+    "LockoutEnd" timestamp with time zone,
+    "LockoutEnabled" boolean NOT NULL,
+    "AccessFailedCount" integer NOT NULL,
+    CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_AspNetUsers_Company_CompanyId" FOREIGN KEY ("CompanyId") REFERENCES "Company" ("CompanyId") ON DELETE RESTRICT
+);
+2026-09-26 15:13:21.722 +02:00 [ERR] Failed executing DbCommand (27ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Company" (
+    "CompanyId" uuid NOT NULL,
+    "UserId" text NOT NULL,
+    "CompanyName" text NOT NULL,
+    "Description" text,
+    CONSTRAINT "PK_Company" PRIMARY KEY ("CompanyId"),
+    CONSTRAINT "FK_Company_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE RESTRICT
+);
+2026-09-26 15:15:18.288 +02:00 [ERR] Failed executing DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetUsers" (
+    "Id" text NOT NULL,
+    "FullName" text NOT NULL,
+    "JobTitle" text NOT NULL,
+    "AssessmentId" uuid NOT NULL,
+    "UserName" character varying(256),
+    "NormalizedUserName" character varying(256),
+    "Email" character varying(256),
+    "NormalizedEmail" character varying(256),
+    "EmailConfirmed" boolean NOT NULL,
+    "PasswordHash" text,
+    "SecurityStamp" text,
+    "ConcurrencyStamp" text,
+    "PhoneNumber" text,
+    "PhoneNumberConfirmed" boolean NOT NULL,
+    "TwoFactorEnabled" boolean NOT NULL,
+    "LockoutEnd" timestamp with time zone,
+    "LockoutEnabled" boolean NOT NULL,
+    "AccessFailedCount" integer NOT NULL,
+    CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_AspNetUsers_Assessment_AssessmentId" FOREIGN KEY ("AssessmentId") REFERENCES "Assessment" ("AssessmentId") ON DELETE RESTRICT
+);
+2026-09-26 15:16:00.118 +02:00 [ERR] Failed executing DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AspNetUsers" (
+    "Id" text NOT NULL,
+    "FullName" text NOT NULL,
+    "JobTitle" text NOT NULL,
+    "AssessmentId" uuid NOT NULL,
+    "UserName" character varying(256),
+    "NormalizedUserName" character varying(256),
+    "Email" character varying(256),
+    "NormalizedEmail" character varying(256),
+    "EmailConfirmed" boolean NOT NULL,
+    "PasswordHash" text,
+    "SecurityStamp" text,
+    "ConcurrencyStamp" text,
+    "PhoneNumber" text,
+    "PhoneNumberConfirmed" boolean NOT NULL,
+    "TwoFactorEnabled" boolean NOT NULL,
+    "LockoutEnd" timestamp with time zone,
+    "LockoutEnabled" boolean NOT NULL,
+    "AccessFailedCount" integer NOT NULL,
+    CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_AspNetUsers_Assessment_AssessmentId" FOREIGN KEY ("AssessmentId") REFERENCES "Assessment" ("AssessmentId") ON DELETE RESTRICT
+);

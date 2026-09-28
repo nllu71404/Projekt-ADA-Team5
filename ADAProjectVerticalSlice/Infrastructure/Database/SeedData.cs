@@ -10,8 +10,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         {
             var dbContext =
                 services.GetRequiredService<ApplicationDbContext>();
-
-
+            
             // ==========================================
             // 1. Opret test Company
             // ==========================================
@@ -58,7 +57,9 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
                 await dbContext.SaveChangesAsync();
             }
+            
 
+           
 
             // ==========================================
             // 3. Opret Regions

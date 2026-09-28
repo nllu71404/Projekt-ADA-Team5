@@ -139,8 +139,29 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
 
 
-                var currentUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == "test@test.dk", cancellationToken);
-               
+                var currentUser = await _dbContext.Users.FirstOrDefaultAsync(
+                    u => u.Email == "test@test.dk",
+                    cancellationToken);
+
+                if (currentUser is null)
+                {
+                    return Result.Failure<Guid>(Error.NullValue);
+                }
+
+                var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
+                var survey = await _dbContext.Surveys
+                    .FirstOrDefaultAsync(
+                        s => s.SurveyId == surveyId,
+                        cancellationToken);
+
+                if (survey is null)
+                {
+                    return Result.Failure<Guid>(
+                        new Error(
+                            "CreateAssessment.SurveyNotFound",
+                            "ADA Survey could not be found."));
+                }
 
                 // Opret Assessment objektet og sæt de nødvendige properties
                 var assessment = new Assessment
@@ -150,6 +171,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
                     ApplicationId = application.ApplicationId,
+                    SurveyId = survey.SurveyId,
                     Roles = roles,
                     Experiences = request.Experiences,
                     Regions = regions,
