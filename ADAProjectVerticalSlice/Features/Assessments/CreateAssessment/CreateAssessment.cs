@@ -94,7 +94,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 }
 
                 // Find eller opret Application
-                var application = await _dbContext.Application
+                var application = await _dbContext.Applications
                     .FirstOrDefaultAsync(
                         a => a.ApplicationName == request.ApplicationName,
                         cancellationToken);
@@ -107,7 +107,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         ApplicationName = request.ApplicationName
                     };
 
-                    _dbContext.Application.Add(application);
+                    _dbContext.Applications.Add(application);
                 }
 
                 // Find eller opret Roles
@@ -115,7 +115,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
                 foreach (var roleName in request.RoleNames)
                 {
-                    var role = await _dbContext.Role
+                    var role = await _dbContext.Roles
                         .FirstOrDefaultAsync(
                             r => r.RoleName == roleName,
                             cancellationToken);
@@ -128,7 +128,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                             RoleName = roleName
                         };
 
-                        _dbContext.Role.Add(role);
+                        _dbContext.Roles.Add(role);
                     }
 
                     roles.Add(role);
@@ -148,6 +148,22 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         new Error(
                             "CreateAssessment.UserNotFound",
                             "Testbrugeren blev ikke fundet."));
+                }
+
+                // Hent Survey fra databasen baseret på SurveyId fra request
+                var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
+                var survey = await _dbContext.Surveys
+                    .FirstOrDefaultAsync(
+                        s => s.SurveyId == surveyId,
+                        cancellationToken);
+
+                if (survey is null)
+                {
+                    return Result.Failure<Guid>(
+                        new Error(
+                            "CreateAssessment.SurveyNotFound",
+                            "ADA Survey could not be found."));
                 }
 
                 // Opret Assessment objektet og sæt de nødvendige properties
