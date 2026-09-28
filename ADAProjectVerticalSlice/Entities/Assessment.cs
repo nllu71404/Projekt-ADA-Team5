@@ -18,12 +18,16 @@
 
 
         //Foreign keys
-        public string UserId { get; set; } //IdentityUser bruger string til UserId
-        
+        public string UserId { get; set; } = string.Empty; //IdentityUser bruger string til UserId
+
         public Guid ApplicationId { get; set; }
+
+        public Guid SurveyId { get; set; }
 
         //Navigation properties
         public User User { get; set; } = null!;
         public Application Application { get; set; } = null!;
+
+        public Survey Survey { get; set; } = null!;
     }
 }

@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114000_Enums")]
-    public partial class Migration001_Enums : Migration
+    [Migration("20260919114000_Enum")]
+    public partial class Migration000_Enum : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

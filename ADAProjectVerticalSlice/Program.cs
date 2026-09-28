@@ -72,10 +72,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.UseCors("AllowDevelopment");
 
 app.MapCarter();
-
-app.UseHttpsRedirection();
 
 app.Run();

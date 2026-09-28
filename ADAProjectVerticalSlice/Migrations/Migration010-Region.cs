@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114400_Region")]
-    public class Migration004_Region : Migration
+    [Migration("20260919114256_Region")]
+    public class Migration010_Region : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,14 +16,14 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 columns: table => new
                 {
                     RegionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RegionName = table.Column<string>(type: "text", nullable: false) // Bør ændres til RegionEnum senere! :D
+                    RegionName = table.Column<string>(type: "text", nullable: false), // Bør ændres til RegionEnum senere! :D
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegionId", λ => λ.RegionId);
+                    table.PrimaryKey("PK_RegionId", x => x.RegionId);
                 });
         }
-
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -31,3 +31,4 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         }
     }
 }
+
