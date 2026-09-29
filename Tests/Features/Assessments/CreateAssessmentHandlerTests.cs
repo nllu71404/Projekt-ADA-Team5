@@ -79,10 +79,10 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 RoleName = "Employee"
             };
 
-            _dbContext.Company.Add(_testCompany);
+            _dbContext.Companies.Add(_testCompany);
             _dbContext.Users.Add(_testUser);
-            _dbContext.Survey.Add(_testSurvey);
-            _dbContext.Role.Add(_existingRole);
+            _dbContext.Surveys.Add(_testSurvey);
+            _dbContext.Roles.Add(_existingRole);
 
             await _dbContext.SaveChangesAsync();
         }
@@ -244,7 +244,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var application = await _dbContext.Application
+            var application = await _dbContext.Applications
                 .FirstOrDefaultAsync(
                     a => a.ApplicationName == "New Application");
 
@@ -289,7 +289,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var role = await _dbContext.Role
+            var role = await _dbContext.Roles
                 .FirstOrDefaultAsync(
                     r => r.RoleName == "New Role");
 
@@ -334,7 +334,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var roles = await _dbContext.Role
+            var roles = await _dbContext.Roles
                 .ToListAsync();
 
             Assert.AreEqual(

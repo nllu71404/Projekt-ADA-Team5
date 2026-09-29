@@ -64,40 +64,40 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
 
 
-            // ==========================================
-            // 3. Opret Regions
-            // ==========================================
+        //    // ==========================================
+        //    // 3. Opret Regions
+        //    // ==========================================
 
-            var regions = new[]
-            {
-            "United Kingdom East",
-            "Continental Europe",
-            "United Kingdom West",
-            "Americas",
-            "Asia Pacific",
-            "Middle East",
-            "Africa",
-            "Nordics",
-            "Central Europe",
-            "Southern Europe"
-        };
+        //    var regions = new[]
+        //    {
+        //    "United Kingdom East",
+        //    "Continental Europe",
+        //    "United Kingdom West",
+        //    "Americas",
+        //    "Asia Pacific",
+        //    "Middle East",
+        //    "Africa",
+        //    "Nordics",
+        //    "Central Europe",
+        //    "Southern Europe"
+        //};
 
-            foreach (var regionName in regions)
-            {
-                var regionExists = await dbContext.Regions
-                    .AnyAsync(r => r.RegionName == regionName);
+        //    foreach (var regionName in regions)
+        //    {
+        //        var regionExists = await dbContext.Regions
+        //            .AnyAsync(r => r.RegionName == regionName);
 
-                if (!regionExists)
-                {
-                    dbContext.Regions.Add(new Region
-                    {
-                        RegionId = Guid.NewGuid(),
-                        RegionName = regionName
-                    });
-                }
-            }
+        //        if (!regionExists)
+        //        {
+        //            dbContext.Regions.Add(new Region
+        //            {
+        //                RegionId = Guid.NewGuid(),
+        //                RegionName = regionName
+        //            });
+        //        }
+        //    }
 
-            await dbContext.SaveChangesAsync();
+        //    await dbContext.SaveChangesAsync();
 
 
             // ==========================================
@@ -170,8 +170,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Usability",
                 Description =
                     "Hvor nemt og intuitivt systemet er at bruge.",
-                Freeform =
-                    "Har du yderligere kommentarer til systemets brugervenlighed?",
                 SurveyId = surveyId
             },
 
@@ -181,8 +179,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Self-efficacy",
                 Description =
                     "Brugerens oplevelse af egne evner til at bruge systemet.",
-                Freeform =
-                    "Har du yderligere kommentarer til din oplevelse af at kunne bruge systemet?",
                 SurveyId = surveyId
             },
 
@@ -192,8 +188,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Enjoyment",
                 Description =
                     "Hvor behageligt og positivt brugeren oplever arbejdet med systemet.",
-                Freeform =
-                    "Har du yderligere kommentarer til din oplevelse af at arbejde i systemet?",
                 SurveyId = surveyId
             },
 
@@ -203,8 +197,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Confirmation",
                 Description =
                     "Om systemet lever op til brugerens forventninger.",
-                Freeform =
-                    "Har du yderligere kommentarer til systemets evne til at leve op til dine forventninger?",
                 SurveyId = surveyId
             },
 
@@ -214,8 +206,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Organizational Support",
                 Description =
                     "Den støtte og hjælp brugeren oplever fra organisationen.",
-                Freeform =
-                    "Har du yderligere kommentarer til den støtte, du får fra organisationen?",
                 SurveyId = surveyId
             },
 
@@ -225,8 +215,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Job-Fit",
                 Description =
                     "Hvor godt systemet passer til brugerens arbejdsopgaver.",
-                Freeform =
-                    "Har du yderligere kommentarer til systemets understøttelse af dit arbejde?",
                 SurveyId = surveyId
             },
 
@@ -236,8 +224,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Data Quality",
                 Description =
                     "Brugerens oplevelse af kvaliteten og pålideligheden af data i systemet.",
-                Freeform =
-                    "Har du yderligere kommentarer til kvaliteten af data i systemet?",
                 SurveyId = surveyId
             },
 
@@ -247,8 +233,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Process-fit",
                 Description =
                     "Hvor godt systemet passer til organisationens arbejdsgange.",
-                Freeform =
-                    "Har du yderligere kommentarer til systemets arbejdsgange?",
                 SurveyId = surveyId
             },
 
@@ -258,8 +242,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Workarounds",
                 Description =
                     "I hvor høj grad brugeren arbejder uden om systemet.",
-                Freeform =
-                    "Har du yderligere kommentarer til brugen af andre løsninger ved siden af systemet?",
                 SurveyId = surveyId
             },
 
@@ -269,8 +251,6 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 Title = "Switching Benefits",
                 Description =
                     "Brugerens oplevelse af fordelene ved det nye system sammenlignet med den tidligere løsning.",
-                Freeform =
-                    "Har du yderligere kommentarer til fordelene ved det nye system?",
                 SurveyId = surveyId
             }
         };
