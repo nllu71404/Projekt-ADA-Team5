@@ -25,9 +25,11 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             public string ApplicationName { get; set; } = string.Empty;
 
+            public Guid SurveyId { get; set; } 
+
             public List<string> RoleNames { get; set; } = new List<string>();
 
-            public List<Guid> RegionIds { get; set; } = new List<Guid>();
+            public List<Region> Regions { get; set; } = new List<Region>();
 
             public List<Experience> Experiences { get; set; } = new List<Experience>();
 
@@ -47,7 +49,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     .WithMessage("Slutdato skal være efter startdato.");
                 RuleFor(c => c.RoleNames).NotEmpty()
                     .WithMessage("Mindst én rolle skal være valgt.");
-                RuleFor(c => c.RegionIds).NotEmpty()
+                RuleFor(c => c.Regions).NotEmpty()
                     .WithMessage("Mindst én region skal være valgt.");
                 RuleFor(c => c.Experiences).NotEmpty()
                     .WithMessage("Mindst ét erfaringsinterval skal være valgt.");
@@ -65,12 +67,12 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             // Validatoren bliver injected via Dependency Injection. Den bruges til at kontrollere, om Command'en er gyldig.
             private readonly IValidator<Command> _validator;
 
-            private readonly RabbitMqPublisher _publisher;
+            private readonly IRabbitMqPublisher _publisher;
 
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
-                RabbitMqPublisher publisher)
+                IRabbitMqPublisher publisher)
             {
                 _dbContext = dbContext;
                 _validator = validator;
@@ -132,10 +134,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     roles.Add(role);
                 }
 
-                //Find Regions
-                var regions = await _dbContext.Regions
-                    .Where(r => request.RegionIds.Contains(r.RegionId))
-                    .ToListAsync(cancellationToken);
+                
 
 
 
@@ -163,6 +162,31 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                             "ADA Survey could not be found."));
                 }
 
+                // Tjek om currentUser er null, og returner en fejl, hvis det er tilfældet
+                if (currentUser == null)
+                {
+                    return Result.Failure<Guid>(
+                        new Error(
+                            "CreateAssessment.UserNotFound",
+                            "Testbrugeren blev ikke fundet."));
+                }
+
+                // Hent Survey fra databasen baseret på SurveyId fra request
+                var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
+                var survey = await _dbContext.Surveys
+                    .FirstOrDefaultAsync(
+                        s => s.SurveyId == surveyId,
+                        cancellationToken);
+
+                if (survey is null)
+                {
+                    return Result.Failure<Guid>(
+                        new Error(
+                            "CreateAssessment.SurveyNotFound",
+                            "ADA Survey could not be found."));
+                }
+
                 // Opret Assessment objektet og sæt de nødvendige properties
                 var assessment = new Assessment
                 {
@@ -174,7 +198,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     SurveyId = survey.SurveyId,
                     Roles = roles,
                     Experiences = request.Experiences,
-                    Regions = regions,
+                    Regions = request.Regions,
+                    SurveyId = request.SurveyId,
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
                     //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).

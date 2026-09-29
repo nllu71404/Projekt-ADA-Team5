@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 
-public class RabbitMqPublisher
+public class RabbitMqPublisher : IRabbitMqPublisher
 {
     public async Task PublishAsync<T>(
         T message,

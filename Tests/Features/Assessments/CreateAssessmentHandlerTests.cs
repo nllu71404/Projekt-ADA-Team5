@@ -1,9 +1,12 @@
 ﻿using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System.Runtime.ConstrainedExecution;
 
 namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
 {
@@ -13,9 +16,12 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
         private ApplicationDbContext _dbContext = null!;
         private IValidator<CreateAssessment.Command> _validator = null!;
         private CreateAssessment.Handler _handler = null!;
+        private Mock<IRabbitMqPublisher> _publisher = null!;
 
-        private Region _region = null!;
         private Role _existingRole = null!;
+        private User _testUser = null!;
+        private Company _testCompany = null!;
+        private Survey _testSurvey = null!;
 
         // Fælles testdata og dependencies bliver oprettet før hver test.
         [TestInitialize]
@@ -28,30 +34,55 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
 
             _dbContext = new ApplicationDbContext(options);
 
-            // Opretter validatoren, som bruges af Handleren.
+            // Opretter validatoren.
             _validator = new CreateAssessment.Validator();
 
-            // Opretter Handleren med database og validator som dependencies.
+            // Mock af RabbitMQ publisher.
+            _publisher = new Mock<IRabbitMqPublisher>();
+
+            // Opretter Handleren med alle dependencies.
             _handler = new CreateAssessment.Handler(
                 _dbContext,
-                _validator);
+                _validator,
+                _publisher.Object);
 
-            // Opretter en region, som bruges af flere tests.
-            _region = new Region
+            // Opretter test Company.
+            _testCompany = new Company
             {
-                RegionId = Guid.NewGuid(),
-                RegionName = "Americas"
+                CompanyId = Guid.NewGuid(),
+                CompanyName = "Test Company"
             };
 
-            // Opretter en eksisterende rolle, som bruges til at teste genbrug af roller.
+            // Opretter test User.
+            _testUser = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = "test@test.dk",
+                Email = "test@test.dk",
+                FullName = "Test Bruger",
+                CompanyId = _testCompany.CompanyId,
+                Company = _testCompany
+            };
+
+            // Opretter test Survey.
+            _testSurvey = new Survey
+            {
+                SurveyId = Guid.NewGuid(),
+                Title = "ADA Survey",
+                Description = "Test Survey"
+            };
+
+            // Opretter en eksisterende rolle.
             _existingRole = new Role
             {
                 RoleId = Guid.NewGuid(),
                 RoleName = "Employee"
             };
 
-            _dbContext.Regions.Add(_region);
-            _dbContext.Roles.Add(_existingRole);
+            _dbContext.Company.Add(_testCompany);
+            _dbContext.Users.Add(_testUser);
+            _dbContext.Survey.Add(_testSurvey);
+            _dbContext.Role.Add(_existingRole);
 
             await _dbContext.SaveChangesAsync();
         }
@@ -66,15 +97,16 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "Microsoft Teams",
+                SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
                 {
                     "Employee"
                 },
 
-                RegionIds = new List<Guid>
+                Regions = new List<Region>
                 {
-                    _region.RegionId
+                    Region.Americas
                 },
 
                 Experiences = new List<Experience>
@@ -93,8 +125,9 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
 
             var assessment = await _dbContext.Assessments
                 .Include(a => a.Roles)
-                .Include(a => a.Regions)
                 .Include(a => a.Application)
+                .Include(a => a.User)
+                .Include(a => a.Survey)
                 .FirstOrDefaultAsync();
 
             Assert.IsNotNull(assessment);
@@ -128,8 +161,24 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 assessment.Regions.Count);
 
             Assert.AreEqual(
-                "Americas",
-                assessment.Regions[0].RegionName);
+                Region.Americas,
+                assessment.Regions[0]);
+
+            Assert.AreEqual(
+                1,
+                assessment.Experiences.Count);
+
+            Assert.AreEqual(
+                Experience.From1To2Years,
+                assessment.Experiences[0]);
+
+            Assert.AreEqual(
+                _testUser.Id,
+                assessment.UserId);
+
+            Assert.AreEqual(
+                _testSurvey.SurveyId,
+                assessment.SurveyId);
         }
 
         [TestMethod]
@@ -142,8 +191,9 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 10, 10),
                 EndDate = new DateTime(2026, 9, 10),
                 ApplicationName = "",
+                SurveyId = _testSurvey.SurveyId,
                 RoleNames = new List<string>(),
-                RegionIds = new List<Guid>(),
+                Regions = new List<Region>(),
                 Experiences = new List<Experience>()
             };
 
@@ -170,15 +220,16 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "New Application",
+                SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
                 {
                     "Employee"
                 },
 
-                RegionIds = new List<Guid>
+                Regions = new List<Region>
                 {
-                    _region.RegionId
+                    Region.Americas
                 },
 
                 Experiences = new List<Experience>
@@ -193,7 +244,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var application = await _dbContext.Applications
+            var application = await _dbContext.Application
                 .FirstOrDefaultAsync(
                     a => a.ApplicationName == "New Application");
 
@@ -214,15 +265,16 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "Microsoft Teams",
+                SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
                 {
                     "New Role"
                 },
 
-                RegionIds = new List<Guid>
+                Regions = new List<Region>
                 {
-                    _region.RegionId
+                    Region.Americas
                 },
 
                 Experiences = new List<Experience>
@@ -237,7 +289,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var role = await _dbContext.Roles
+            var role = await _dbContext.Role
                 .FirstOrDefaultAsync(
                     r => r.RoleName == "New Role");
 
@@ -258,15 +310,16 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "Microsoft Teams",
+                SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
                 {
                     "Employee"
                 },
 
-                RegionIds = new List<Guid>
+                Regions = new List<Region>
                 {
-                    _region.RegionId
+                    Region.Americas
                 },
 
                 Experiences = new List<Experience>
@@ -281,7 +334,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 CancellationToken.None);
 
             // Assert
-            var roles = await _dbContext.Roles
+            var roles = await _dbContext.Role
                 .ToListAsync();
 
             Assert.AreEqual(
@@ -307,23 +360,24 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "Microsoft Teams",
+                SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
-        {
-            "Employee"
-        },
+                {
+                    "Employee"
+                },
 
-                RegionIds = new List<Guid>
-        {
-            _region.RegionId
-        },
+                Regions = new List<Region>
+                {
+                    Region.Americas
+                },
 
                 Experiences = new List<Experience>
-        {
-            Experience.LessThan1Year,
-            Experience.From1To2Years,
-            Experience.From3To5Years
-        }
+                {
+                    Experience.LessThan1Year,
+                    Experience.From1To2Years,
+                    Experience.From3To5Years
+                }
             };
 
             // Act
@@ -346,9 +400,9 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
             CollectionAssert.AreEquivalent(
                 new[]
                 {
-            Experience.LessThan1Year,
-            Experience.From1To2Years,
-            Experience.From3To5Years
+                    Experience.LessThan1Year,
+                    Experience.From1To2Years,
+                    Experience.From3To5Years
                 },
                 assessment.Experiences);
         }

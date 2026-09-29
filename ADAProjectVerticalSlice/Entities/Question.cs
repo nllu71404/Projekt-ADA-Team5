@@ -6,6 +6,8 @@
         public string QuestionText { get; set; } = string.Empty;
         public string QuestionPolarity { get; set; } = string.Empty;
 
+        public string QuestionType { get; set; } = string.Empty;
+
         // Foreign keys
         public Guid SurveyId { get; set; }
         public Guid ThemeId { get; set; }
@@ -14,6 +16,6 @@
         public Survey Survey { get; set; } = null!;
         public Theme Theme { get; set; } = null!;
 
-        public string QuestionType { get; set; } = string.Empty;
+       
     }
 }
