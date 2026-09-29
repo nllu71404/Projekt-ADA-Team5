@@ -39,7 +39,7 @@ builder.Services.AddCarter();
 
 builder.Services.AddValidatorsFromAssembly(assembly);
 
-builder.Services.AddSingleton<RabbitMqPublisher>();
+builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 
 builder.Services.AddCors(options =>
 {
