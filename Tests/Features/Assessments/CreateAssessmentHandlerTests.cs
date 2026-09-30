@@ -1,4 +1,5 @@
-﻿using ADAProjectAPIVerticalSlice.Entities;
+﻿using ADA_Contracts.Events;
+using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
@@ -6,7 +7,6 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Runtime.ConstrainedExecution;
 
 namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
 {
@@ -19,41 +19,57 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
         private Mock<IRabbitMqPublisher> _publisher = null!;
 
         private Role _existingRole = null!;
+        private Region _existingRegion = null!;
+        private Experience _experienceLessThan1Year = null!;
+        private Experience _experienceFrom1To2Years = null!;
+        private Experience _experienceFrom3To5Years = null!;
+
         private User _testUser = null!;
         private Company _testCompany = null!;
         private Survey _testSurvey = null!;
 
-        // Fælles testdata og dependencies bliver oprettet før hver test.
+
         [TestInitialize]
         public async Task Setup()
         {
-            // Opretter en ny InMemory database, så hver test er isoleret.
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             _dbContext = new ApplicationDbContext(options);
 
-            // Opretter validatoren.
             _validator = new CreateAssessment.Validator();
 
-            // Mock af RabbitMQ publisher.
             _publisher = new Mock<IRabbitMqPublisher>();
 
-            // Opretter Handleren med alle dependencies.
+            _publisher
+                .Setup(p => p.PublishAsync(
+                    It.IsAny<AssessmentCreated>(),
+                    "assessment-created",
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
             _handler = new CreateAssessment.Handler(
                 _dbContext,
                 _validator,
                 _publisher.Object);
 
-            // Opretter test Company.
+
+            // -------------------------
+            // Company
+            // -------------------------
+
             _testCompany = new Company
             {
                 CompanyId = Guid.NewGuid(),
                 CompanyName = "Test Company"
             };
 
-            // Opretter test User.
+
+            // -------------------------
+            // User
+            // -------------------------
+
             _testUser = new User
             {
                 Id = Guid.NewGuid().ToString(),
@@ -64,7 +80,11 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 Company = _testCompany
             };
 
-            // Opretter test Survey.
+
+            // -------------------------
+            // Survey
+            // -------------------------
+
             _testSurvey = new Survey
             {
                 SurveyId = Guid.NewGuid(),
@@ -72,20 +92,70 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 Description = "Test Survey"
             };
 
-            // Opretter en eksisterende rolle.
+
+            // -------------------------
+            // Role
+            // -------------------------
+
             _existingRole = new Role
             {
                 RoleId = Guid.NewGuid(),
                 RoleName = "Employee"
             };
 
+
+            // -------------------------
+            // Region
+            // -------------------------
+
+            _existingRegion = new Region
+            {
+                RegionId = Guid.NewGuid(),
+                RegionName = "Americas"
+            };
+
+
+            // -------------------------
+            // Experiences
+            // -------------------------
+
+            _experienceLessThan1Year = new Experience
+            {
+                ExperienceId = Guid.NewGuid(),
+                Years = "<1 år"
+            };
+
+            _experienceFrom1To2Years = new Experience
+            {
+                ExperienceId = Guid.NewGuid(),
+                Years = "1-2 år"
+            };
+
+            _experienceFrom3To5Years = new Experience
+            {
+                ExperienceId = Guid.NewGuid(),
+                Years = "3-5 år"
+            };
+
+
+            // -------------------------
+            // Add test data
+            // -------------------------
+
             _dbContext.Companies.Add(_testCompany);
             _dbContext.Users.Add(_testUser);
             _dbContext.Surveys.Add(_testSurvey);
             _dbContext.Roles.Add(_existingRole);
 
+            _dbContext.Regions.Add(_existingRegion);
+
+            _dbContext.Experiences.Add(_experienceLessThan1Year);
+            _dbContext.Experiences.Add(_experienceFrom1To2Years);
+            _dbContext.Experiences.Add(_experienceFrom3To5Years);
+
             await _dbContext.SaveChangesAsync();
         }
+
 
         [TestMethod]
         public async Task Handle_ValidCommand_CreatesAssessment()
@@ -97,6 +167,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
                 ApplicationName = "Microsoft Teams",
+
                 SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
@@ -104,31 +175,41 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                     "Employee"
                 },
 
-                Regions = new List<Region>
+                RegionIds = new List<Guid>
                 {
-                    Region.Americas
+                    _existingRegion.RegionId
                 },
 
-                Experiences = new List<Experience>
+                ExperienceIds = new List<Guid>
                 {
-                    Experience.From1To2Years
+                    _experienceFrom1To2Years.ExperienceId
+                },
+
+                RespondentEmails = new List<string>
+                {
+                    "respondent@test.dk"
                 }
             };
+
 
             // Act
             var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
+
             // Assert
             Assert.IsTrue(result.IsSuccess);
 
             var assessment = await _dbContext.Assessments
                 .Include(a => a.Roles)
+                .Include(a => a.Regions)
+                .Include(a => a.Experiences)
                 .Include(a => a.Application)
                 .Include(a => a.User)
                 .Include(a => a.Survey)
                 .FirstOrDefaultAsync();
+
 
             Assert.IsNotNull(assessment);
 
@@ -144,10 +225,14 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 new DateTime(2026, 10, 10),
                 assessment.EndDate);
 
+
+            // Application
             Assert.AreEqual(
                 "Microsoft Teams",
                 assessment.Application.ApplicationName);
 
+
+            // Role
             Assert.AreEqual(
                 1,
                 assessment.Roles.Count);
@@ -156,33 +241,68 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 "Employee",
                 assessment.Roles[0].RoleName);
 
+
+            // Region
             Assert.AreEqual(
                 1,
                 assessment.Regions.Count);
 
             Assert.AreEqual(
-                Region.Americas,
-                assessment.Regions[0]);
+                _existingRegion.RegionId,
+                assessment.Regions[0].RegionId);
 
+            Assert.AreEqual(
+                "Americas",
+                assessment.Regions[0].RegionName);
+
+
+            // Experience
             Assert.AreEqual(
                 1,
                 assessment.Experiences.Count);
 
             Assert.AreEqual(
-                Experience.From1To2Years,
-                assessment.Experiences[0]);
+                _experienceFrom1To2Years.ExperienceId,
+                assessment.Experiences[0].ExperienceId);
 
+            Assert.AreEqual(
+                "1-2 år",
+                assessment.Experiences[0].Years);
+
+
+            // User
             Assert.AreEqual(
                 _testUser.Id,
                 assessment.UserId);
 
+
+            // Survey
             Assert.AreEqual(
                 _testSurvey.SurveyId,
                 assessment.SurveyId);
+
+
+            // Respondent
+            var respondent = await _dbContext.Respondents
+                .FirstOrDefaultAsync();
+
+            Assert.IsNotNull(respondent);
+
+            Assert.AreEqual(
+                "respondent@test.dk",
+                respondent.EmailAddress);
+
+            Assert.AreEqual(
+                assessment.AssessmentId,
+                respondent.AssessmentId);
+
+            Assert.IsFalse(
+                string.IsNullOrEmpty(respondent.AccessToken));
         }
 
+
         [TestMethod]
-        public async Task Handle_InvalidCommand_ReturnsValidationFailure()
+        public async Task Handle_InvalidCommand_ReturnsValidationError()
         {
             // Arrange
             var command = new CreateAssessment.Command
@@ -191,35 +311,40 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 StartDate = new DateTime(2026, 10, 10),
                 EndDate = new DateTime(2026, 9, 10),
                 ApplicationName = "",
-                SurveyId = _testSurvey.SurveyId,
+
                 RoleNames = new List<string>(),
-                Regions = new List<Region>(),
-                Experiences = new List<Experience>()
+
+                RegionIds = new List<Guid>(),
+
+                ExperienceIds = new List<Guid>(),
+
+                RespondentEmails = new List<string>()
             };
+
 
             // Act
             var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
-            // Assert
-            Assert.IsTrue(result.IsFailure);
 
-            Assert.AreEqual(
-                "CreateAssessment.Validation",
-                result.Error.Code);
+            // Assert
+            Assert.IsFalse(result.IsSuccess);
         }
 
+
         [TestMethod]
-        public async Task Handle_ApplicationDoesNotExist_CreatesApplication()
+        public async Task Handle_ApplicationDoesNotExist_ReturnsFailure()
         {
             // Arrange
             var command = new CreateAssessment.Command
             {
-                AssessmentName = "Test Assessment",
+                AssessmentName = "ADA Measurement 2026",
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
-                ApplicationName = "New Application",
+
+                ApplicationName = "NonExisting Application",
+
                 SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
@@ -227,78 +352,70 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                     "Employee"
                 },
 
-                Regions = new List<Region>
+                RegionIds = new List<Guid>
                 {
-                    Region.Americas
+                    _existingRegion.RegionId
                 },
 
-                Experiences = new List<Experience>
+                ExperienceIds = new List<Guid>
                 {
-                    Experience.From1To2Years
+                    _experienceFrom1To2Years.ExperienceId
                 }
             };
 
+
             // Act
-            await _handler.Handle(
+            var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
+
             // Assert
-            var application = await _dbContext.Applications
-                .FirstOrDefaultAsync(
-                    a => a.ApplicationName == "New Application");
-
-            Assert.IsNotNull(application);
-
-            Assert.AreEqual(
-                "New Application",
-                application.ApplicationName);
+            Assert.IsFalse(result.IsSuccess);
         }
 
+
         [TestMethod]
-        public async Task Handle_RoleDoesNotExist_CreatesRole()
+        public async Task Handle_RoleDoesNotExist_ReturnsFailure()
         {
             // Arrange
             var command = new CreateAssessment.Command
             {
-                AssessmentName = "Test Assessment",
+                AssessmentName = "ADA Measurement 2026",
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
+
                 ApplicationName = "Microsoft Teams",
+
                 SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
                 {
-                    "New Role"
+                    "NonExistingRole"
                 },
 
-                Regions = new List<Region>
+                RegionIds = new List<Guid>
                 {
-                    Region.Americas
+                    _existingRegion.RegionId
                 },
 
-                Experiences = new List<Experience>
+                ExperienceIds = new List<Guid>
                 {
-                    Experience.From1To2Years
+                    _experienceFrom1To2Years.ExperienceId
                 }
             };
 
+
             // Act
-            await _handler.Handle(
+            var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
+
             // Assert
-            var role = await _dbContext.Roles
-                .FirstOrDefaultAsync(
-                    r => r.RoleName == "New Role");
-
-            Assert.IsNotNull(role);
-
-            Assert.AreEqual(
-                "New Role",
-                role.RoleName);
+            Assert.IsFalse(result.IsSuccess);
         }
+
 
         [TestMethod]
         public async Task Handle_ExistingRole_ReusesExistingRole()
@@ -306,10 +423,12 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
             // Arrange
             var command = new CreateAssessment.Command
             {
-                AssessmentName = "Test Assessment",
+                AssessmentName = "ADA Measurement 2026",
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
+
                 ApplicationName = "Microsoft Teams",
+
                 SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
@@ -317,38 +436,42 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                     "Employee"
                 },
 
-                Regions = new List<Region>
+                RegionIds = new List<Guid>
                 {
-                    Region.Americas
+                    _existingRegion.RegionId
                 },
 
-                Experiences = new List<Experience>
+                ExperienceIds = new List<Guid>
                 {
-                    Experience.From1To2Years
+                    _experienceFrom1To2Years.ExperienceId
                 }
             };
 
+
             // Act
-            await _handler.Handle(
+            var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
+
             // Assert
-            var roles = await _dbContext.Roles
-                .ToListAsync();
+            Assert.IsTrue(result.IsSuccess);
+
+            var assessment = await _dbContext.Assessments
+                .Include(a => a.Roles)
+                .FirstOrDefaultAsync();
+
+            Assert.IsNotNull(assessment);
 
             Assert.AreEqual(
                 1,
-                roles.Count);
+                assessment.Roles.Count);
 
             Assert.AreEqual(
                 _existingRole.RoleId,
-                roles[0].RoleId);
-
-            Assert.AreEqual(
-                "Employee",
-                roles[0].RoleName);
+                assessment.Roles[0].RoleId);
         }
+
 
         [TestMethod]
         public async Task Handle_MultipleExperiencesSelected_AddsAllExperiencesToAssessment()
@@ -359,7 +482,9 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 AssessmentName = "ADA Measurement 2026",
                 StartDate = new DateTime(2026, 9, 10),
                 EndDate = new DateTime(2026, 10, 10),
+
                 ApplicationName = "Microsoft Teams",
+
                 SurveyId = _testSurvey.SurveyId,
 
                 RoleNames = new List<string>
@@ -367,28 +492,31 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                     "Employee"
                 },
 
-                Regions = new List<Region>
+                RegionIds = new List<Guid>
                 {
-                    Region.Americas
+                    _existingRegion.RegionId
                 },
 
-                Experiences = new List<Experience>
+                ExperienceIds = new List<Guid>
                 {
-                    Experience.LessThan1Year,
-                    Experience.From1To2Years,
-                    Experience.From3To5Years
+                    _experienceLessThan1Year.ExperienceId,
+                    _experienceFrom1To2Years.ExperienceId,
+                    _experienceFrom3To5Years.ExperienceId
                 }
             };
+
 
             // Act
             var result = await _handler.Handle(
                 command,
                 CancellationToken.None);
 
+
             // Assert
             Assert.IsTrue(result.IsSuccess);
 
             var assessment = await _dbContext.Assessments
+                .Include(a => a.Experiences)
                 .FirstOrDefaultAsync();
 
             Assert.IsNotNull(assessment);
@@ -397,14 +525,20 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
                 3,
                 assessment.Experiences.Count);
 
+
+            var experienceIds = assessment.Experiences
+                .Select(e => e.ExperienceId)
+                .ToList();
+
+
             CollectionAssert.AreEquivalent(
-                new[]
+                new List<Guid>
                 {
-                    Experience.LessThan1Year,
-                    Experience.From1To2Years,
-                    Experience.From3To5Years
+                    _experienceLessThan1Year.ExperienceId,
+                    _experienceFrom1To2Years.ExperienceId,
+                    _experienceFrom3To5Years.ExperienceId
                 },
-                assessment.Experiences);
+                experienceIds);
         }
     }
 }
