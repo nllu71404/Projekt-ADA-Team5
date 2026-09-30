@@ -1,6 +1,7 @@
 ﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using ADAProjectAPIVerticalSlice.Entities;
 
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
@@ -16,11 +17,11 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 columns: table => new
                 {
                     RegionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RegionName = table.Column<string>(type: "text", nullable: false), // Bør ændres til RegionEnum senere! :D
+                    RegionName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegionId", x => x.RegionId);
+                    table.PrimaryKey("PK_RegionId", λ => λ.RegionId);
                 });
         }
         

@@ -1,4 +1,5 @@
-﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+﻿using ADAProjectAPIVerticalSlice.Entities;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -22,7 +23,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     ApplicationId = table.Column<Guid>(type: "uuid",nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     SurveyId = table.Column<Guid>(type: "uuid",nullable: false),
-                    Experiences = table.Column<int[]>(type: "integer[]",nullable: false,defaultValueSql: "ARRAY[]::integer[]")
                 },
                 constraints: table =>
                 {

@@ -31,22 +31,22 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     {
                         x.AssessmentId,
                         x.ExperienceId
+                    });
+
+                table.ForeignKey(
+                    name: "FK_AssessmentExperience_Assessment_AssessmentId",
+                    column: x => x.AssessmentId,
+                    principalTable: "Assessment",
+                    principalColumn: "AssessmentId",
+                    onDelete: ReferentialAction.Cascade);
+
+                table.ForeignKey(
+                    name: "FK_AssessmentExperience_Experiences_ExperienceId",
+                    column: x => x.ExperienceId,
+                    principalTable: "Experiences",
+                    principalColumn: "ExperienceId",
+                    onDelete: ReferentialAction.Cascade);
             });
-
-        table.ForeignKey(
-            name: "FK_AssessmentExperience_Assessment_AssessmentId",
-            column: x => x.AssessmentId,
-            principalTable: "Assessment",
-            principalColumn: "AssessmentId",
-            onDelete: ReferentialAction.Cascade);
-
-        table.ForeignKey(
-            name: "FK_AssessmentExperience_Experiences_ExperienceId",
-            column: x => x.ExperienceId,
-            principalTable: "Experiences",
-            principalColumn: "ExperienceId",
-            onDelete: ReferentialAction.Cascade);
-         });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentExperience_ExperienceId",

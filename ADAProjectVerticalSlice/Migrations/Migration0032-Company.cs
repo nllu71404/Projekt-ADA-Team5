@@ -7,7 +7,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260919114010_Company")]
 
-    public partial class Migration0031_Company : Migration
+    public partial class Migration0032_Company : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

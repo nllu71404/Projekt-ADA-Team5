@@ -1,36 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ADAProjectAPIVerticalSlice.Entities
+namespace ADAProjectAPIVerticalSlice.Entities;
 
+public class Region
 {
-    public enum Region
-    {
-   
-        [Display(Name = "United Kingdom East")]
-        UnitedKingdomEast,
-
-        [Display(Name = "Continental Europe")]
-        ContinentalEurope,
-
-        [Display(Name = "United Kingdom West")]
-        UnitedKingdomWest,
-
-        Americas,
-
-        [Display(Name = "Asia Pacific")]
-        AsiaPacific,
-
-        [Display(Name = "Middle East")]
-        MiddleEast,
-
-        Africa,
-        Nordics,
-
-        [Display(Name = "Central Europe")]
-        CentralEurope,
-
-        [Display(Name = "Southern Europe")]
-        SouthernEurope
-    }
-
+    public Guid RegionId { get; set; }
+    public string RegionName { get; set; } = string.Empty;
 }

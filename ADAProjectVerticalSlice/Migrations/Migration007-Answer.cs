@@ -18,6 +18,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     AnswerId = table.Column<Guid>(type: "uuid", nullable: false),
                     QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
                     Point = table.Column<int>(type: "integer", nullable: false), 
+                    RespondentId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,6 +29,13 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     column: λ => λ.QuestionId,
                     principalTable: "Question",
                     principalColumn: "QuestionId",
+                    onDelete: ReferentialAction.Cascade);
+
+                    table.ForeignKey(
+                    name: "FK_Answer_Respondent_RespondentId",
+                    column: λ => λ.RespondentId,
+                    principalTable: "Respondent",
+                    principalColumn: "RespondentId",
                     onDelete: ReferentialAction.Cascade);
                 });
         }
