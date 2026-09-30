@@ -28,6 +28,8 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
         public DbSet<Question> Questions { get; set; }
 
+        public DbSet<Respondent> Respondents { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

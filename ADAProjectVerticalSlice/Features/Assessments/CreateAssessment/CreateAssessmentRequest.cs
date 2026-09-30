@@ -22,5 +22,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
         public List<Experience> Experiences { get; set; } = new();
 
+        public List<string> RespondentEmails { get; set; } = new List<string>();
+
     }
 }

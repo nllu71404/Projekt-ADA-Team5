@@ -8,6 +8,8 @@ using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using ADA_Contracts.Events;
+using ADA_Contracts.Other_contracts;
+using System.Security.Cryptography;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
@@ -32,6 +34,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             public List<Region> Regions { get; set; } = new List<Region>();
 
             public List<Experience> Experiences { get; set; } = new List<Experience>();
+            public List<string> RespondentEmails { get; set; } = new List<string>();
+
+
 
 
         }
@@ -77,6 +82,13 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 _dbContext = dbContext;
                 _validator = validator;
                 _publisher = publisher;
+            }
+
+            // genererer en tilfældig adgangstoken for Respondent-objekter.
+            private static string GenerateAccessToken()
+            {
+                return Convert.ToBase64String(
+                    RandomNumberGenerator.GetBytes(32));
             }
 
             // Handle() bliver automatisk kaldt af MediatR, når en CreateAssessment.Command bliver sendt.
@@ -134,11 +146,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     roles.Add(role);
                 }
 
-                
 
 
-
-                var currentUser = await _dbContext.Users.FirstOrDefaultAsync(
+            var currentUser = await _dbContext.Users.FirstOrDefaultAsync(
                     u => u.Email == "test@test.dk",
                     cancellationToken);
 
@@ -190,13 +200,38 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // Gem Assessment, eventuelle nye Applications og Roles til databasen
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
+
+                // Opret Respondent-objekter for hver email i request.RespondentEmails og tilføj dem til databasen
+                var respondents = new List<Respondent>();
+
+                foreach (var email in request.RespondentEmails)
+                {
+                    var respondent = new Respondent
+                    {
+                        RespondentId = Guid.NewGuid(),
+                        EmailAddress = email,
+                        HasAnswered = false,
+                        AssessmentId = assessment.AssessmentId,
+                        AccessToken = GenerateAccessToken()
+                    };
+
+                    respondents.Add(respondent);
+                    _dbContext.Respondents.Add(respondent);
+                }
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                // Mapping af Respondent-objekter til RespondentEmailContract-objekter, som bruges i AssessmentCreated-eventen.
+                var respondentContracts = respondents
+                 .Select(r => r.Adapt<RespondentEmailContract>())
+                 .ToList();
+
                 //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
                 //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "assessment-created" routing key.
                 var @event = new AssessmentCreated(
                     assessment.AssessmentId,
-                    assessment.AssessmentName,
-                    assessment.StartDate,
-                    assessment.EndDate);
+                    respondentContracts
+                );
 
                 await _publisher.PublishAsync(
                     @event,
