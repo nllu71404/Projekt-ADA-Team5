@@ -16,6 +16,8 @@
 
         public List<Experience> Experiences { get; set; } = new List<Experience>();
 
+        public List<Respondent> Respondents { get; set; } = new List<Respondent>();
+
 
         //Foreign keys
         public string UserId { get; set; } = string.Empty; //IdentityUser bruger string til UserId

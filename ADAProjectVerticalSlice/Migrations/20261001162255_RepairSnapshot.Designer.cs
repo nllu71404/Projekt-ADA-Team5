@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260926124810_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261001162255_RepairSnapshot")]
+    partial class RepairSnapshot
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,10 +56,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.PrimitiveCollection<int[]>("Experiences")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -81,6 +77,31 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.ToTable("Assessment", (string)null);
                 });
 
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FreeForm")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RespondentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ThemeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("RespondentId");
+
+                    b.HasIndex("ThemeId");
+
+                    b.ToTable("Comment");
+                });
+
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Company", b =>
                 {
                     b.Property<Guid>("CompanyId")
@@ -94,6 +115,24 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.HasKey("CompanyId");
 
                     b.ToTable("Company", (string)null);
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Experience", b =>
+                {
+                    b.Property<Guid>("ExperienceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ExperienceValue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ExperienceId");
+
+                    b.HasIndex("ExperienceValue")
+                        .IsUnique();
+
+                    b.ToTable("Experiences", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Question", b =>
@@ -144,7 +183,34 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.HasIndex("RegionName")
                         .IsUnique();
 
-                    b.ToTable("Region", (string)null);
+                    b.ToTable("Regions", (string)null);
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Respondent", b =>
+                {
+                    b.Property<Guid>("RespondentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("AssessmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("HasAnswered")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("RespondentId");
+
+                    b.HasIndex("AssessmentId");
+
+                    b.ToTable("Respondents");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Role", b =>
@@ -159,7 +225,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role", (string)null);
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Survey", b =>
@@ -188,10 +254,6 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Freeform")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -286,19 +348,34 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AssessmentExperience", b =>
+                {
+                    b.Property<Guid>("AssessmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ExperienceId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AssessmentId", "ExperienceId");
+
+                    b.HasIndex("ExperienceId");
+
+                    b.ToTable("AssessmentExperience", (string)null);
+                });
+
             modelBuilder.Entity("AssessmentRegion", b =>
                 {
                     b.Property<Guid>("AssessmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RegionsRegionId")
+                    b.Property<Guid>("RegionId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AssessmentId", "RegionsRegionId");
+                    b.HasKey("AssessmentId", "RegionId");
 
-                    b.HasIndex("RegionsRegionId");
+                    b.HasIndex("RegionId");
 
-                    b.ToTable("AssessmentRegion");
+                    b.ToTable("AssessmentRegion", (string)null);
                 });
 
             modelBuilder.Entity("AssessmentRole", b =>
@@ -306,14 +383,14 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Property<Guid>("AssessmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("RolesRoleId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("AssessmentId", "RolesRoleId");
+                    b.HasKey("AssessmentId", "RoleId");
 
-                    b.HasIndex("RolesRoleId");
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("AssessmentRole");
+                    b.ToTable("AssessmentRole", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -475,6 +552,25 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Comment", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Respondent", "Respondent")
+                        .WithMany()
+                        .HasForeignKey("RespondentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Theme", "Theme")
+                        .WithMany("Comments")
+                        .HasForeignKey("ThemeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Respondent");
+
+                    b.Navigation("Theme");
+                });
+
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Question", b =>
                 {
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Survey", "Survey")
@@ -492,6 +588,17 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Navigation("Survey");
 
                     b.Navigation("Theme");
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Respondent", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", "Assessment")
+                        .WithMany("Respondents")
+                        .HasForeignKey("AssessmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assessment");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Theme", b =>
@@ -516,19 +623,38 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("AssessmentExperience", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", null)
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentExperience_Assessment_AssessmentId");
+
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Experience", null)
+                        .WithMany()
+                        .HasForeignKey("ExperienceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentExperience_Experiences_ExperienceId");
+                });
+
             modelBuilder.Entity("AssessmentRegion", b =>
                 {
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", null)
                         .WithMany()
                         .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentRegion_Assessment_AssessmentId");
 
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Region", null)
                         .WithMany()
-                        .HasForeignKey("RegionsRegionId")
+                        .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentRegion_Regions_RegionId");
                 });
 
             modelBuilder.Entity("AssessmentRole", b =>
@@ -537,13 +663,15 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .WithMany()
                         .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentRole_Assessment_AssessmentId");
 
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Role", null)
                         .WithMany()
-                        .HasForeignKey("RolesRoleId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_AssessmentRole_Roles_RoleId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -595,6 +723,16 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Assessment", b =>
+                {
+                    b.Navigation("Respondents");
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Theme", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

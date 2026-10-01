@@ -18,9 +18,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
         public List<string> RoleNames { get; set; } = new();
 
-        public List<Region> Regions { get; set; } = new();
+        public List<Guid> RegionIds { get; set; } = new();
 
-        public List<Experience> Experiences { get; set; } = new();
+        public List<Guid> ExperienceIds { get; set; } = new();
 
         public List<string> RespondentEmails { get; set; } = new List<string>();
 

@@ -46,6 +46,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Question>().ToTable("Question");
             modelBuilder.Entity<Theme>().ToTable("Theme");
             modelBuilder.Entity<Survey>().ToTable("Survey");
+            modelBuilder.Entity<Respondent>().ToTable("Respondent");
 
             // Survey
             modelBuilder.Entity<Survey>()
@@ -120,6 +121,14 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                         j.HasKey("AssessmentId", "RegionId");
                         j.ToTable("AssessmentRegion");
                     });
+
+            // Assessment -> Respondent
+            modelBuilder.Entity<Respondent>()
+                .HasOne(r => r.Assessment)
+                .WithMany(a => a.Respondents)
+                .HasForeignKey(r => r.AssessmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             //Region
             modelBuilder.Entity<Region>()

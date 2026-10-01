@@ -5,7 +5,7 @@
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     /// <inheritdoc />
-    public partial class SyncSnapshot2 : Migration
+    public partial class RepairSnapshot : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
