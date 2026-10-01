@@ -32,7 +32,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
             'LessThan1Year',
             'From1To2Years',
             'From3To5Years',
-            'MoreThan5Years'
+            'MoreThan5Years' 
         );
         """);
 
