@@ -33,20 +33,20 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         x.RoleId
                     });
 
-        table.ForeignKey(
-            name: "FK_AssessmentRole_Assessment_AssessmentId",
-            column: x => x.AssessmentId,
-            principalTable: "Assessment",
-            principalColumn: "AssessmentId",
-            onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    name: "FK_AssessmentRole_Assessment_AssessmentId",
+                    column: x => x.AssessmentId,
+                    principalTable: "Assessment",
+                    principalColumn: "AssessmentId",
+                    onDelete: ReferentialAction.Cascade);
 
-        table.ForeignKey(
-            name: "FK_AssessmentRole_Roles_RoleId",
-            column: x => x.RoleId,
-            principalTable: "Roles",
-            principalColumn: "RoleId",
-            onDelete: ReferentialAction.Cascade);
-         });
+                table.ForeignKey(
+                    name: "FK_AssessmentRole_Roles_RoleId",
+                    column: x => x.RoleId,
+                    principalTable: "Roles",
+                    principalColumn: "RoleId",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentRole_RoleId",
