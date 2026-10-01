@@ -18,6 +18,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     CommentId = table.Column<Guid>(type: "uuid", nullable: false),
                     ThemeId = table.Column<Guid>(type: "uuid", nullable: false),
                     Freeform = table.Column<string>(type: "text", nullable: false),
+                    RespondentId = table.Column<Guid>(type: null, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,6 +29,13 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     column: λ => λ.ThemeId,
                     principalTable: "Theme",
                     principalColumn: "ThemeId",
+                    onDelete: ReferentialAction.Cascade);
+
+                    table.ForeignKey(
+                    name: "FK_Comment_Respondent_RespondentId",
+                    column: λ => λ.RespondentId,
+                    principalTable: "Respondent",
+                    principalColumn: "RespondentId",
                     onDelete: ReferentialAction.Cascade);
                 });
         }
