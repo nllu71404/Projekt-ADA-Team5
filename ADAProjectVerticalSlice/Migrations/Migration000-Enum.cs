@@ -13,7 +13,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
             // Application
             // Enums
             migrationBuilder.Sql("""
-        CREATE TYPE RegionEnum AS ENUM (
+        CREATE TYPE Region AS ENUM (
             'United Kingdom East',
             'Continental Europe',
             'United Kingdom West',
@@ -28,16 +28,16 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         """);
 
             migrationBuilder.Sql("""
-        CREATE TYPE ExperienceEnum AS ENUM (
-            '<1',
-            '1-3',
-            '3-5',
-            '5+'
+        CREATE TYPE Experience AS ENUM (
+            'LessThan1Year',
+            'From1To2Years',
+            'From3To5Years',
+            'MoreThan5Years' 
         );
         """);
 
             migrationBuilder.Sql("""
-        CREATE TYPE RoleEnum AS ENUM (
+        CREATE TYPE Role AS ENUM (
             'employee',
             'manager',
             'director',
@@ -50,11 +50,11 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP TYPE RegionEnum");
+            migrationBuilder.Sql("DROP TYPE Region");
 
-            migrationBuilder.Sql("DROP TYPE ExperienceEnum");
+            migrationBuilder.Sql("DROP TYPE Experience");
 
-            migrationBuilder.Sql("DROP TYPE RoleEnum");
+            migrationBuilder.Sql("DROP TYPE Role");
         }
     }
 }

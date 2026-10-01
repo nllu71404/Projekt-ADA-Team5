@@ -1,6 +1,7 @@
 ﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using ADAProjectAPIVerticalSlice.Entities;
 
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
@@ -16,7 +17,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 columns: table => new
                 {
                     ExperienceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExperienceValue = table.Column<string>(type: "RegionEnum", nullable: false)
+                    ExperienceValue = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
