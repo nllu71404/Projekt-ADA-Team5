@@ -122,19 +122,19 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
             _experienceLessThan1Year = new Experience
             {
                 ExperienceId = Guid.NewGuid(),
-                Years = "<1 år"
+                ExperienceValue = "<1 år"
             };
 
             _experienceFrom1To2Years = new Experience
             {
                 ExperienceId = Guid.NewGuid(),
-                Years = "1-2 år"
+                ExperienceValue = "1-2 år"
             };
 
             _experienceFrom3To5Years = new Experience
             {
                 ExperienceId = Guid.NewGuid(),
-                Years = "3-5 år"
+                ExperienceValue = "3-5 år"
             };
 
 
@@ -267,7 +267,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
 
             Assert.AreEqual(
                 "1-2 år",
-                assessment.Experiences[0].Years);
+                assessment.Experiences[0].ExperienceValue);
 
 
             // User
