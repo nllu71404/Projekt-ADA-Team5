@@ -41,6 +41,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Application>().ToTable("Application");
             modelBuilder.Entity<Assessment>().ToTable("Assessment");
             modelBuilder.Entity<Region>().ToTable("Regions");
+            modelBuilder.Entity<Experience>().ToTable("Experiences");
             modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<Question>().ToTable("Question");
             modelBuilder.Entity<Theme>().ToTable("Theme");
@@ -122,10 +123,34 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
             //Region
             modelBuilder.Entity<Region>()
-                 .HasIndex(r => r.RegionName)
-                 .IsUnique();
+                .HasIndex(r => r.RegionName)
+                .IsUnique();
 
+            //Experience
+            modelBuilder.Entity<Assessment>()
+                .HasMany(a => a.Experiences)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "AssessmentExperience",
+                    j => j
+                        .HasOne<Experience>()
+                        .WithMany()
+                        .HasForeignKey("ExperienceId")
+                        .HasConstraintName("FK_AssessmentExperience_Experiences_ExperienceId"),
+                    j => j
+                        .HasOne<Assessment>()
+                        .WithMany()
+                        .HasForeignKey("AssessmentId")
+                        .HasConstraintName("FK_AssessmentExperience_Assessment_AssessmentId"),
+                    j =>
+                    {
+                        j.HasKey("AssessmentId", "ExperienceId");
+                        j.ToTable("AssessmentExperience");
+                    });
 
+            modelBuilder.Entity<Experience>()
+                .HasIndex(e => e.ExperienceValue)
+                .IsUnique();
         }
     }
 }
