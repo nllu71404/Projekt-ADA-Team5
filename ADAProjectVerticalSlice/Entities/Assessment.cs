@@ -4,7 +4,7 @@
     {
         public Guid AssessmentId { get; set; }
 
-        public string AssessmentName { get; set; }
+        public string AssessmentName { get; set; } = string.Empty;
 
         public DateTime StartDate { get; set; }
 

@@ -5,7 +5,7 @@ namespace ADAProjectAPIVerticalSlice.Entities
     public class Experience
     {
         public Guid ExperienceId { get; set; }
-        public string ExperienceValue { get; set; }
+        public string ExperienceValue { get; set; } = string.Empty;
     }
       
 }

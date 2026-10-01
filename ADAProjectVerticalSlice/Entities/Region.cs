@@ -7,7 +7,7 @@ namespace ADAProjectAPIVerticalSlice.Entities
     {
    
         public Guid RegionId { get; set; }
-        public string RegionName { get; set; }
+        public string RegionName { get; set; } = string.Empty;
     }
 
 }
