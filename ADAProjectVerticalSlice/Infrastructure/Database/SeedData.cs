@@ -10,7 +10,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         {
             var dbContext =
                 services.GetRequiredService<ApplicationDbContext>();
-            
+
             // ==========================================
             // 1. Opret test Company
             // ==========================================
@@ -57,47 +57,47 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
                 await dbContext.SaveChangesAsync();
             }
-            
-
-           
 
 
 
 
-        //    // ==========================================
-        //    // 3. Opret Regions
-        //    // ==========================================
 
-        //    var regions = new[]
-        //    {
-        //    "United Kingdom East",
-        //    "Continental Europe",
-        //    "United Kingdom West",
-        //    "Americas",
-        //    "Asia Pacific",
-        //    "Middle East",
-        //    "Africa",
-        //    "Nordics",
-        //    "Central Europe",
-        //    "Southern Europe"
-        //};
 
-        //    foreach (var regionName in regions)
-        //    {
-        //        var regionExists = await dbContext.Regions
-        //            .AnyAsync(r => r.RegionName == regionName);
 
-        //        if (!regionExists)
-        //        {
-        //            dbContext.Regions.Add(new Region
-        //            {
-        //                RegionId = Guid.NewGuid(),
-        //                RegionName = regionName
-        //            });
-        //        }
-        //    }
+            // ==========================================
+            // 3. Opret Regions
+            // ==========================================
 
-        //    await dbContext.SaveChangesAsync();
+            var regions = new[]
+            {
+            "United Kingdom East",
+            "Continental Europe",
+            "United Kingdom West",
+            "Americas",
+            "Asia Pacific",
+            "Middle East",
+            "Africa",
+            "Nordics",
+            "Central Europe",
+            "Southern Europe"
+        };
+
+            foreach (var regionName in regions)
+            {
+                var regionExists = await dbContext.Regions
+                    .AnyAsync(r => r.RegionName == regionName);
+
+                if (!regionExists)
+                {
+                    dbContext.Regions.Add(new Region
+                    {
+                        RegionId = Guid.NewGuid(),
+                        RegionName = regionName
+                    });
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
 
 
             // ==========================================
@@ -126,6 +126,34 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 await dbContext.SaveChangesAsync();
             }
 
+            // ==========================================
+            // 5. Opret Experiences
+            // ==========================================
+
+            var experiences = new[]
+                {
+                    "LessThan1Year",
+                    "From1To2Years",
+                    "From3To5Years",
+                    "MoreThan5Years"
+                };
+
+            foreach (var experienceValue in experiences)
+            {
+                var experienceExists = await dbContext.Experiences
+                    .AnyAsync(e => e.ExperienceValue == experienceValue);
+
+                if (!experienceExists)
+                {
+                    dbContext.Experiences.Add(new Experience
+                    {
+                        ExperienceId = Guid.NewGuid(),
+                        ExperienceValue = experienceValue
+                    });
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
 
             // ==========================================
             // 5. Opret Themes
