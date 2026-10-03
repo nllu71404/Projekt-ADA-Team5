@@ -18,15 +18,15 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Survey",
                 columns: table => new
                 {
-                    SurveyId = table.Column<Guid>(type: "uuid",nullable: false),
+                    SurveyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text",nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Survey",x => x.SurveyId);
+                    table.PrimaryKey("PK_Survey", x => x.SurveyId);
                 });
-                }
+        }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {

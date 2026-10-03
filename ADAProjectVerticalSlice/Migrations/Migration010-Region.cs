@@ -24,7 +24,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     table.PrimaryKey("PK_RegionId", λ => λ.RegionId);
                 });
         }
-        
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

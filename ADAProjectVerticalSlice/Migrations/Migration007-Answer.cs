@@ -17,7 +17,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 {
                     AnswerId = table.Column<Guid>(type: "uuid", nullable: false),
                     QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Point = table.Column<int>(type: "integer", nullable: false), 
+                    Point = table.Column<int>(type: "integer", nullable: false),
                     RespondentId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>

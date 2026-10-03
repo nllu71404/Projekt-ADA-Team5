@@ -202,10 +202,10 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 column: "NormalizedUserName",
                 unique: true);
 
-            
+
 
         }
-        
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

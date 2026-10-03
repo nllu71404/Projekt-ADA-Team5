@@ -16,13 +16,13 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Assessment",
                 columns: table => new
                 {
-                    AssessmentId = table.Column<Guid>(type: "uuid",nullable: false),
-                    AssessmentName = table.Column<string>(type: "text",nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone",nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone",nullable: false),
-                    ApplicationId = table.Column<Guid>(type: "uuid",nullable: false),
+                    AssessmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssessmentName = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ApplicationId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    SurveyId = table.Column<Guid>(type: "uuid",nullable: false),
+                    SurveyId = table.Column<Guid>(type: "uuid", nullable: false),
                 },
                 constraints: table =>
                 {

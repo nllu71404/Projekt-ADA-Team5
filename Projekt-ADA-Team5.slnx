@@ -2,10 +2,10 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="ADA-Consumer/ADA-Consumer.csproj" Id="4b1e9d47-30f9-4309-8f0a-ff5146335e5d">
+  <Project Path="ADA-Contracts/ADA-Contracts.csproj" Id="b6462b0c-e939-43a9-9bd7-0c00ad7a1c8e">
     <Build Solution="Debug|*" Project="false" />
   </Project>
-  <Project Path="ADA-Contracts/ADA-Contracts.csproj" Id="b6462b0c-e939-43a9-9bd7-0c00ad7a1c8e">
+  <Project Path="ADA-Email-Service/ADA-EmailConsumer.csproj" Id="5bdf3488-7535-483c-ae2c-38242ad9b2d4">
     <Build Solution="Debug|*" Project="false" />
   </Project>
   <Project Path="ADAProjectVerticalSlice/ADAProjectAPIVerticalSlice.csproj" />

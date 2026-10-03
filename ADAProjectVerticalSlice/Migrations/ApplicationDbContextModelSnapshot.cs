@@ -207,7 +207,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
                     b.HasIndex("AssessmentId");
 
-                    b.ToTable("Respondent");
+                    b.ToTable("Respondent", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Role", b =>
@@ -590,7 +590,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Respondent", b =>
                 {
                     b.HasOne("ADAProjectAPIVerticalSlice.Entities.Assessment", "Assessment")
-                        .WithMany()
+                        .WithMany("Respondents")
                         .HasForeignKey("AssessmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -720,6 +720,11 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Assessment", b =>
+                {
+                    b.Navigation("Respondents");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Theme", b =>

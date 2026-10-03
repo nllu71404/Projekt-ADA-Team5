@@ -8,6 +8,8 @@ using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using ADA_Contracts.Events;
+using ADA_Contracts.Other_contracts;
+using System.Security.Cryptography;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
@@ -29,9 +31,12 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             public List<string> RoleNames { get; set; } = new List<string>();
 
-            public List<Region> Regions { get; set; } = new List<Region>();
+            public List<Guid> RegionIds { get; set; } = new List<Guid>();
 
-            public List<Experience> Experiences { get; set; } = new List<Experience>();
+            public List<Guid> ExperienceIds { get; set; } = new List<Guid>();
+            public List<string> RespondentEmails { get; set; } = new List<string>();
+
+
 
 
         }
@@ -49,9 +54,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     .WithMessage("Slutdato skal være efter startdato.");
                 RuleFor(c => c.RoleNames).NotEmpty()
                     .WithMessage("Mindst én rolle skal være valgt.");
-                RuleFor(c => c.Regions).NotEmpty()
+                RuleFor(c => c.RegionIds).NotEmpty()
                     .WithMessage("Mindst én region skal være valgt.");
-                RuleFor(c => c.Experiences).NotEmpty()
+                RuleFor(c => c.ExperienceIds).NotEmpty()
                     .WithMessage("Mindst ét erfaringsinterval skal være valgt.");
                 RuleFor(c => c.ApplicationName).NotEmpty()
                     .WithMessage("Applikationsnavnet må ikke være tomt.");
@@ -77,6 +82,47 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 _dbContext = dbContext;
                 _validator = validator;
                 _publisher = publisher;
+            }
+
+            // genererer en tilfældig adgangstoken for Respondent-objekter.
+            private static string GenerateAccessToken()
+            {
+                return Convert.ToBase64String(
+                    RandomNumberGenerator.GetBytes(32));
+            }
+
+            //Henter de valgte Regions i databasen
+            private async Task<Result<List<Region>>> GetRegions(List<Guid> regionIds, CancellationToken cancellationToken)
+            {
+                var regions = await _dbContext.Regions
+                    .Where(r => regionIds.Contains(r.RegionId))
+                    .ToListAsync(cancellationToken);
+
+                if (regions.Count != regionIds.Count)
+                {
+                    return Result.Failure<List<Region>>(
+                        new Error(
+                            "CreateAssessment.RegionNotFound",
+                            "Regioner kunne ikke findes."));
+                }
+
+                return regions;
+            }
+
+            //Henter de valgte Experiences i databasen
+            private async Task<Result<List<Experience>>> GetExperiences(List<Guid> experienceIds, CancellationToken cancellationToken)
+            {
+                var experiences = await _dbContext.Experiences
+                    .Where(e => experienceIds.Contains(e.ExperienceId))
+                    .ToListAsync(cancellationToken);
+                if (experiences.Count != experienceIds.Count)
+                {
+                    return Result.Failure<List<Experience>>(
+                        new Error(
+                            "CreateAssessment.ExperienceNotFound",
+                            "Erfaringer kunne ikke findes."));
+                }
+                return experiences;
             }
 
             // Handle() bliver automatisk kaldt af MediatR, når en CreateAssessment.Command bliver sendt.
@@ -134,10 +180,23 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     roles.Add(role);
                 }
 
-                
 
+                // Hent de valgte Regions og Experiences fra databasen
+                var regionsResult = await GetRegions(request.RegionIds,cancellationToken);
 
+                if (regionsResult.IsFailure)
+                {
+                    return Result.Failure<Guid>(regionsResult.Error);
+                }
 
+                var experiencesResult = await GetExperiences(request.ExperienceIds, cancellationToken);
+
+                if (experiencesResult.IsFailure)
+                {
+                    return Result.Failure<Guid>(experiencesResult.Error);
+                }
+
+                // Hent den aktuelle bruger fra databasen. Vi skal ændre denne til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
                 var currentUser = await _dbContext.Users.FirstOrDefaultAsync(
                     u => u.Email == "test@test.dk",
                     cancellationToken);
@@ -147,6 +206,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     return Result.Failure<Guid>(Error.NullValue);
                 }
 
+                // Hent Survey fra databasen. Vi bruger en hardcoded SurveyId for nu, men dette skal ændres til at hente den korrekte SurveyId fra requesten.
                 var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
                 var survey = await _dbContext.Surveys
@@ -173,8 +233,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     ApplicationId = application.ApplicationId,
                     SurveyId = survey.SurveyId,
                     Roles = roles,
-                    Experiences = request.Experiences,
-                    Regions = request.Regions,
+                    Experiences = experiencesResult.Value,
+                    Regions = regionsResult.Value,
                   
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
@@ -190,13 +250,38 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // Gem Assessment, eventuelle nye Applications og Roles til databasen
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
+
+                // Opret Respondent-objekter for hver email i request.RespondentEmails og tilføj dem til databasen
+                var respondents = new List<Respondent>();
+
+                foreach (var email in request.RespondentEmails)
+                {
+                    var respondent = new Respondent
+                    {
+                        RespondentId = Guid.NewGuid(),
+                        EmailAddress = email,
+                        HasAnswered = false,
+                        AssessmentId = assessment.AssessmentId,
+                        AccessToken = GenerateAccessToken()
+                    };
+
+                    respondents.Add(respondent);
+                    _dbContext.Respondents.Add(respondent);
+                }
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                // Mapping af Respondent-objekter til RespondentEmailContract-objekter, som bruges i AssessmentCreated-eventen.
+                var respondentContracts = respondents
+                 .Select(r => r.Adapt<RespondentEmailContract>())
+                 .ToList();
+
                 //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
                 //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "assessment-created" routing key.
                 var @event = new AssessmentCreated(
                     assessment.AssessmentId,
-                    assessment.AssessmentName,
-                    assessment.StartDate,
-                    assessment.EndDate);
+                    respondentContracts
+                );
 
                 await _publisher.PublishAsync(
                     @event,

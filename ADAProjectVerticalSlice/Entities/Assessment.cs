@@ -4,7 +4,7 @@
     {
         public Guid AssessmentId { get; set; }
 
-        public string AssessmentName { get; set; }
+        public string AssessmentName { get; set; } = string.Empty;
 
         public DateTime StartDate { get; set; }
 
@@ -15,6 +15,8 @@
         public List<Region> Regions { get; set; } = new List<Region>();
 
         public List<Experience> Experiences { get; set; } = new List<Experience>();
+
+        public List<Respondent> Respondents { get; set; } = new List<Respondent>();
 
 
         //Foreign keys
