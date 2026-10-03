@@ -17,7 +17,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 {
                     CommentId = table.Column<Guid>(type: "uuid", nullable: false),
                     ThemeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Freeform = table.Column<string>(type: "text", nullable: false),
+                    FreeForm = table.Column<string>(type: "text", nullable: false),
                     RespondentId = table.Column<Guid>(type: null, nullable: false)
                 },
                 constraints: table =>
