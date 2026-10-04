@@ -10,14 +10,14 @@ namespace ADA_EmailConsumer;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly AssessmentCreatedConsumer _assessmentCreatedConsumer;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public Worker(
         ILogger<Worker> logger,
-        AssessmentCreatedConsumer assessmentCreatedConsumer)
+        IServiceScopeFactory scopeFactory)
     {
         _logger = logger;
-        _assessmentCreatedConsumer = assessmentCreatedConsumer;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(
@@ -68,7 +68,13 @@ public class Worker : BackgroundService
                 "AssessmentCreated event received for Assessment {AssessmentId}",
                 @event.AssessmentId);
 
-            await _assessmentCreatedConsumer.Handle(
+            using var scope = _scopeFactory.CreateScope();
+
+            var assessmentCreatedConsumer =
+                scope.ServiceProvider
+                    .GetRequiredService<AssessmentCreatedConsumer>();
+
+            await assessmentCreatedConsumer.Handle(
                 @event,
                 stoppingToken);
         };
