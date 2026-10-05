@@ -10,9 +10,7 @@ namespace ADA_EmailConsumer.Services
         private readonly ILogger<EmailService> _logger;
         private readonly IResend _resend;
 
-        public EmailService(
-            ILogger<EmailService> logger,
-            IResend resend)
+        public EmailService(ILogger<EmailService> logger, IResend resend)
         {
             _logger = logger;
             _resend = resend;
@@ -20,24 +18,20 @@ namespace ADA_EmailConsumer.Services
             Console.WriteLine("ResendEmailService initialized.");
         }
 
-        public async Task SendAsync(
-            string recipient,
-            string subject,
-            string surveyLink,
-            CancellationToken cancellationToken)
+        public async Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, string subject, string surveyLink, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Sending email to {Recipient}",
-                recipient);
+            _logger.LogInformation( "Sending email to {Recipient}", recipient);
 
             var message = new EmailMessage
             {
                 From = "onboarding@resend.dev",
                 Subject = subject,
                 HtmlBody = $"""
+                    <p>Dato: {sentDate:dd-MM-yyyy}</p>
+                    
                     <h2>Du er inviteret til en ADA-måling</h2>
 
-                    <p>Du er blevet inviteret til at deltage i en ADA-måling.</p>
+                    <p>Du er blevet inviteret til at deltage i en ADA-måling omhandlende {applicationName} med svarperiode fra {startDate:dd-MM-yyyy} til {endDate:dd-MM-yyyy}.</p>
 
                     <p>
                         <a href="{surveyLink}">
@@ -51,9 +45,7 @@ namespace ADA_EmailConsumer.Services
 
             await _resend.EmailSendAsync(message);
 
-            _logger.LogInformation(
-                "Email sent successfully to {Recipient}",
-                recipient);
+            _logger.LogInformation("Email sent successfully to {Recipient}", recipient);
         }
     }
 }

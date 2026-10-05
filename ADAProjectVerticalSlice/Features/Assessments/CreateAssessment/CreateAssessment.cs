@@ -280,6 +280,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "assessment-created" routing key.
                 var @event = new AssessmentCreated(
                     assessment.AssessmentId,
+                    request.ApplicationName,
+                    request.StartDate,
+                    request.EndDate,
                     respondentContracts
                 );
 

@@ -16,20 +16,16 @@ namespace ADA_EmailConsumer.Consumers
             _emailService = emailService;
         }
 
-        public async Task Handle(
-            AssessmentCreated @event,
-            CancellationToken cancellationToken)
+        public async Task Handle(AssessmentCreated @event, CancellationToken cancellationToken)
         {
+            var sentDate = DateTime.UtcNow;
+
             foreach (var respondent in @event.Respondents)
             {
                 var surveyLink = CreateSurveyLink(
                     respondent.AccessToken);
 
-                await _emailService.SendAsync(
-                    respondent.EmailAddress,
-                    "Du er inviteret til en ADA-måling",
-                    surveyLink,
-                    cancellationToken);
+                await _emailService.SendAsync(respondent.EmailAddress, @event.ApplicationName, @event.StartDate, @event.EndDate, sentDate, "Du er inviteret til en ADA-måling", surveyLink, cancellationToken);
             }
         }
 
