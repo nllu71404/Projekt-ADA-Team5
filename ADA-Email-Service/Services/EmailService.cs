@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Resend;
+using ADA_Contracts.Enums;
 
 namespace ADA_EmailConsumer.Services
 {
@@ -18,9 +19,9 @@ namespace ADA_EmailConsumer.Services
             Console.WriteLine("ResendEmailService initialized.");
         }
 
-        public async Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, string subject, string surveyLink, CancellationToken cancellationToken)
+        public async Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken)
         {
-            _logger.LogInformation( "Sending email to {Recipient}", recipient);
+            _logger.LogInformation( "Sending {EmailType} email to {Recipient}", emailType, recipient);
 
             var message = new EmailMessage
             {

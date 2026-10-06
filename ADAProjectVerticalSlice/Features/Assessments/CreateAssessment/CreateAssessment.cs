@@ -277,7 +277,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                  .ToList();
 
                 //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
-                //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "assessment-created" routing key.
+                //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "email-scheduled" routing key.
                 var @event = new AssessmentCreated(
                     assessment.AssessmentId,
                     request.ApplicationName,

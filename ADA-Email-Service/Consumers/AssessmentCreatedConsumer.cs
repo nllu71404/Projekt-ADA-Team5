@@ -4,6 +4,7 @@ using ADA_EmailConsumer.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ADA_Contracts.Enums;
 
 namespace ADA_EmailConsumer.Consumers
 {
@@ -25,7 +26,7 @@ namespace ADA_EmailConsumer.Consumers
                 var surveyLink = CreateSurveyLink(
                     respondent.AccessToken);
 
-                await _emailService.SendAsync(respondent.EmailAddress, @event.ApplicationName, @event.StartDate, @event.EndDate, sentDate, "Du er inviteret til en ADA-måling", surveyLink, cancellationToken);
+                await _emailService.SendAsync(respondent.EmailAddress, @event.ApplicationName, @event.StartDate, @event.EndDate, sentDate, EmailType.HeadsUp, "Du er inviteret til en ADA-måling", surveyLink, cancellationToken);
             }
         }
 
