@@ -3,50 +3,134 @@ using System.Collections.Generic;
 using System.Text;
 using Resend;
 using ADA_Contracts.Enums;
+using ADA_Contracts;
 
 namespace ADA_EmailConsumer.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly ILogger<EmailService> _logger;
         private readonly IResend _resend;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(ILogger<EmailService> logger, IResend resend)
+        public EmailService(
+            IResend resend,
+            ILogger<EmailService> logger)
         {
-            _logger = logger;
             _resend = resend;
-
-            Console.WriteLine("ResendEmailService initialized.");
+            _logger = logger;
         }
 
-        public async Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken)
+        public async Task SendAsync(
+            string recipient,
+            string applicationName,
+            DateTime startDate,
+            DateTime endDate,
+            DateTime scheduledDate,
+            EmailType emailType,
+            string subject,
+            string surveyLink,
+            CancellationToken cancellationToken)
         {
-            _logger.LogInformation( "Sending {EmailType} email to {Recipient}", emailType, recipient);
-
-            var message = new EmailMessage
+            var body = emailType switch
             {
-                From = "onboarding@resend.dev",
-                Subject = subject,
-                HtmlBody = $"""
-                    <p>Dato: {sentDate:dd-MM-yyyy}</p>
-                    
-                    <h2>Du er inviteret til en ADA-måling</h2>
+                EmailType.HeadsUp => $"""
+                <h2>Du bliver snart inviteret til en ADA-måling</h2>
 
-                    <p>Du er blevet inviteret til at deltage i en ADA-måling omhandlende {applicationName} med svarperiode fra {startDate:dd-MM-yyyy} til {endDate:dd-MM-yyyy}.</p>
+                <p>
+                    Du vil snart modtage en invitation til at deltage
+                    i en ADA-måling for:
+                </p>
 
-                    <p>
-                        <a href="{surveyLink}">
-                            Klik her for at åbne målingen
-                        </a>
-                    </p>
-                    """
+                <p><strong>{applicationName}</strong></p>
+
+                <p>
+                    Målingen åbner:
+                    <strong>{startDate:dd/MM/yyyy HH:mm}</strong>
+                </p>
+
+                <p>
+                    Målingen lukker:
+                    <strong>{endDate:dd/MM/yyyy HH:mm}</strong>
+                </p>
+
+                <p>
+                    Du modtager en ny email, når målingen åbner.
+                </p>
+                """,
+
+                EmailType.Invitation => $"""
+                <h2>Din ADA-måling er nu åben</h2>
+
+                <p>
+                    Du er inviteret til at deltage i en ADA-måling for:
+                </p>
+
+                <p><strong>{applicationName}</strong></p>
+
+                <p>
+                    Målingen er åben fra:
+                    <strong>{startDate:dd/MM/yyyy HH:mm}</strong>
+                </p>
+
+                <p>
+                    Målingen lukker:
+                    <strong>{endDate:dd/MM/yyyy HH:mm}</strong>
+                </p>
+
+                <p>
+                    <a href="{surveyLink}">
+                        Gå til ADA-målingen
+                    </a>
+                </p>
+                """,
+
+                EmailType.Reminder => $"""
+                <h2>Du mangler at besvare ADA-målingen</h2>
+
+                <p>
+                    Dette er en påmindelse om, at du endnu ikke har
+                    besvaret ADA-målingen for:
+                </p>
+
+                <p><strong>{applicationName}</strong></p>
+
+                <p>
+                    Målingen lukker:
+                    <strong>{endDate:dd/MM/yyyy HH:mm}</strong>
+                </p>
+
+                <p>
+                    Du kan besvare målingen ved at klikke her:
+                </p>
+
+                <p>
+                    <a href="{surveyLink}">
+                        Gå til ADA-målingen
+                    </a>
+                </p>
+                """,
+
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(emailType),
+                    emailType,
+                    "Ukendt emailtype.")
             };
 
+            var message = new EmailMessage();
+
+            message.From = "ADA <onboarding@resend.dev>";
             message.To.Add(recipient);
+            message.Subject = subject;
+            message.HtmlBody = body;
 
-            await _resend.EmailSendAsync(message);
+            await _resend.EmailSendAsync(
+                message,
+                cancellationToken);
 
-            _logger.LogInformation("Email sent successfully to {Recipient}", recipient);
+            _logger.LogInformation(
+                "Email sent to {Recipient}. Email type: {EmailType}",
+                recipient,
+                emailType);
         }
     }
 }

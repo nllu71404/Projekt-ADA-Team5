@@ -49,9 +49,6 @@ public class Worker : BackgroundService
             emailChannel,
             stoppingToken);
 
-        await PublishTestEmail(
-            emailChannel,
-            stoppingToken);
 
         await assessmentChannel.QueueDeclareAsync(
             queue: "assessment-created",
@@ -204,41 +201,5 @@ public class Worker : BackgroundService
             arguments: arguments,
             cancellationToken: cancellationToken);
     }
-    private static async Task PublishTestEmail(
-    IChannel channel,
-    CancellationToken cancellationToken)
-    {
-        var testEvent = new EmailScheduled(
-            AssessmentId: Guid.NewGuid(),
-            EmailType: EmailType.HeadsUp,
-            ApplicationName: "Test Application",
-            StartDate: DateTime.UtcNow.AddDays(7),
-            EndDate: DateTime.UtcNow.AddDays(14),
-            SentDate: DateTime.UtcNow,
-            Respondents:
-            [
-                new RespondentEmailContract(
-                RespondentId: Guid.NewGuid(),
-                EmailAddress: "test@example.com",
-                AccessToken: "test-access-token")
-            ]);
-
-        var json = JsonSerializer.Serialize(testEvent);
-
-        var body = Encoding.UTF8.GetBytes(json);
-
-        var properties = new BasicProperties
-        {
-            Persistent = true,
-            Expiration = "5000"
-        };
-
-        await channel.BasicPublishAsync(
-            exchange: string.Empty,
-            routingKey: "email-delay-queue",
-            mandatory: false,
-            basicProperties: properties,
-            body: body,
-            cancellationToken: cancellationToken);
-    }
+    
 }

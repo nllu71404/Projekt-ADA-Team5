@@ -1,5 +1,6 @@
 using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Extensions;
+using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using Carter;
@@ -41,6 +42,7 @@ builder.Services.AddCarter();
 builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+builder.Services.AddScoped<EmailTimingCalculator>();
 
 builder.Services.AddCors(options =>
 {

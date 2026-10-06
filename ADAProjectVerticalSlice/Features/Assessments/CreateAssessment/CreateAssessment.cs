@@ -74,14 +74,18 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             private readonly IRabbitMqPublisher _publisher;
 
+            private readonly EmailTimingCalculator _emailTimingCalculator;
+
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
-                IRabbitMqPublisher publisher)
+                IRabbitMqPublisher publisher,
+                EmailTimingCalculator emailTimingCalculator)
             {
                 _dbContext = dbContext;
                 _validator = validator;
                 _publisher = publisher;
+                _emailTimingCalculator = emailTimingCalculator;
             }
 
             // genererer en tilfældig adgangstoken for Respondent-objekter.
@@ -276,6 +280,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                  .Select(r => r.Adapt<RespondentEmailContract>())
                  .ToList();
 
+                // Beregn anbefalede tidspunkter for udsendelse af emails baseret på start- og slutdatoen for Assessment.
+                var emailTiming = _emailTimingCalculator.Calculate(request.StartDate, request.EndDate);
+
                 //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
                 //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "email-scheduled" routing key.
                 var @event = new AssessmentCreated(
@@ -283,6 +290,9 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     request.ApplicationName,
                     request.StartDate,
                     request.EndDate,
+                    emailTiming.HeadsUpDate,
+                    emailTiming.InvitationDate,
+                    emailTiming.ReminderDate,
                     respondentContracts
                 );
 

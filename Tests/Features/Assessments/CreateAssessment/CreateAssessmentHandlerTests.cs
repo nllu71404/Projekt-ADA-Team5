@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
+namespace Tests.Features.Assessments.CreateAssessmentTests
 {
     [TestClass]
     public class CreateAssessmentHandlerTests
@@ -17,6 +17,7 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
         private IValidator<CreateAssessment.Command> _validator = null!;
         private CreateAssessment.Handler _handler = null!;
         private Mock<IRabbitMqPublisher> _publisher = null!;
+        private EmailTimingCalculator _emailTimingCalculator = null!;
 
         private Role _existingRole = null!;
         private Region _existingRegion = null!;
@@ -52,8 +53,8 @@ namespace ADAProjectAPIVerticalSlice.Tests.Features.Assessments
             _handler = new CreateAssessment.Handler(
                 _dbContext,
                 _validator,
-                _publisher.Object);
-
+                _publisher.Object,
+                _emailTimingCalculator);
 
             // -------------------------
             // Company

@@ -7,6 +7,6 @@ namespace ADA_EmailConsumer.Services
 {
     public interface IEmailService
     {
-        Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken);
+        Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime scheduledDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken);
     }
 }

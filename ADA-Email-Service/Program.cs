@@ -1,5 +1,6 @@
 using ADA_EmailConsumer;
 using ADA_EmailConsumer.Consumers;
+using ADA_EmailConsumer.Messaging;
 using ADA_EmailConsumer.Services;
 using Resend;
 
@@ -22,6 +23,7 @@ builder.Services.AddTransient<IResend, ResendClient>();
 builder.Services.AddScoped<IEmailService, TestEmailService>(); //Kan ændres til "EmailService", når vi vil sende rigtige emails 
 builder.Services.AddScoped<AssessmentCreatedConsumer>();
 builder.Services.AddScoped<EmailScheduledConsumer>();
+builder.Services.AddScoped<RabbitMqEmailScheduler>();
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

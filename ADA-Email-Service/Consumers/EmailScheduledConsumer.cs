@@ -55,7 +55,7 @@ public class EmailScheduledConsumer
                 @event.ApplicationName,
                 @event.StartDate,
                 @event.EndDate,
-                @event.SentDate,
+                @event.ScheduledDate,
                 @event.EmailType,
                 subject,
                 surveyLink,

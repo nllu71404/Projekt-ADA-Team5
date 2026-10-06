@@ -14,7 +14,7 @@ public class TestEmailService : IEmailService
         _logger = logger;
     }
 
-    public Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime sentDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken)
+    public Task SendAsync(string recipient, string applicationName, DateTime startDate, DateTime endDate, DateTime scheduledDate, EmailType emailType, string subject, string surveyLink, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             """
@@ -23,7 +23,7 @@ public class TestEmailService : IEmailService
             Application Name: {ApplicationName}
             Start Date: {StartDate}
             End Date: {EndDate}
-            Sent Date: {SentDate}
+            Scheduled Date: {ScheduledDate}
             Email Type: {EmailType}
             Subject: {Subject}
             Survey link: {SurveyLink}
@@ -32,7 +32,7 @@ public class TestEmailService : IEmailService
             applicationName,
             startDate,
             endDate,
-            sentDate,
+            scheduledDate,
             emailType,
             subject,
             surveyLink);
