@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114255_Role")]
+    [Migration("20260919114151_Role")]
     public class Migration009_Role : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +15,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleName = table.Column<string>(type: "text", nullable: false) // Bør ændres til RoleEnum senere! :D
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RoleName = table.Column<string>(type: "text", nullable: true) // Bør ændres til RoleEnum senere! :D
                 },
                 constraints: table =>
                 {
