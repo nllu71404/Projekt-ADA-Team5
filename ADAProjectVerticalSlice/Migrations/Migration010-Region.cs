@@ -6,7 +6,7 @@ using ADAProjectAPIVerticalSlice.Entities;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114256_Region")]
+    [Migration("20260919114151_Region")]
     public class Migration010_Region : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,8 +16,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Regions",
                 columns: table => new
                 {
-                    RegionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RegionName = table.Column<string>(type: "text", nullable: false)
+                    RegionId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RegionName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

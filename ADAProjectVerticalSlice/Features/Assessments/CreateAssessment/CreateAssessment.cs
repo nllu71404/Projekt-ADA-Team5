@@ -266,7 +266,10 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         EmailAddress = email,
                         HasAnswered = false,
                         AssessmentId = assessment.AssessmentId,
-                        AccessToken = GenerateAccessToken()
+                        AccessToken = GenerateAccessToken(),
+                        RegionId = null,
+                        ExperienceId = null,
+                        RoleId = null
                     };
 
                     respondents.Add(respondent);
