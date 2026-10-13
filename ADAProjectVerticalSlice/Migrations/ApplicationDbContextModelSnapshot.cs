@@ -22,6 +22,30 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Answer", b =>
+                {
+                    b.Property<Guid>("AnswerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Point")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RespondentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AnswerId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("RespondentId");
+
+                    b.ToTable("Answer", (string)null);
+                });
+
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Application", b =>
                 {
                     b.Property<Guid>("ApplicationId")
@@ -96,7 +120,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Company", b =>
@@ -535,6 +559,25 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Answer", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Question", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Respondent", "Respondent")
+                        .WithMany()
+                        .HasForeignKey("RespondentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Respondent");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Assessment", b =>
