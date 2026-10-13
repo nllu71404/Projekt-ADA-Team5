@@ -38,7 +38,7 @@ public class RabbitMqEmailScheduler
         var properties = new BasicProperties
         {
             Persistent = true,
-            Expiration = expiration.ToString()
+            Expiration = expiration.ToString() //TTL på den enkelte besked i millisekunder (Per-Message TTL)
         };
 
         await channel.BasicPublishAsync(
