@@ -3,7 +3,7 @@
     public class Answer
     {
         public Guid AnswerId { get; set; }
-        public int Points { get; set; }
+        public int Point { get; set; }
 
         // Foreign keys
         public Guid QuestionId { get; set; }

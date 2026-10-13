@@ -1431,3 +1431,13 @@ DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error
 2026-10-13 11:58:12.451 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
 2026-10-13 11:59:10.175 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
 2026-10-13 12:00:10.703 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-10-13 16:32:17.593 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 16:43:44.197 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 16:45:45.769 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 16:55:50.271 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 16:57:42.057 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 17:08:35.430 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-10-13 17:15:11.996 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 17:15:27.394 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-13 17:15:28.147 +02:00 [ERR] Failed executing DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER INDEX "IX_Comment_ThemeId" RENAME TO "IX_Comments_ThemeId";

@@ -31,6 +31,8 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         public DbSet<Question> Questions { get; set; }
 
         public DbSet<Respondent> Respondents { get; set; }
+        public DbSet<Answer> Answers { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,6 +49,8 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Theme>().ToTable("Theme");
             modelBuilder.Entity<Survey>().ToTable("Survey");
             modelBuilder.Entity<Respondent>().ToTable("Respondent");
+            modelBuilder.Entity<Answer>().ToTable("Answer");
+            modelBuilder.Entity<Comment>().ToTable("Comment");
 
             // Survey
             modelBuilder.Entity<Survey>()
