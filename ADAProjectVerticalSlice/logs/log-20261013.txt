@@ -1442,3 +1442,4 @@ DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error
 2026-10-13 17:15:28.147 +02:00 [ERR] Failed executing DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
 ALTER INDEX "IX_Comment_ThemeId" RENAME TO "IX_Comments_ThemeId";
 2026-10-13 20:58:34.150 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-10-13 21:18:22.622 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.

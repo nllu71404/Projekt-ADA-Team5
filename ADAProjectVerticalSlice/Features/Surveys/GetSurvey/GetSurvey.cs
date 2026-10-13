@@ -35,15 +35,16 @@ public class GetSurvey
             var respondent = await _dbContext.Respondents
                 .AsNoTracking()
                 .Where(r => r.AccessToken == request.Token)
-                .Select(r => new
-                {
-                    r.RespondentId,
-                    r.HasAnswered,
-                    r.Assessment.AssessmentName,
-                    r.Assessment.StartDate,
-                    r.Assessment.EndDate,
-                    r.Assessment.SurveyId
-                })
+               .Select(r => new
+               {
+                   r.RespondentId,
+                   r.HasAnswered,
+                   r.Assessment.AssessmentName,
+                   r.Assessment.StartDate,
+                   r.Assessment.EndDate,
+                   r.Assessment.SurveyId,
+                   ApplicationName = r.Assessment.Application.ApplicationName
+               })
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (respondent is null || respondent.HasAnswered)
@@ -119,7 +120,9 @@ public class GetSurvey
                         .Select(q => new SurveyQuestionResponse
                         {
                             QuestionId = q.QuestionId,
-                            QuestionText = q.QuestionText,
+                            QuestionText = q.QuestionText.Replace(
+                            "[System]",
+                            respondent.ApplicationName),
                             QuestionPolarity = q.QuestionPolarity,
                             QuestionType = q.QuestionType,
                             AnswerOptions = new List<int> { 1, 2, 3, 4, 5 }
