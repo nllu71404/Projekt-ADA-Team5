@@ -6,7 +6,7 @@ using ADAProjectAPIVerticalSlice.Entities;
 namespace ADAProjectAPIVerticalSlice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260919114254_Experience")]
+    [Migration("20260919114151_Experience")]
     public class Migration008_Experience : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,8 +16,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                 name: "Experiences",
                 columns: table => new
                 {
-                    ExperienceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExperienceValue = table.Column<string>(type: "text", nullable: false)
+                    ExperienceId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ExperienceValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

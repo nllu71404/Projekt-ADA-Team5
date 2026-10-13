@@ -200,12 +200,27 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ExperienceId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("HasAnswered")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("RegionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("RoleId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("RespondentId");
 
                     b.HasIndex("AssessmentId");
+
+                    b.HasIndex("ExperienceId");
+
+                    b.HasIndex("RegionId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Respondent", (string)null);
                 });
@@ -595,7 +610,25 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Experience", "Experience")
+                        .WithMany()
+                        .HasForeignKey("ExperienceId");
+
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId");
+
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId");
+
                     b.Navigation("Assessment");
+
+                    b.Navigation("Experience");
+
+                    b.Navigation("Region");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Theme", b =>
