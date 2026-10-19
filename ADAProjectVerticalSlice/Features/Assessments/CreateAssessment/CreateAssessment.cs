@@ -1,14 +1,15 @@
-﻿using Carter;
-using MediatR;
-using FluentValidation;
-using Mapster;
-using Microsoft.EntityFrameworkCore;
-using ADAProjectAPIVerticalSlice.Shared;
+﻿using ADA_Contracts.Events;
+using ADA_Contracts.Other_contracts;
 using ADAProjectAPIVerticalSlice.Entities;
+using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
-using ADA_Contracts.Events;
-using ADA_Contracts.Other_contracts;
+using ADAProjectAPIVerticalSlice.Shared;
+using Carter;
+using FluentValidation;
+using Mapster;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
@@ -76,16 +77,20 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
             private readonly EmailTimingCalculator _emailTimingCalculator;
 
+            private readonly ICurrentUserService _currentUserService;
+
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
                 IRabbitMqPublisher publisher,
-                EmailTimingCalculator emailTimingCalculator)
+                EmailTimingCalculator emailTimingCalculator,
+                ICurrentUserService currentUserService)
             {
                 _dbContext = dbContext;
                 _validator = validator;
                 _publisher = publisher;
                 _emailTimingCalculator = emailTimingCalculator;
+                _currentUserService = currentUserService;
             }
 
             // genererer en tilfældig adgangstoken for Respondent-objekter.
@@ -200,10 +205,18 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     return Result.Failure<Guid>(experiencesResult.Error);
                 }
 
-                // Hent den aktuelle bruger fra databasen. Vi skal ændre denne til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
-                var currentUser = await _dbContext.Users.FirstOrDefaultAsync(
-                    u => u.Email == "test@test.dk",
-                    cancellationToken);
+                // Hent den aktuelle bruger, som sender requesten
+                var currentUserId = _currentUserService.UserId;
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    return Result.Failure<Guid>(Error.NullValue);
+                }
+
+                var currentUser = await _dbContext.Users
+                    .FirstOrDefaultAsync(
+                        u => u.Id == currentUserId,
+                        cancellationToken);
 
                 if (currentUser is null)
                 {
