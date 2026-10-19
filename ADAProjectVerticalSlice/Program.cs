@@ -9,6 +9,11 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
+using Microsoft.OpenApi;
+
 
 // Logging konfiguration
 Log.Logger = new LoggerConfiguration()
@@ -26,11 +31,34 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT-token til autentificering."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+    });
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("Database")));
+
+
+builder.Services
+    .AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager();
 
 var assembly = typeof(Program).Assembly;
 
@@ -43,6 +71,7 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 builder.Services.AddScoped<EmailTimingCalculator>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 builder.Services.AddCors(options =>
 {
@@ -54,6 +83,32 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+// JWT Authentication konfiguration - vi henter værdierne fra appsettings.json
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                ValidateLifetime = true,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Convert.FromBase64String(
+                        builder.Configuration["Jwt:SigningKey"]!))
+            };
+    });
+
+builder.Services.AddAuthorization();
+
 
 
 var app = builder.Build();
@@ -78,6 +133,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowDevelopment");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapCarter();
 

@@ -1,5 +1,6 @@
 ﻿using ADAProjectAPIVerticalSlice.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 {
@@ -34,28 +35,62 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
 
             // ==========================================
-            // 2. Opret test User
+            // 2. Opret test User via ASP.NET Core Identity
             // ==========================================
 
-            var user = await dbContext.Users
-                .FirstOrDefaultAsync(u =>
-                    u.Email == "test@test.dk");
+            var userManager =
+                services.GetRequiredService<UserManager<User>>();
+
+            var user = await userManager.FindByEmailAsync(
+                "test@test.dk");
 
             if (user == null)
             {
                 user = new User
                 {
-                    Id = Guid.NewGuid().ToString(),
                     UserName = "test@test.dk",
                     Email = "test@test.dk",
                     FullName = "Test Bruger",
-
                     CompanyId = company.CompanyId
                 };
 
-                dbContext.Users.Add(user);
+                var createResult = await userManager.CreateAsync(
+                    user,
+                    "AdaTest123!");
 
-                await dbContext.SaveChangesAsync();
+                // Join error beskeden til en enkelt streng, hvis oprettelsen fejler
+                if (!createResult.Succeeded)
+                {
+                    var errors = string.Join(
+                        "; ",
+                        createResult.Errors.Select(e => e.Description));
+
+                    throw new InvalidOperationException(
+                        $"Kunne ikke oprette testbrugeren: {errors}");
+                }
+            }
+            else
+            {
+                var hasPassword =
+                    await userManager.HasPasswordAsync(user);
+
+                if (!hasPassword)
+                {
+                    var passwordResult =
+                        await userManager.AddPasswordAsync(
+                            user,
+                            "AdaTest123!");
+
+                    if (!passwordResult.Succeeded)
+                    {
+                        var errors = string.Join(
+                            "; ",
+                            passwordResult.Errors.Select(e => e.Description));
+
+                        throw new InvalidOperationException(
+                            $"Kunne ikke tilføje adgangskode: {errors}");
+                    }
+                }
             }
 
 

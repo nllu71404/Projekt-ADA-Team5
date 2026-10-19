@@ -336,7 +336,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         }
 
                         return Results.Ok(result.Value);
-                    });
+                    })
+                .RequireAuthorization(); // Kræver, at brugeren er autentificeret for at kunne oprette en Assessment.
             }
         }
 
