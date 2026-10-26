@@ -7,6 +7,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 
 namespace Tests.Features.Assessments.CreateAssessmentTests
 {
@@ -18,6 +19,7 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
         private CreateAssessment.Handler _handler = null!;
         private Mock<IRabbitMqPublisher> _publisher = null!;
         private EmailTimingCalculator _emailTimingCalculator = null!;
+        private Mock<ICurrentUserService> _currentUserService = null!;
 
         private Role _existingRole = null!;
         private Region _existingRegion = null!;
@@ -47,6 +49,8 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
 
             _emailTimingCalculator = new EmailTimingCalculator();
 
+            _currentUserService = new Mock<ICurrentUserService>();
+
             _publisher
                 .Setup(p => p.PublishAsync(
                     It.IsAny<AssessmentCreated>(),
@@ -54,11 +58,18 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
+            _currentUserService
+                .Setup(c => c.UserId)
+                .Returns("test-user-id");
+
             _handler = new CreateAssessment.Handler(
                 _dbContext,
                 _validator,
                 _publisher.Object,
-                _emailTimingCalculator);
+                _emailTimingCalculator,
+                _currentUserService.Object);
+
+            
 
             _testCompany = new Company
             {
@@ -66,15 +77,13 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
                 CompanyName = "Test Company"
             };
 
-            _testUser = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "test@test.dk",
-                Email = "test@test.dk",
-                FullName = "Test Bruger",
-                CompanyId = _testCompany.CompanyId,
-                Company = _testCompany
-            };
+           _testUser = new User
+           {
+               Id = "test-user-id",
+               Email = "test@test.com",
+               UserName = "test@test.com",
+               CompanyId = _testCompany.CompanyId,
+           };
 
             _testSurvey = new Survey
             {

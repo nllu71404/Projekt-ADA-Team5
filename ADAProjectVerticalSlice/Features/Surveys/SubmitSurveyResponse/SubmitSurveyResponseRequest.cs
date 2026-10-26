@@ -3,7 +3,10 @@
 public record SubmitSurveyResponseRequest(
     string Token,
     List<AnswerSubmission> Answers,
-    List<CommentSubmission> Comments);
+    List<CommentSubmission> Comments,
+    Guid RoleId,
+    Guid RegionId,
+    Guid ExperienceId);
 
 public record AnswerSubmission(
     Guid QuestionId,

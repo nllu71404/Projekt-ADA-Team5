@@ -116,6 +116,14 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    Console.WriteLine(
+        $"INCOMING REQUEST: {context.Request.Method} {context.Request.Path}");
+
+    await next();
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.ApplyMigrations();

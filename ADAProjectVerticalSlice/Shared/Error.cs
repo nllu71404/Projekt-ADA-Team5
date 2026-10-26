@@ -51,5 +51,9 @@
         public static readonly Error DuplicateComment =
             new("Survey.DuplicateComment",
                 "Der må kun angives én kommentar pr. tema.");
+
+        public static readonly Error InvalidRoleRegionExperience = 
+            new("Survey.InvalidRoleRegionExperience",
+                "En eller flere kommentarer tilhører et ugyldigt rolle/region/erfaring.");
     }
 }
