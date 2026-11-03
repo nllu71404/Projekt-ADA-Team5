@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ADAProjectVerticalSlice\ADAProjectAPIVerticalSlice.csproj" />
+    <ProjectReference Include="..\ADAProjectVerticalSlice\ADAProjectVerticalSlice.csproj" />
   </ItemGroup>
 
   <ItemGroup>
