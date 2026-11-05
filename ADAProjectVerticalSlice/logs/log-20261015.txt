@@ -1,0 +1,1 @@
+2026-10-15 13:30:59.323 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.

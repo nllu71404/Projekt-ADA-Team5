@@ -1,0 +1,3 @@
+2026-10-20 10:34:05.153 +02:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-10-20 14:22:03.087 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-10-20 16:24:08.822 +02:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.

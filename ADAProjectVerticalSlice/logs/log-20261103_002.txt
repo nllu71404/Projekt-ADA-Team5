@@ -1,0 +1,36 @@
+2026-11-03 23:48:36.587 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-03 23:51:35.865 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-03 23:55:55.455 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.AspNetCore.Http.BadHttpRequestException: Failed to read parameter "CreateAssessmentRequest request" from the request body as JSON.
+ ---> System.Text.Json.JsonException: ']' is invalid after a property name. Expected a ':'. Path: $ | LineNumber: 8 | BytePositionInLine: 2.
+ ---> System.Text.Json.JsonReaderException: ']' is invalid after a property name. Expected a ':'. LineNumber: 8 | BytePositionInLine: 2.
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumePropertyName()
+   at System.Text.Json.Utf8JsonReader.ConsumeNextToken(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ConsumeNextTokenOrRollback(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value)
+   at System.Text.Json.Serialization.JsonConverter`1.TryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value, Boolean& isPopulatedValue)
+   at System.Text.Json.Serialization.JsonConverter`1.ReadCore(Utf8JsonReader& reader, T& value, JsonSerializerOptions options, ReadStack& state)
+   --- End of inner exception stack trace ---
+   at System.Text.Json.ThrowHelper.ReThrowWithPath(ReadStack& state, JsonReaderException ex)
+   at System.Text.Json.Serialization.JsonConverter`1.ReadCore(Utf8JsonReader& reader, T& value, JsonSerializerOptions options, ReadStack& state)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.ContinueDeserialize[TReadBufferState,TStream](TReadBufferState& bufferState, JsonReaderState& jsonReaderState, ReadStack& readStack, T& value)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsync[TReadBufferState,TStream](TStream utf8Json, TReadBufferState bufferState, CancellationToken cancellationToken)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsObjectAsync(PipeReader utf8Json, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.HttpRequestJsonExtensions.ReadFromJsonAsync(HttpRequest request, JsonTypeInfo jsonTypeInfo, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.HttpRequestJsonExtensions.ReadFromJsonAsync(HttpRequest request, JsonTypeInfo jsonTypeInfo, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<HandleRequestBodyAndCompileRequestDelegateForJson>g__TryReadBodyAsync|102_0(HttpContext httpContext, Type bodyType, String parameterTypeName, String parameterName, Boolean allowEmptyRequestBody, Boolean throwOnBadRequest, JsonTypeInfo jsonTypeInfo)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.Log.InvalidJsonRequestBody(HttpContext httpContext, String parameterTypeName, String parameterName, Exception exception, Boolean shouldThrow)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<HandleRequestBodyAndCompileRequestDelegateForJson>g__TryReadBodyAsync|102_0(HttpContext httpContext, Type bodyType, String parameterTypeName, String parameterName, Boolean allowEmptyRequestBody, Boolean throwOnBadRequest, JsonTypeInfo jsonTypeInfo)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Program.<>c.<<<Main>$>b__0_5>d.MoveNext() in C:\Users\mia\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 124
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)

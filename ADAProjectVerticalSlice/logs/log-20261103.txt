@@ -1,0 +1,7 @@
+2026-11-03 13:19:42.564 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-03 23:25:14.715 +01:00 [ERR] Failed executing DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Experiences" (
+    "ExperienceId" uuid,
+    "ExperienceValue" text,
+    CONSTRAINT "PK_ExperienceId" PRIMARY KEY ("ExperienceId")
+);
