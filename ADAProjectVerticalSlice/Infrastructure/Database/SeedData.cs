@@ -13,7 +13,44 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 services.GetRequiredService<ApplicationDbContext>();
 
             // ==========================================
-            // 1. Opret test Company
+            // Opret Identity Roles
+            // ==========================================
+
+            var roleManager =
+                services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var roles = new[]
+            {
+                 "Admin",
+                 "User",
+                 "Viewer"
+};
+
+            foreach (var roleName in roles)
+            {
+                var roleExists = await roleManager.RoleExistsAsync(roleName);
+
+                if (!roleExists)
+                {
+                    var result = await roleManager.CreateAsync(
+                        new IdentityRole(roleName));
+
+                    if (!result.Succeeded)
+                    {
+                        var errors = string.Join(
+                            "; ",
+                            result.Errors.Select(e => e.Description));
+
+                        throw new InvalidOperationException(
+                            $"Kunne ikke oprette rollen {roleName}: {errors}");
+                    }
+                }
+            }
+
+            
+
+            // ==========================================
+            // Opret test Company
             // ==========================================
 
             var company = await dbContext.Companies
@@ -35,7 +72,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
 
             // ==========================================
-            // 2. Opret test User via ASP.NET Core Identity
+            // Opret test User via ASP.NET Core Identity
             // ==========================================
 
             var userManager =
@@ -94,13 +131,33 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             }
 
 
+            // ==========================================
+            // Tildel Admin-rollen til testbrugeren
+            // ==========================================
 
+
+            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+            if (!isAdmin)
+            {
+                var result = await userManager.AddToRoleAsync(user, "Admin");
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(
+                        "; ",
+                        result.Errors.Select(e => e.Description));
+
+                    throw new InvalidOperationException(
+                        $"Kunne ikke tildele Admin-rollen til testbrugeren: {errors}");
+                }
+            }
 
 
 
 
             // ==========================================
-            // 3. Opret Regions
+            // Opret Regions
             // ==========================================
 
             var regions = new[]
@@ -136,7 +193,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
 
             // ==========================================
-            // 4. Opret ADA Survey
+            // Opret ADA Survey
             // ==========================================
 
             var surveyId =
@@ -162,7 +219,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             }
 
             // ==========================================
-            // 5. Opret Experiences
+            // Opret Experiences
             // ==========================================
 
             var experiences = new[]
@@ -191,7 +248,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             await dbContext.SaveChangesAsync();
 
             // ==========================================
-            // 5. Opret Themes
+            // Opret Themes
             // ==========================================
 
             var usabilityId =

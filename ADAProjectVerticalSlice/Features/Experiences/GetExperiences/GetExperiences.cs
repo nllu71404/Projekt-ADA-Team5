@@ -48,7 +48,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Experiences.GetExperiences
                         }
 
                         return Results.Ok(result.Value);
-                    });
+                    })
+                .RequireAuthorization("UserOrAdmin");
             }
         }
     }

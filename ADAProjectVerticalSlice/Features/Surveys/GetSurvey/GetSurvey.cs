@@ -4,6 +4,7 @@ using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+ 
 
 // Tilpas namespace/imports for Result og Error til dit projekt.
 
@@ -156,7 +157,9 @@ public class GetSurvey
                     }
 
                     return Results.Ok(result.Value);
-                });
+                })
+            .RequireAuthorization("UserOrAdmin");
         }
+        
     }
 }
