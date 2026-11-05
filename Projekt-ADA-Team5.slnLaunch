@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile (2)",
+    "Projects": [
+      {
+        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
