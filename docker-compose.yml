@@ -1,0 +1,43 @@
+# Starter databasen og beskedkøen til ADA-projektet:   docker compose up -d
+# Stopper dem (data bevares):                           docker compose down
+# Stopper dem OG sletter alle data:                     docker compose down -v
+# Kun RabbitMQ (hvis du bruger din egen lokale Postgres): docker compose up -d rabbitmq
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: ada-postgres
+    environment:
+      POSTGRES_DB: ADA
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: qwasdf          # skift til jeres eget, og commit den ikke i git
+    ports:
+      - "5433:5432"                      # udefra: 5433, indeni containeren: 5432
+    volumes:
+      - ada-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management         # "management" giver et webinterface
+    container_name: ada-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest       # samme som i RabbitMqPublisher.cs
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"                      # her forbinder backend'en
+      - "15672:15672"                    # webinterface: http://localhost:15672
+    volumes:
+      - ada-rabbitdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  ada-pgdata:
+  ada-rabbitdata:

@@ -1,4 +1,4 @@
-﻿//Bruges til forbindelse med Android studio emulator
+//Bruges til forbindelse med Android studio emulator
 
 {
   "profiles": {
@@ -30,28 +30,3 @@
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"
 }
-
-
-//{
-//  "$schema": "https://json.schemastore.org/launchsettings.json",
-//  "profiles": {
-//    "http": {
-//      "commandName": "Project",
-//      "dotnetRunMessages": true,
-//      "launchBrowser": false,
-//      "applicationUrl": "http://localhost:5142",
-//      "environmentVariables": {
-//        "ASPNETCORE_ENVIRONMENT": "Development"
-//      }
-//    },
-//    "https": {
-//      "commandName": "Project",
-//      "dotnetRunMessages": true,
-//      "launchBrowser": false,
-//      "applicationUrl": "https://localhost:7227;http://localhost:5142",
-//      "environmentVariables": {
-//        "ASPNETCORE_ENVIRONMENT": "Development"
-//      }
-//    }
-//  }
-//}
