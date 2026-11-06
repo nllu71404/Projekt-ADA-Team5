@@ -48,6 +48,14 @@
 
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource
+			Include="Infrastructure\Database\DatabaseScripts\*.sql"
+			LogicalName="AuditSql.%(Filename)%(Extension)" />
+	</ItemGroup>
+	
+	
+
 	
 	
 
