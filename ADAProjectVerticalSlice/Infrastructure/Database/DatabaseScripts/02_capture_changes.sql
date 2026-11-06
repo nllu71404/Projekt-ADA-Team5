@@ -20,7 +20,7 @@ DECLARE
     -- Række, der bruges til at hente primærnøgleværdier.
     v_row JSONB;
 
-    -- JSON-objekt med primærnøgleværdier.
+    -- JSON-objekt med primærnøgleværdier. 
     v_pk JSONB := '{}'::jsonb;
 
     -- Løkketæller.

@@ -16,7 +16,7 @@ AS $$
 DECLARE
 
     -- Nyligt oprettet databaseobjekt.
-    cmd RECORD;
+    cmd RECORD; 
 
 BEGIN
 

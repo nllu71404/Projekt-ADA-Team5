@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS audit.row_changes (
     -- Primærnøgle for den berørte række.
     row_pk JSONB,
 
-    -- Oplysninger om applikationsbruger og forespørgsel.
+    -- Oplysninger om applikationsbruger og forespørgsel. 
     actor_id TEXT,
     request_id TEXT,
 

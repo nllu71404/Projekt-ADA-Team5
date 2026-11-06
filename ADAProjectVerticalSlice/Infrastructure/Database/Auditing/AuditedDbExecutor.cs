@@ -58,7 +58,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing
                 await db.SaveChangesAsync(ct);
 
                 // Godkend transaktionen.
-                await tx.CommitAsync(ct);
+                await tx.CommitAsync(ct); 
             });
         }
     }

@@ -18,7 +18,7 @@ DECLARE
     -- Tabellens navn.
     v_table TEXT;
 
-    -- Argumenter for primærnøglekolonner.
+    -- Argumenter for primærnøglekolonner. 
     v_pk_columns TEXT;
 
 BEGIN

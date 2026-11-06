@@ -53,7 +53,7 @@
 			Include="Infrastructure\Database\DatabaseScripts\*.sql"
 			LogicalName="AuditSql.%(Filename)%(Extension)" />
 	</ItemGroup> 
-	
+	 
 	
 
 	
