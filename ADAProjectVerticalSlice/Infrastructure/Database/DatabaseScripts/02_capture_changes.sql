@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION audit.capture_change()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = pg_catalog, pg_temp
+SET search_path = pg_catalog, pg_temp 
 
 AS $$
 DECLARE

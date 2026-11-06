@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION audit.install_on_table(
 )
 RETURNS VOID
 LANGUAGE plpgsql
-SET search_path = pg_catalog, pg_temp
+SET search_path = pg_catalog, pg_temp 
 
 AS $$
 DECLARE

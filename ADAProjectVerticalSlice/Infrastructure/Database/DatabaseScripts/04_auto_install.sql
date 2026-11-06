@@ -10,7 +10,7 @@
 CREATE OR REPLACE FUNCTION audit.on_create_table()
 RETURNS EVENT_TRIGGER
 LANGUAGE plpgsql
-SET search_path = pg_catalog, pg_temp
+SET search_path = pg_catalog, pg_temp 
 
 AS $$
 DECLARE

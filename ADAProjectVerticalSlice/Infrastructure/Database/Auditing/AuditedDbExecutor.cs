@@ -39,7 +39,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing
 
                 // Start en databasetransaktion.
                 await using var tx =
-                    await db.Database.BeginTransactionAsync(ct);
+                    await db.Database.BeginTransactionAsync(ct); 
 
                 // Gem applikationsbrugerens ID i den aktuelle transaktion.
                 await db.Database.ExecuteSqlInterpolatedAsync(

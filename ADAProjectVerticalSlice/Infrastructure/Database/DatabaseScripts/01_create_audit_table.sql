@@ -6,7 +6,7 @@
 CREATE SCHEMA IF NOT EXISTS audit;
 
 
--- Opret tabel til ændringslog.
+-- Opret tabel til ændringslog. 
 CREATE TABLE IF NOT EXISTS audit.row_changes (
 
     -- Unikt ID for logposten.
