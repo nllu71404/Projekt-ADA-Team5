@@ -10,20 +10,15 @@ namespace ADAProjectAPIVerticalSlice.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // 1. Create audit schema, table and indexes.
             migrationBuilder.Sql(
                 ReadSql("01_create_audit_table.sql"));
 
-            // 2. Create audit capture function.
             migrationBuilder.Sql(
                 ReadSql("02_capture_changes.sql"));
 
-            // 3. Create trigger installation function.
             migrationBuilder.Sql(
                 ReadSql("03_install_triggers.sql"));
 
-            // 4. Create automatic event trigger and
-            // install audit triggers on existing tables.
             migrationBuilder.Sql(
                 ReadSql("04_auto_install.sql"));
         }

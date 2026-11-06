@@ -1,120 +1,81 @@
-﻿-- ==============================================
--- SCRIPT 4: AUTOMATISK INSTALLATION AF AUDIT
--- ==============================================
-
-
--- ==========================================
--- 1. OPRET FUNKTION TIL EVENT-TRIGGER
+﻿-- ==========================================
+-- SCRIPT 03: INSTALLER AUDIT-TRIGGERE
 -- ==========================================
 
-CREATE OR REPLACE FUNCTION audit.on_create_table()
-RETURNS EVENT_TRIGGER
+CREATE OR REPLACE FUNCTION audit.install_on_table(
+    p_table REGCLASS
+)
+RETURNS VOID
 LANGUAGE plpgsql
-SET search_path = pg_catalog, pg_temp 
-
+SET search_path = pg_catalog, pg_temp
 AS $$
 DECLARE
-
-    -- Nyligt oprettet databaseobjekt.
-    cmd RECORD; 
-
-BEGIN
-
-    -- Find tabeller oprettet af DDL-kommandoen.
-    FOR cmd IN
-
-        SELECT DISTINCT d.objid
-
-        FROM pg_event_trigger_ddl_commands() AS d
-
-        WHERE d.command_tag IN (
-            'CREATE TABLE',
-            'CREATE TABLE AS'
-        )
-
-          -- Kun objekter fra pg_class.
-          AND d.classid =
-              'pg_catalog.pg_class'::regclass
-
-          -- Udeluk objekter fra udvidelser.
-          AND NOT d.in_extension
-
-    LOOP
-
-        -- Installer audit-trigger på den nye tabel.
-        PERFORM audit.install_on_table(
-            cmd.objid::regclass
-        );
-
-    END LOOP;
-
-END;
-$$;
-
-
--- ==========================================
--- 2. OPRET POSTGRESQL EVENT-TRIGGER
--- ==========================================
-
--- Fjern eksisterende event-trigger, hvis den findes.
--- Dette gør det muligt at gentage installationen.
-DROP EVENT TRIGGER IF EXISTS audit_new_tables;
-
-
--- Registrer automatisk nyoprettede tabeller.
-CREATE EVENT TRIGGER audit_new_tables
-
-ON ddl_command_end
-
-WHEN TAG IN (
-    'CREATE TABLE',
-    'CREATE TABLE AS'
-)
-
-EXECUTE FUNCTION audit.on_create_table();
-
-
--- Sørg for, at event-triggeren er aktiveret.
-ALTER EVENT TRIGGER audit_new_tables ENABLE;
-
-
--- ==========================================
--- 3. INSTALLER PÅ EKSISTERENDE TABELLER
--- ==========================================
-
--- Registrering af nye tabeller påvirker ikke tabeller,
--- der allerede eksisterede før installationen.
-
-DO $$
-DECLARE
-
-    v_table RECORD;
+    v_schema TEXT;
+    v_table TEXT;
+    v_pk_columns TEXT;
 
 BEGIN
 
-    -- Find eksisterende tabeller, der opfylder kravene.
-    FOR v_table IN
+    -- Find en tabel, der opfylder kravene.
+    SELECT
+        n.nspname,
+        c.relname
+    INTO
+        v_schema,
+        v_table
+    FROM pg_class c
+    JOIN pg_namespace n
+        ON n.oid = c.relnamespace
+    WHERE c.oid = p_table
+      AND c.relkind IN ('r', 'p')
+      AND NOT c.relispartition
+      AND n.nspname = 'public'
+      AND c.relname <> '__EFMigrationsHistory';
 
-        SELECT c.oid
+    IF NOT FOUND THEN
+        RETURN;
+    END IF;
 
-        FROM pg_class c
+    -- Kontrollér, om triggeren allerede findes.
+    IF EXISTS (
+        SELECT 1
+        FROM pg_trigger
+        WHERE tgrelid = p_table
+          AND tgname = 'audit_changes'
+    ) THEN
+        RETURN;
+    END IF;
 
-        JOIN pg_namespace n
-            ON n.oid = c.relnamespace
+    -- Find kolonnerne, der udgør primærnøglen.
+    SELECT COALESCE(
+        string_agg(
+            format('%L', a.attname),
+            ', ' ORDER BY k.ordinality
+        ),
+        ''
+    )
+    INTO v_pk_columns
+    FROM pg_index ix
+    CROSS JOIN LATERAL unnest(ix.indkey)
+        WITH ORDINALITY AS k(attnum, ordinality)
+    JOIN pg_attribute a
+        ON a.attrelid = ix.indrelid
+       AND a.attnum = k.attnum
+    WHERE ix.indrelid = p_table
+      AND ix.indisprimary
+      AND k.ordinality <= ix.indnkeyatts;
 
-        WHERE n.nspname = 'public'
-          AND c.relkind IN ('r', 'p')
-          AND NOT c.relispartition
-          AND c.relname <> '__EFMigrationsHistory'
-
-    LOOP
-
-        -- Installer triggeren, hvis den mangler.
-        PERFORM audit.install_on_table(
-            v_table.oid::regclass
-        );
-
-    END LOOP;
+    -- Opret audit-triggeren.
+    EXECUTE format(
+        'CREATE TRIGGER audit_changes
+         AFTER INSERT OR UPDATE OR DELETE
+         ON %I.%I
+         FOR EACH ROW
+         EXECUTE FUNCTION audit.capture_change(%s)',
+        v_schema,
+        v_table,
+        v_pk_columns
+    );
 
 END;
 $$;
