@@ -9,6 +9,10 @@
       {
         "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "ADA-Frontend\\ADA-Frontend.csproj",
+        "Action": "Start"
       }
     ]
   }
