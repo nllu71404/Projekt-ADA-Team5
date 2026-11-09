@@ -38,31 +38,72 @@
         {
             var client = HttpClientFactory.CreateClient("ADAApi");
 
-            var response = await client.PostAsJsonAsync(
-                "api/auth/login",
-                new { Email = email, Password = password });
+            // 1. Hent CSRF-token fra backend.
+            using var csrfResponse = await client.GetAsync(
+                "api/auth/csrf-token");
 
-            
-            if (response.IsSuccessStatusCode)
+            if (!csrfResponse.IsSuccessStatusCode)
             {
-                var result = await response.Content
-                    .ReadFromJsonAsync<LoginResponse>();
+                message = "Could not retrieve CSRF token.";
+                return;
+            }
 
-                if (!string.IsNullOrEmpty(result?.AccessToken))
+            // Gem antiforgery-cookien fra backend.
+            UpdateCookies(csrfResponse);
+
+            var csrfData = await csrfResponse.Content
+                .ReadFromJsonAsync<CsrfResponse>();
+
+            if (string.IsNullOrWhiteSpace(csrfData?.RequestToken))
+            {
+                message = "No CSRF token received.";
+                return;
+            }
+
+            AuthSession.CsrfToken = csrfData.RequestToken;
+
+            // 2. Send login-request med CSRF-token og cookie.
+            using var loginRequest = new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/auth/web-login");
+
+            loginRequest.Headers.Add(
+                "X-CSRF-TOKEN",
+                AuthSession.CsrfToken);
+
+            if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+            {
+                loginRequest.Headers.Add(
+                    "Cookie",
+                    AuthSession.CookieHeader);
+            }
+
+            loginRequest.Content = JsonContent.Create(new
+            {
+                Email = email,
+                Password = password
+            });
+
+            using var loginResponse = await client.SendAsync(loginRequest);
+
+            if (loginResponse.IsSuccessStatusCode)
+            {
+                // 3. Gem authentication-cookien fra backend.
+                UpdateCookies(loginResponse);
+
+                if (AuthSession.IsAuthenticated)
                 {
-                    AuthSession.AccessToken = result.AccessToken;
-
                     Navigation.NavigateTo("/dashboard");
                     return;
                 }
 
-                message = "No token received.";
+                message = "Login succeeded, but no authentication cookie was received.";
+                return;
             }
 
-            else
-            {
-                message = "Invalid email or password.";
-            }
+            message = loginResponse.StatusCode == System.Net.HttpStatusCode.BadRequest
+                ? "Login request was rejected. Check the CSRF token."
+                : "Invalid email or password.";
         }
         catch (Exception ex)
         {
@@ -70,5 +111,45 @@
         }
     }
 
-    private record LoginResponse(string AccessToken);
+    // Gemmer cookies fra backend uden deres øvrige attributter.
+    private void UpdateCookies(HttpResponseMessage response)
+    {
+        if (!response.Headers.TryGetValues(
+            "Set-Cookie", out var setCookieHeaders))
+        {
+            return;
+        }
+
+        var cookies = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+
+        // Behold allerede modtagne cookies.
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            foreach (var cookie in AuthSession.CookieHeader.Split(
+                ';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = cookie.Trim().Split('=', 2);
+
+                if (parts.Length == 2)
+                    cookies[parts[0]] = parts[1];
+            }
+        }
+
+        // Opdater med cookies fra det aktuelle svar.
+        foreach (var setCookie in setCookieHeaders)
+        {
+            var cookiePair = setCookie.Split(';', 2)[0].Trim();
+            var parts = cookiePair.Split('=', 2);
+
+            if (parts.Length == 2)
+                cookies[parts[0]] = parts[1];
+        }
+
+        AuthSession.CookieHeader = string.Join(
+            "; ",
+            cookies.Select(cookie => $"{cookie.Key}={cookie.Value}"));
+    }
+
+    private record CsrfResponse(string RequestToken);
 }
