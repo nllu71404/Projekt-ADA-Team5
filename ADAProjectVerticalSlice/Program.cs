@@ -97,9 +97,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowDevelopment", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins(
+                "http://localhost:5026",
+                "https://localhost:7237"
+            )
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -260,9 +264,17 @@ app.Use(async (context, next) =>
         .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase);
 
     // CSRF-valider kun autentificerede requests, der ikke bruger JWT.
+    var isWebLoginEndpoint =
+     context.Request.Path.Equals(
+         "/api/auth/web-login",
+         StringComparison.OrdinalIgnoreCase);
+
+    var isAuthenticated =
+        context.User.Identity?.IsAuthenticated == true;
+
     if (!isSafeMethod &&
         !hasBearerToken &&
-        context.User.Identity?.IsAuthenticated == true)
+        (isAuthenticated || isWebLoginEndpoint))
     {
         var antiforgery = context.RequestServices
             .GetRequiredService<IAntiforgery>();
