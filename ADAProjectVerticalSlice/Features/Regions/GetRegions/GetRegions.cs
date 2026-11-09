@@ -48,7 +48,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Regions.GetRegions
                         }
 
                         return Results.Ok(result.Value);
-                    });
+                    })
+                    .RequireAuthorization("UserOrAdmin");
             }
         }
     }

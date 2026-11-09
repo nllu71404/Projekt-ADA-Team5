@@ -1,0 +1,78 @@
+﻿@page "/dashboard"
+
+<PageTitle>ADA Dashboard</PageTitle>
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="fw-bold">ADA Dashboard</h1>
+        <p class="text-muted">
+            Welcome to the ADA management system.
+        </p>
+    </div>
+
+    <!-- Dashboard cards -->
+    <div class="row g-4">
+
+        <!-- Assessments -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Assessments</h4>
+
+                    <p class="card-text text-muted">
+                        Create and manage assessments
+                        for your applications.
+                    </p>
+
+                    
+                    <a href="/assessments/create" class="btn btn-primary">
+                        Create Assessment
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Surveys -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">Surveys</h4>
+
+                    <p class="card-text text-muted">
+                        View surveys and their questions
+                        and responses.
+                    </p>
+
+                    <button class="btn btn-primary" disabled>
+                        View Surveys
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regions & Experiences -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        Regions & Experiences
+                    </h4>
+
+                    <p class="card-text text-muted">
+                        View available regions and
+                        experience levels.
+                    </p>
+
+                    <button class="btn btn-primary" disabled>
+                        View Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

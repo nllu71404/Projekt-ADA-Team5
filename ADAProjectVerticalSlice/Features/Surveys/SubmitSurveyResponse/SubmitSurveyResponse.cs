@@ -283,6 +283,7 @@ public class Endpoint : ICarterModule
                     return Results.BadRequest(result.Error);
 
                 return Results.NoContent();
-            });
+            })
+        .RequireAuthorization("UserOrAdmin");
     }
 }

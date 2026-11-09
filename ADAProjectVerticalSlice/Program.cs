@@ -80,6 +80,18 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<ITicketStore, PostgresTicketStore>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("UserOrAdmin", policy =>
+        policy.RequireRole("User", "Admin"));
+
+    options.AddPolicy("AllRoles", policy =>
+        policy.RequireRole("Admin", "User", "Viewer"));
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowDevelopment", policy =>

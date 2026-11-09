@@ -3,11 +3,11 @@
     "Name": "New Profile (2)",
     "Projects": [
       {
-        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
+        "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
         "Action": "Start"
       },
       {
-        "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
+        "Path": "ADA-Frontend\\ADA-Frontend.csproj",
         "Action": "Start"
       }
     ]
