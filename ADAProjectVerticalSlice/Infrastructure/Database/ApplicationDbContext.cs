@@ -33,6 +33,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         public DbSet<Respondent> Respondents { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<UserSession> UserSessions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,6 +52,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Respondent>().ToTable("Respondent");
             modelBuilder.Entity<Answer>().ToTable("Answer");
             modelBuilder.Entity<Comment>().ToTable("Comment");
+            modelBuilder.Entity<UserSession>().ToTable("UserSession");
 
             // Survey
             modelBuilder.Entity<Survey>()
@@ -164,6 +166,13 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Experience>()
                 .HasIndex(e => e.ExperienceValue)
                 .IsUnique();
+
+            // User -> UserSession
+            modelBuilder.Entity<UserSession>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

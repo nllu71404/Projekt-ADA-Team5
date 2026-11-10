@@ -1,0 +1,29 @@
+2026-11-07 15:33:01.067 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-07 15:33:11.689 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-07 15:35:02.237 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-07 15:35:03.360 +01:00 [ERR] Failed executing DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserSessions" (
+    "Id" uniqueidentifier NOT NULL,
+    "Ticket" varbinary(max) NOT NULL,
+    "Created" datetime2 NOT NULL,
+    "LastActivity" datetime2 NOT NULL,
+    "Expires" datetime2 NOT NULL,
+    "Revoked" datetime2,
+    "UserId" nvarchar(450) NOT NULL,
+    CONSTRAINT "PK_UserSessions" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_UserSessions_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE
+);
+2026-11-07 15:35:44.289 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-07 15:35:45.274 +01:00 [ERR] Failed executing DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserSessions" (
+    "Id" uuid NOT NULL,
+    "Ticket" varbinary(max) NOT NULL,
+    "Created" datetime2 NOT NULL,
+    "LastActivity" datetime2 NOT NULL,
+    "Expires" datetime2 NOT NULL,
+    "Revoked" datetime2,
+    "UserId" nvarchar(450) NOT NULL,
+    CONSTRAINT "PK_UserSessions" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_UserSessions_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE
+);
+2026-11-07 15:43:23.223 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.

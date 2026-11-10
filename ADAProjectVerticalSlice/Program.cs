@@ -1,18 +1,21 @@
 using ADAProjectAPIVerticalSlice.Entities;
 using ADAProjectAPIVerticalSlice.Extensions;
 using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
+using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
 using Carter;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 using Microsoft.OpenApi;
+using Serilog;
 
 
 // Logging konfiguration
@@ -75,6 +78,7 @@ builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 builder.Services.AddScoped<EmailTimingCalculator>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<ITicketStore, PostgresTicketStore>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -93,15 +97,49 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowDevelopment", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins(
+                "http://localhost:5026",
+                "https://localhost:7237"
+            )
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
-// JWT Authentication konfiguration - vi henter værdierne fra appsettings.json
+// Vi registrerer både JWT og Cookie Authentication.
 builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddAuthentication(options =>
+    {
+        // Policy Scheme bliver vores fælles indgang til authentication.
+        options.DefaultScheme = "Smart";
+        options.DefaultAuthenticateScheme = "Smart";
+        options.DefaultChallengeScheme = "Smart";
+        options.DefaultForbidScheme = "Smart";
+    })
+
+    // Policy Scheme vælger authentication-mekanisme ud fra requesten.
+    .AddPolicyScheme("Smart", "JWT eller Cookie", options =>
+    {
+        options.ForwardDefaultSelector = context =>
+        {
+            var authorization = context.Request.Headers.Authorization.ToString();
+
+            // Hvis requesten indeholder et Bearer-token,
+            // bruger vi JWT Authentication.
+            if (authorization.StartsWith(
+                "Bearer ",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return JwtBearerDefaults.AuthenticationScheme;
+            }
+
+            // Ellers forsøger vi Cookie Authentication.
+            return CookieAuthenticationDefaults.AuthenticationScheme;
+        };
+    })
+
+    // Eksisterende JWT-konfiguration.
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters =
@@ -120,11 +158,60 @@ builder.Services
                     Convert.FromBase64String(
                         builder.Configuration["Jwt:SigningKey"]!))
             };
+    })
+
+    // Ny Cookie Authentication-konfiguration.
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.Cookie.Name = "ADA.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+
+        // API'et skal returnere 401 i stedet for at
+        // omdirigere brugeren til en login-side.
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode =
+                StatusCodes.Status401Unauthorized;
+
+            return Task.CompletedTask;
+        };
+
+        // API'et skal returnere 403 ved manglende rettigheder.
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode =
+                StatusCodes.Status403Forbidden;
+
+            return Task.CompletedTask;
+        };
+    });
+
+// Forbinder Cookie Authentication med vores ticket store.
+builder.Services
+    .AddOptions<CookieAuthenticationOptions>(
+        CookieAuthenticationDefaults.AuthenticationScheme)
+    .Configure<ITicketStore>((options, ticketStore) =>
+    {
+        options.SessionStore = ticketStore;
     });
 
 builder.Services.AddAuthorization();
 
+// CSRF-beskyttelse for Cookie Authentication.
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
 
+    options.Cookie.Name = "ADA.AntiForgery";
+    options.Cookie.HttpOnly = true; // Forhindrer JavaScript i at tilgå cookien.
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Sørger for, at cookien kun sendes over HTTPS.
+    options.Cookie.SameSite = SameSiteMode.None; // Tillader cross-site requests, når browserens øvrige sikkerhedsindstillinger tillader det. Dette er fordi frontend og backend kan ligge på forskellige origins. 
+});
 
 var app = builder.Build();
 
@@ -158,6 +245,59 @@ app.UseHttpsRedirection();
 app.UseCors("AllowDevelopment");
 
 app.UseAuthentication();
+
+// CSRF-beskyttelse af cookie-autentificerede requests.
+app.Use(async (context, next) =>
+{
+    var method = context.Request.Method;
+
+    // GET, HEAD og OPTIONS ændrer ikke data og skal ikke CSRF-valideres.
+    var isSafeMethod =
+        HttpMethods.IsGet(method) ||
+        HttpMethods.IsHead(method) ||
+        HttpMethods.IsOptions(method) ||
+        HttpMethods.IsTrace(method);
+
+    // Android bruger JWT i Authorization-headeren.
+    var hasBearerToken = context.Request.Headers.Authorization
+        .ToString()
+        .StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase);
+
+    // CSRF-valider kun autentificerede requests, der ikke bruger JWT.
+    var isWebLoginEndpoint =
+     context.Request.Path.Equals(
+         "/api/auth/web-login",
+         StringComparison.OrdinalIgnoreCase);
+
+    var isAuthenticated =
+        context.User.Identity?.IsAuthenticated == true;
+
+    if (!isSafeMethod &&
+        !hasBearerToken &&
+        (isAuthenticated || isWebLoginEndpoint))
+    {
+        var antiforgery = context.RequestServices
+            .GetRequiredService<IAntiforgery>();
+
+        var isValid = await antiforgery.IsRequestValidAsync(context);
+
+        if (!isValid)
+        {
+            context.Response.StatusCode =
+                StatusCodes.Status400BadRequest;
+
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Invalid or missing anti-forgery token."
+            });
+
+            return;
+        }
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 
 app.MapCarter();

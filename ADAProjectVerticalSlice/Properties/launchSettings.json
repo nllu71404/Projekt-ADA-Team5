@@ -1,3 +1,5 @@
+//Bruges til forbindelse med Android studio emulator
+
 {
   "profiles": {
     "http": {
