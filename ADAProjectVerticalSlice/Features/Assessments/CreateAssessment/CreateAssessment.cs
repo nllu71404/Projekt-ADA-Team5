@@ -73,8 +73,6 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             // Validatoren bliver injected via Dependency Injection. Den bruges til at kontrollere, om Command'en er gyldig.
             private readonly IValidator<Command> _validator;
 
-            private readonly IRabbitMqPublisher _publisher;
-
             private readonly EmailTimingCalculator _emailTimingCalculator;
 
             private readonly ICurrentUserService _currentUserService;
@@ -82,13 +80,11 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
-                IRabbitMqPublisher publisher,
                 EmailTimingCalculator emailTimingCalculator,
                 ICurrentUserService currentUserService)
             {
                 _dbContext = dbContext;
                 _validator = validator;
-                _publisher = publisher;
                 _emailTimingCalculator = emailTimingCalculator;
                 _currentUserService = currentUserService;
             }
@@ -259,14 +255,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     UserId = currentUser.Id 
                 };
 
-               
-
-                // Tilføj Assessment til databasen
                 _dbContext.Assessments.Add(assessment);
-
-                // Gem Assessment, eventuelle nye Applications og Roles til databasen
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
 
                 // Opret Respondent-objekter for hver email i request.RespondentEmails og tilføj dem til databasen
                 var respondents = new List<Respondent>();
@@ -289,18 +278,17 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     _dbContext.Respondents.Add(respondent);
                 }
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                // Mapping af Respondent-objekter til RespondentEmailContract-objekter, som bruges i AssessmentCreated-eventen.
+                // Mapping af Respondent-objekter til RespondentEmailContract-objekter.
                 var respondentContracts = respondents
-                 .Select(r => r.Adapt<RespondentEmailContract>())
-                 .ToList();
+                    .Select(r => r.Adapt<RespondentEmailContract>())
+                    .ToList();
 
-                // Beregn anbefalede tidspunkter for udsendelse af emails baseret på start- og slutdatoen for Assessment.
-                var emailTiming = _emailTimingCalculator.Calculate(request.StartDate, request.EndDate);
+                // Beregn tidspunkter for udsendelse af emails.
+                var emailTiming = _emailTimingCalculator.Calculate(
+                    request.StartDate,
+                    request.EndDate);
 
-                //Fortæl resten af systemet, at en ny Assessment er blevet oprettet.
-                //Dette gøres via RabbitMQ, som sender en besked til de services, der lytter på "email-scheduled" routing key.
+                // Opret eventet.
                 var @event = new AssessmentCreated(
                     assessment.AssessmentId,
                     request.ApplicationName,
@@ -312,12 +300,22 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     respondentContracts
                 );
 
-                await _publisher.PublishAsync(
-                    @event,
-                    "assessment-created",
-                    cancellationToken);
+                // Opret en OutboxMessage i stedet for at publicere direkte til RabbitMQ.
+                var outboxMessage = new OutboxMessage
+                {
+                    Id = Guid.NewGuid(),
+                    Type = nameof(AssessmentCreated),
+                    Payload = System.Text.Json.JsonSerializer.Serialize(@event),
+                    RoutingKey = "assessment-created",
+                    CreatedOnUtc = DateTime.UtcNow
+                };
 
-                // Returner ID på den nye Assessment
+                _dbContext.OutboxMessages.Add(outboxMessage);
+
+                // Gem ALT samlet i databasen.
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                // Returner ID på den nye Assessment.
                 return assessment.AssessmentId;
             }
         }
