@@ -71,7 +71,10 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddHttpContextAccessor();
 
+
 builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+// Transactional Outbox Background Worker
+builder.Services.AddHostedService<OutboxPublisherWorker>();
 builder.Services.AddScoped<EmailTimingCalculator>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();

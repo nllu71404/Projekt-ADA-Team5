@@ -34,6 +34,9 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -164,6 +167,32 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Experience>()
                 .HasIndex(e => e.ExperienceValue)
                 .IsUnique();
+
+
+            modelBuilder.Entity<OutboxMessage>(entity =>
+            {
+                entity.ToTable("OutboxMessages");
+
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.Type)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(x => x.RoutingKey)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                entity.Property(x => x.Payload)
+                    .IsRequired();
+
+                entity.HasIndex(x => new
+                {
+                    x.ProcessedOnUtc,
+                    x.CreatedOnUtc
+                });
+            });
+
         }
     }
 }
