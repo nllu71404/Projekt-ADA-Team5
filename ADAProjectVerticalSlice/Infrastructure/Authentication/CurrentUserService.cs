@@ -13,7 +13,9 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // Læser brugerens Id fra JWT-tokenet, som er gemt i HTTP-konteksten. Hvis brugeren ikke er logget ind, returneres null.
+        // Henter brugerens ID fra den aktuelle autentificerede bruger.
+        // Brugeren kan være autentificeret via JWT eller cookie/session.
+        // Hvis brugeren ikke er logget ind, returneres null.
         public string? UserId =>
             _httpContextAccessor.HttpContext?
                 .User.FindFirstValue(ClaimTypes.NameIdentifier);

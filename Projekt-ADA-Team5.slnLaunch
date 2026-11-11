@@ -9,6 +9,10 @@
       {
         "Path": "ADA-Frontend\\ADA-Frontend.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
+        "Action": "Start"
       }
     ]
   }

@@ -414,7 +414,7 @@ namespace ADAProjectAPIVerticalSlice.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserSession", (string)null);
+                    b.ToTable("UserSessions", (string)null);
                 });
 
             modelBuilder.Entity("AssessmentExperience", b =>

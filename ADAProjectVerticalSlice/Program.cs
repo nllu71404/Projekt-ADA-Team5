@@ -200,7 +200,6 @@ builder.Services
         options.SessionStore = ticketStore;
     });
 
-builder.Services.AddAuthorization();
 
 // CSRF-beskyttelse for Cookie Authentication.
 builder.Services.AddAntiforgery(options =>

@@ -83,8 +83,9 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Authentication
             var dbContext = scope.ServiceProvider
                 .GetRequiredService<ApplicationDbContext>();
 
+            // Henter sessionen fra databasen.
+            // Vi bruger ikke AsNoTracking, da vi skal opdatere LastActivity.
             var session = await dbContext.UserSessions
-                .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (session is null)
@@ -101,14 +102,26 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Authentication
 
             try
             {
+                // Henter og dekrypterer authentication-ticketen.
                 var serializedTicket = _protector.Unprotect(session.Ticket);
 
-                return TicketSerializer.Default.Deserialize(serializedTicket);
+                var ticket = TicketSerializer.Default.Deserialize(serializedTicket);
+
+                if (ticket is null)
+                {
+                    return null;
+                }
+
+                // Opdaterer tidspunktet for seneste aktivitet.
+                session.LastActivity = DateTime.UtcNow;
+
+                await dbContext.SaveChangesAsync();
+
+                return ticket;
             }
             catch (CryptographicException)
             {
-                // Hvis ticketen ikke kan beskyttes op eller er ugyldig,
-                // må sessionen ikke accepteres.
+                // Hvis ticketen er ugyldig, accepteres sessionen ikke.
                 return null;
             }
         }

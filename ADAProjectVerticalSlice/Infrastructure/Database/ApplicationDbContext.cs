@@ -52,7 +52,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Respondent>().ToTable("Respondent");
             modelBuilder.Entity<Answer>().ToTable("Answer");
             modelBuilder.Entity<Comment>().ToTable("Comment");
-            modelBuilder.Entity<UserSession>().ToTable("UserSession");
+            modelBuilder.Entity<UserSession>().ToTable("UserSessions");
 
             // Survey
             modelBuilder.Entity<Survey>()
