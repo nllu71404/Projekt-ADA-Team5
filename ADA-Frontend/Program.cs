@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 // Tillader at razor components kan sende HTTP requests til API'en
 builder.Services.AddHttpClient("ADAApi", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5142/");
+    client.BaseAddress = new Uri("https://localhost:7227/");
 });
 
 builder.Services.AddScoped<AuthSession>();

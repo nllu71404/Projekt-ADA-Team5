@@ -33,6 +33,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         public DbSet<Respondent> Respondents { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<UserSession> UserSessions { get; set; }
 
         public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
@@ -54,6 +55,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
             modelBuilder.Entity<Respondent>().ToTable("Respondent");
             modelBuilder.Entity<Answer>().ToTable("Answer");
             modelBuilder.Entity<Comment>().ToTable("Comment");
+            modelBuilder.Entity<UserSession>().ToTable("UserSessions");
 
             // Survey
             modelBuilder.Entity<Survey>()
@@ -193,6 +195,13 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 });
             });
 
+
+            // User -> UserSession
+            modelBuilder.Entity<UserSession>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

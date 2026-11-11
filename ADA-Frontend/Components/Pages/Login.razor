@@ -1,28 +1,34 @@
 ﻿@page "/login"
 @rendermode InteractiveServer
+
+@using System.Net
 @using System.Net.Http.Json
+@using ADA.Frontend.Services
+
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
-@using ADA.Frontend.Services
 @inject AuthSession AuthSession
-@inject NavigationManager Navigation
-
-
 
 <h3>ADA Login</h3>
 
 <div class="mb-3">
     <label>Email</label>
-    <input class="form-control" type="email" @bind="email" />
+    <input class="form-control"
+           type="email"
+           @bind="email" />
 </div>
 
 <div class="mb-3">
     <label>Password</label>
-    <input class="form-control" type="password" @bind="password" />
+    <input class="form-control"
+           type="password"
+           @bind="password" />
 </div>
 
-<button class="btn btn-primary" @onclick="HandleLogin">
-    Login
+<button class="btn btn-primary"
+        @onclick="HandleLogin"
+        disabled="@isLoggingIn">
+    @(isLoggingIn ? "Logging in..." : "Login")
 </button>
 
 <p class="mt-3">@message</p>
@@ -31,44 +37,166 @@
     private string email = "";
     private string password = "";
     private string message = "";
+    private bool isLoggingIn;
 
     private async Task HandleLogin()
     {
+        isLoggingIn = true;
+        message = "";
+
         try
         {
             var client = HttpClientFactory.CreateClient("ADAApi");
 
-            var response = await client.PostAsJsonAsync(
-                "api/auth/login",
-                new { Email = email, Password = password });
+            // 1. Hent CSRF-token før login.
+            var csrfToken = await FetchCsrfTokenAsync(client);
 
-            
-            if (response.IsSuccessStatusCode)
+            if (string.IsNullOrWhiteSpace(csrfToken))
             {
-                var result = await response.Content
-                    .ReadFromJsonAsync<LoginResponse>();
-
-                if (!string.IsNullOrEmpty(result?.AccessToken))
-                {
-                    AuthSession.AccessToken = result.AccessToken;
-
-                    Navigation.NavigateTo("/dashboard");
-                    return;
-                }
-
-                message = "No token received.";
+                message = "Could not retrieve CSRF token.";
+                return;
             }
 
-            else
+            // 2. Send login-request med CSRF-token.
+            using var loginRequest = new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/auth/web-login");
+
+            loginRequest.Headers.TryAddWithoutValidation(
+                "X-CSRF-TOKEN",
+                csrfToken);
+
+            AddSessionCookie(loginRequest);
+
+            loginRequest.Content = JsonContent.Create(new
             {
-                message = "Invalid email or password.";
+                Email = email,
+                Password = password
+            });
+
+            using var loginResponse =
+                await client.SendAsync(loginRequest);
+
+            if (!loginResponse.IsSuccessStatusCode)
+            {
+                message = loginResponse.StatusCode == HttpStatusCode.BadRequest
+                    ? "Login request was rejected. Check the CSRF token."
+                    : "Invalid email or password.";
+
+                return;
             }
+
+            // 3. Gem authentication-cookien fra login-svaret.
+            UpdateCookies(loginResponse);
+
+            // 4. Hent et NYT CSRF-token efter login.
+            // Det nye token skal bruges til efterfølgende POST-requests.
+            var authenticatedCsrfToken =
+                await FetchCsrfTokenAsync(client);
+
+            if (string.IsNullOrWhiteSpace(authenticatedCsrfToken))
+            {
+                message = "Login succeeded, but could not retrieve a new security token.";
+                return;
+            }
+
+            AuthSession.CsrfToken = authenticatedCsrfToken;
+
+            // 5. Kontrollér, at vores lokale session er opdateret.
+            if (!AuthSession.IsAuthenticated)
+            {
+                message = "Login succeeded, but the authentication session was not registered.";
+                return;
+            }
+
+            // 6. Gå til dashboard.
+            Navigation.NavigateTo("/dashboard");
         }
         catch (Exception ex)
         {
             message = $"Error: {ex.Message}";
         }
+        finally
+        {
+            isLoggingIn = false;
+        }
     }
 
-    private record LoginResponse(string AccessToken);
+    // Henter et CSRF-token fra backend.
+    private async Task<string?> FetchCsrfTokenAsync(HttpClient client)
+    {
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            "api/auth/csrf-token");
+
+        // Send eksisterende cookies med requesten.
+        AddSessionCookie(request);
+
+        using var response = await client.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        // Gem eventuelle nye cookies fra backend.
+        UpdateCookies(response);
+
+        var csrfData = await response.Content
+            .ReadFromJsonAsync<CsrfResponse>();
+
+        return csrfData?.RequestToken;
+    }
+
+    // Tilføjer de gemte cookies til en request.
+    private void AddSessionCookie(HttpRequestMessage request)
+    {
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            request.Headers.TryAddWithoutValidation(
+                "Cookie",
+                AuthSession.CookieHeader);
+        }
+    }
+
+    // Opdaterer de gemte cookies med cookies fra backend.
+    private void UpdateCookies(HttpResponseMessage response)
+    {
+        if (!response.Headers.TryGetValues(
+            "Set-Cookie", out var setCookieHeaders))
+        {
+            return;
+        }
+
+        var cookies = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+
+        // Behold eksisterende cookies.
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            foreach (var cookie in AuthSession.CookieHeader.Split(
+                ';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = cookie.Trim().Split('=', 2);
+
+                if (parts.Length == 2)
+                    cookies[parts[0]] = parts[1];
+            }
+        }
+
+        // Opdater med nye cookies.
+        foreach (var setCookie in setCookieHeaders)
+        {
+            var cookiePair = setCookie.Split(';', 2)[0].Trim();
+            var parts = cookiePair.Split('=', 2);
+
+            if (parts.Length == 2)
+                cookies[parts[0]] = parts[1];
+        }
+
+        AuthSession.CookieHeader = string.Join(
+            "; ",
+            cookies.Select(cookie =>
+                $"{cookie.Key}={cookie.Value}"));
+    }
+
+    private record CsrfResponse(string RequestToken);
 }
