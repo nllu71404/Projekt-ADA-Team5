@@ -4,10 +4,16 @@
     "Projects": [
       {
         "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": "https"
       },
       {
         "Path": "ADA-Frontend\\ADA-Frontend.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
         "Action": "Start"
       }
     ]

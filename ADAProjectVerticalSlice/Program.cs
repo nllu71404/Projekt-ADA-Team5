@@ -36,6 +36,9 @@ builder.Host.UseSerilog();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    // Sikrer unikke schema-navne, selvom flere klasser hedder Command.
+    options.CustomSchemaIds(type => type.FullName);
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -200,7 +203,6 @@ builder.Services
         options.SessionStore = ticketStore;
     });
 
-builder.Services.AddAuthorization();
 
 // CSRF-beskyttelse for Cookie Authentication.
 builder.Services.AddAntiforgery(options =>
@@ -240,7 +242,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowDevelopment");
 

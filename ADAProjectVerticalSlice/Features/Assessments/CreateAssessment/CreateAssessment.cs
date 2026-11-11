@@ -139,7 +139,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 Command request,
                 CancellationToken cancellationToken)
             {
-                var validationResult =  _validator.Validate(request);
+                var validationResult =  await _validator.ValidateAsync(request, cancellationToken);
 
                 if (!validationResult.IsValid)
                 {
@@ -224,11 +224,11 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 }
 
                 // Hent Survey fra databasen. Vi bruger en hardcoded SurveyId for nu, men dette skal ændres til at hente den korrekte SurveyId fra requesten.
-                var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+                //var surveyId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
                 var survey = await _dbContext.Surveys
                     .FirstOrDefaultAsync(
-                        s => s.SurveyId == surveyId,
+                        s => s.SurveyId == request.SurveyId,
                         cancellationToken);
 
                 if (survey is null)
