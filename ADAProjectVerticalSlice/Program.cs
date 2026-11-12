@@ -215,7 +215,9 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.Name = "ADA.AntiForgery";
     options.Cookie.HttpOnly = true; // Forhindrer JavaScript i at tilgå cookien.
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Sørger for, at cookien kun sendes over HTTPS.
-    options.Cookie.SameSite = SameSiteMode.None; // Tillader cross-site requests, når browserens øvrige sikkerhedsindstillinger tillader det. Dette er fordi frontend og backend kan ligge på forskellige origins. 
+    options.Cookie.SameSite = SameSiteMode.None; 
+    //Tillader cross-site requests, når browserens øvrige sikkerhedsindstillinger tillader det. 
+    //Dette er fordi frontend og backend kan ligge på forskellige origins. 
 });
 
 var app = builder.Build();

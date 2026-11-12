@@ -1,15 +1,26 @@
 ﻿@page "/dashboard"
+@inject HttpClient Http
+@inject NavigationManager Navigation
 
 <PageTitle>ADA Dashboard</PageTitle>
 
 <div class="container py-4">
 
     <!-- Header -->
-    <div class="mb-4">
-        <h1 class="fw-bold">ADA Dashboard</h1>
-        <p class="text-muted">
-            Welcome to the ADA management system.
-        </p>
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold">ADA Dashboard</h1>
+            <p class="text-muted">
+                Welcome to the ADA management system.
+            </p>
+        </div>
+
+        <form action="https://localhost:7227/api/auth/web-logout"
+              method="post">
+            <button type="submit" class="btn btn-outline-danger">
+                Logout
+            </button>
+        </form>
     </div>
 
     <!-- Dashboard cards -->
@@ -76,3 +87,16 @@
     </div>
 
 </div>
+
+@code {
+    private async Task Logout()
+    {
+        var response = await Http.PostAsync(
+            "api/auth/web-logout", null);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/login", true);
+        }
+    }
+}
