@@ -3,25 +3,32 @@
 
 @using System.Net.Http.Json
 @using ADA.Frontend.Services
+@using ADA.Frontend.Components.Buttons
+@using ADA.Frontend.Components.Messages
 
 @inject IHttpClientFactory HttpClientFactory
 @inject AuthSession AuthSession
+
+<!-- Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+   
+    <BackToDashboardButton />
+    <LogoutButton />
+</div>
 
 <PageTitle>Create Assessment</PageTitle>
 
 <div class="container py-4">
 
     <h2>Create Assessment</h2>
+   
     <p class="text-muted">
         Create a new ADA assessment.
     </p>
 
-    @if (!string.IsNullOrEmpty(message))
-    {
-        <div class="alert @(success ? "alert-success" : "alert-danger")">
-            @message
-        </div>
-    }
+   <MessagePopup Message="@message"
+              Success="@success"
+              OnClose="CloseMessage" />
 
     @if (!AuthSession.IsAuthenticated)
     {
@@ -317,6 +324,8 @@
 
                 success = true;
                 message = $"Assessment created successfully! ID: {id}";
+
+                ClearForm();
             }
             else if (response.StatusCode ==
                      System.Net.HttpStatusCode.Forbidden)
@@ -350,7 +359,30 @@
         }
     }
 
+    private void ClearForm()
+    {
+        // Text fields
+        assessmentName = "";
+        applicationName = "";
+        roleNames = "";
+        respondentEmails = "";
 
+        // Reset dates
+        startDate = DateTime.Today;
+        endDate = DateTime.Today.AddDays(14);
+
+        // Unselect all regions
+        foreach (var region in regions)
+        {
+            region.Selected = false;
+        }
+
+        // Unselect all experience levels
+        foreach (var experience in experiences)
+        {
+            experience.Selected = false;
+        }
+    }
     // Attach the stored authentication cookie to a request.
     private void AddSessionCookie(HttpRequestMessage request)
     {
@@ -428,5 +460,10 @@
         public Guid ExperienceId { get; set; }
         public string ExperienceValue { get; set; } = "";
         public bool Selected { get; set; }
+    }
+
+    private void CloseMessage()
+    {
+        message = "";
     }
 }

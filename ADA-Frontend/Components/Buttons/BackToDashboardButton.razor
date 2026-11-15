@@ -1,0 +1,15 @@
+﻿@namespace ADA.Frontend.Components.Buttons
+
+@inject NavigationManager Navigation
+
+<button class="btn btn-outline-secondary"
+        @onclick="GoToDashboard">
+    <i class="bi bi-arrow-left"></i>
+</button>
+
+@code {
+    private void GoToDashboard()
+    {
+        Navigation.NavigateTo("/dashboard");
+    }
+}

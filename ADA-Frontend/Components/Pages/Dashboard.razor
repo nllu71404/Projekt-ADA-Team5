@@ -1,6 +1,9 @@
 ﻿@page "/dashboard"
-@inject HttpClient Http
-@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+@using ADA.Frontend.Components.Buttons
+
+
 
 <PageTitle>ADA Dashboard</PageTitle>
 
@@ -15,13 +18,10 @@
             </p>
         </div>
 
-        <form action="https://localhost:7227/api/auth/web-logout"
-              method="post">
-            <button type="submit" class="btn btn-outline-danger">
-                Logout
-            </button>
-        </form>
+         <LogoutButton />
     </div>
+
+    
 
     <!-- Dashboard cards -->
     <div class="row g-4">
@@ -37,11 +37,12 @@
                         for your applications.
                     </p>
 
-                    
                     <a href="/assessments/create" class="btn btn-primary">
                         Create Assessment
                     </a>
-
+                    <a href="/assessments" class="btn btn-primary">
+                        View and manage Assessments
+                    </a>
                 </div>
             </div>
         </div>
@@ -85,18 +86,8 @@
         </div>
 
     </div>
-
 </div>
 
 @code {
-    private async Task Logout()
-    {
-        var response = await Http.PostAsync(
-            "api/auth/web-logout", null);
-
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo("/login", true);
-        }
-    }
+   
 }
