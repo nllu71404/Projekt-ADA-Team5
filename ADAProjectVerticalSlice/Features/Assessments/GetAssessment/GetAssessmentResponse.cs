@@ -1,4 +1,4 @@
-﻿namespace ADAProjectVerticalSlice.Features.Assessments.GetAssessment
+﻿namespace ADAProjectAPIVerticalSlice.Features.Assessments.GetAssessment
 {
     public class GetAssessmentResponse
     {

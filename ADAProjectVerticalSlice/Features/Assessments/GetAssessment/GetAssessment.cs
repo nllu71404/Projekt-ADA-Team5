@@ -1,6 +1,5 @@
 ﻿using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
-using ADAProjectAPIVerticalSlice.Features.Assessments.GetAssessment;
 using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
