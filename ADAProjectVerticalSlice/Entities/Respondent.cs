@@ -5,6 +5,8 @@
         public Guid RespondentId { get; set; }
         public bool HasAnswered { get; set; }
         public string EmailAddress { get; set; } = string.Empty;
+
+        // AccessTokenHash der gemmes i databasen
         public string AccessToken { get; set; } = string.Empty;
 
         // Foreign key

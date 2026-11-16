@@ -4,6 +4,7 @@ using ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment;
 using ADAProjectAPIVerticalSlice.Infrastructure.Authentication;
 using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
+using Microsoft.AspNetCore.DataProtection;
 using Carter;
 using FluentValidation;
 using MediatR;
@@ -29,6 +30,12 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Brug lokal mappe på computeren til databeskyttelse, så både API og Email-service kan dele nøglerne
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(
+        new DirectoryInfo(@"C:\ADA\Shared\DataProtection-Keys"))
+    .SetApplicationName("ADA.Shared");
 
 
 builder.Host.UseSerilog();
@@ -222,6 +229,9 @@ builder.Services.AddAntiforgery(options =>
 
 var app = builder.Build();
 
+
+
+// Middleware pipeline
 app.Use(async (context, next) =>
 {
     Console.WriteLine(

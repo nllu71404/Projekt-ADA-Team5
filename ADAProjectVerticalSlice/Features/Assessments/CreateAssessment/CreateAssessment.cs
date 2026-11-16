@@ -11,6 +11,9 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
@@ -76,24 +79,37 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             private readonly EmailTimingCalculator _emailTimingCalculator;
 
             private readonly ICurrentUserService _currentUserService;
+            private readonly IDataProtector _tokenProtector;
 
             public Handler(
                 ApplicationDbContext dbContext,
                 IValidator<Command> validator,
                 EmailTimingCalculator emailTimingCalculator,
-                ICurrentUserService currentUserService)
+                ICurrentUserService currentUserService,
+                IDataProtectionProvider dataProtectionProvider)
             {
                 _dbContext = dbContext;
                 _validator = validator;
                 _emailTimingCalculator = emailTimingCalculator;
                 _currentUserService = currentUserService;
+                _tokenProtector = dataProtectionProvider.CreateProtector("ADA.MagicLinkToken.v1");
             }
 
-            // genererer en tilfældig adgangstoken for Respondent-objekter.
+            // Genererer et tilfældigt URL-venligt token med 256 bits entropi.
             private static string GenerateAccessToken()
             {
-                return Convert.ToBase64String(
+                return WebEncoders.Base64UrlEncode(
                     RandomNumberGenerator.GetBytes(32));
+            }
+
+            // Beregner SHA-256 hash af tokenet til lagring i databasen.
+            private static string HashAccessToken(string token)
+            {
+                var tokenBytes = Encoding.UTF8.GetBytes(token);
+
+                var hashBytes = SHA256.HashData(tokenBytes);
+
+                return Convert.ToHexString(hashBytes);
             }
 
             //Henter de valgte Regions i databasen
@@ -260,6 +276,18 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // Opret Respondent-objekter for hver email i request.RespondentEmails og tilføj dem til databasen
                 var respondents = new List<Respondent>();
 
+                // Her gemmer vi de beskyttede tokens til email-flowet.
+                var respondentContracts = new List<RespondentEmailContract>();
+
+                // Generer respondentens hemmelige magic link-token.
+                var accessToken = GenerateAccessToken();
+
+                // Beregn en hash, som kan gemmes i databasen.
+                var accessTokenHash = HashAccessToken(accessToken);
+
+                // Beskyt det oprindelige token, så Email Service kan åbne det igen.
+                var protectedAccessToken = _tokenProtector.Protect(accessToken);
+
                 foreach (var email in request.RespondentEmails)
                 {
                     var respondent = new Respondent
@@ -268,7 +296,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                         EmailAddress = email,
                         HasAnswered = false,
                         AssessmentId = assessment.AssessmentId,
-                        AccessToken = GenerateAccessToken(),
+                        AccessToken = accessTokenHash,
                         RegionId = null,
                         ExperienceId = null,
                         RoleId = null
@@ -276,12 +304,16 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
                     respondents.Add(respondent);
                     _dbContext.Respondents.Add(respondent);
+
+                    // Opret email-contract med det beskyttede token.
+                    respondentContracts.Add(
+                        new RespondentEmailContract(
+                            respondent.RespondentId,
+                            respondent.EmailAddress,
+                            protectedAccessToken));
                 }
 
-                // Mapping af Respondent-objekter til RespondentEmailContract-objekter.
-                var respondentContracts = respondents
-                    .Select(r => r.Adapt<RespondentEmailContract>())
-                    .ToList();
+               
 
                 // Beregn tidspunkter for udsendelse af emails.
                 var emailTiming = _emailTimingCalculator.Calculate(

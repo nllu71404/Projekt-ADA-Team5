@@ -2,9 +2,15 @@ using ADA_EmailConsumer;
 using ADA_EmailConsumer.Consumers;
 using ADA_EmailConsumer.Messaging;
 using ADA_EmailConsumer.Services;
+using Microsoft.AspNetCore.DataProtection;
 using Resend;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(
+        new DirectoryInfo(@"C:\ADA\Shared\DataProtection-Keys"))
+    .SetApplicationName("ADA.Shared");
 
 var resendApiKey = builder.Configuration["RESEND_API_KEY"];
 
@@ -27,5 +33,6 @@ builder.Services.AddScoped<RabbitMqEmailScheduler>();
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
+
 
 host.Run();

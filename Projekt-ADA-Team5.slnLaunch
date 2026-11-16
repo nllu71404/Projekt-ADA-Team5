@@ -15,10 +15,6 @@
       {
         "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
         "Action": "Start"
-      },
-      {
-        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
-        "Action": "Start"
       }
     ]
   }

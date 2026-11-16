@@ -26,7 +26,6 @@ public class TestEmailService : IEmailService
             Scheduled Date: {ScheduledDate}
             Email Type: {EmailType}
             Subject: {Subject}
-            Survey link: {SurveyLink}
             """,
             recipient,
             applicationName,
@@ -34,8 +33,7 @@ public class TestEmailService : IEmailService
             endDate,
             scheduledDate,
             emailType,
-            subject,
-            surveyLink);
+            subject);
 
         return Task.CompletedTask;
     }
