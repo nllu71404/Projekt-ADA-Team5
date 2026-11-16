@@ -55,14 +55,14 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
 
             var company = await dbContext.Companies
                 .FirstOrDefaultAsync(c =>
-                    c.CompanyName == "Test Company");
+                    c.CompanyName == "Lego");
 
             if (company == null)
             {
                 company = new Company
                 {
                     CompanyId = Guid.NewGuid(),
-                    CompanyName = "Test Company"
+                    CompanyName = "Lego"
                 };
 
                 dbContext.Companies.Add(company);
@@ -79,16 +79,17 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 services.GetRequiredService<UserManager<User>>();
 
             var user = await userManager.FindByEmailAsync(
-                "test@test.dk");
+                "Admin@test.dk");
 
             if (user == null)
             {
                 user = new User
                 {
-                    UserName = "test@test.dk",
-                    Email = "test@test.dk",
-                    FullName = "Test Bruger",
-                    CompanyId = company.CompanyId
+                    UserName = "Admin@test.dk",
+                    Email = "Admin@test.dk",
+                    FullName = "Lone Larsen",
+                    CompanyId = company.CompanyId,
+                    JobTitle = "IT-consultant"
                 };
 
                 var createResult = await userManager.CreateAsync(

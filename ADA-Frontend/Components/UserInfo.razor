@@ -1,0 +1,147 @@
+﻿@using System.Net.Http.Json
+@using ADA.Frontend.Services
+
+@implements IDisposable
+
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthSession AuthSession
+@inject NavigationManager Navigation
+
+@if (!IsLoginPage)
+{
+    @if (!AuthSession.IsAuthenticated)
+    {
+        <div class="text-danger">
+            Ingen aktiv login-session
+        </div>
+    }
+    else if (user == null)
+    {
+        <small class="text-danger">
+            Login registreret, men brugeroplysninger kunne ikke hentes.
+            @loadStatus
+        </small>
+    }
+    else
+    {
+        <div class="d-flex align-items-center gap-2">
+            <div class="text-end">
+                <div class="fw-bold">@user.FullName</div>
+                <small class="text-muted">@user.CompanyName</small>
+                <br />
+                <small class="text-muted">
+                    @string.Join(", ", user.Roles)
+                </small>
+            </div>
+
+            <div class="rounded-circle bg-primary text-white d-flex
+                align-items-center justify-content-center"
+                 style="width: 40px; height: 40px;">
+                <i class="bi bi-person-fill"></i>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private UserInfoResponse? user;
+    private string loadStatus = "";
+    private bool IsLoginPage =>
+    new Uri(Navigation.Uri).AbsolutePath
+        .TrimEnd('/')
+        .Equals("/login", StringComparison.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+
+        AuthSession.OnChange += HandleAuthSessionChanged;
+
+        if (AuthSession.IsAuthenticated)
+        {
+            await LoadUserAsync();
+        }
+    }
+
+    private async void HandleAuthSessionChanged()
+    {
+   
+
+        await InvokeAsync(async () =>
+        {
+            if (AuthSession.IsAuthenticated)
+            {
+                await LoadUserAsync();
+            }
+            else
+            {
+                user = null;
+                StateHasChanged();
+            }
+        });
+    }
+
+    private async Task LoadUserAsync()
+    {
+        try
+        {
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "api/auth/me");
+
+            if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+            {
+                request.Headers.TryAddWithoutValidation(
+                    "Cookie",
+                    AuthSession.CookieHeader);
+            }
+
+            using var response = await client.SendAsync(request);
+
+        
+
+            if (response.IsSuccessStatusCode)
+            {
+                user = await response.Content
+                    .ReadFromJsonAsync<UserInfoResponse>();
+
+                loadStatus = user == null
+                    ? "API returned no user information."
+                    : "User information loaded successfully.";
+            }
+            else
+            {
+                user = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            user = null;
+            loadStatus = $"Error: {ex.Message}";
+
+            Console.WriteLine($"USERINFO ERROR: {ex}");
+        }
+
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        AuthSession.OnChange -= HandleAuthSessionChanged;
+    }
+
+    private class UserInfoResponse
+    {
+        public string FullName { get; set; } = "";
+
+        public string? Email { get; set; }
+
+        public string JobTitle { get; set; } = "";
+
+        public string CompanyName { get; set; } = "";
+
+        public List<string> Roles { get; set; } = new();
+    }
+}

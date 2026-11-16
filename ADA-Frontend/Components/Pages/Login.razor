@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@rendermode InteractiveServer
+
 
 @using System.Net
 @using System.Net.Http.Json
@@ -9,7 +9,10 @@
 @inject NavigationManager Navigation
 @inject AuthSession AuthSession
 
-<h3>ADA Login</h3>
+<h3 class="text-center fw-bold">ADA</h3>
+<h5 class="text-center">Adoption Diagnostic Assessment</h5>
+<p> </p>
+<p class="text-center fst-italic">Helps organizations understand and improve their employees’ adoption of digital tools</p>
 
 <div class="mb-3">
     <label>Email</label>
@@ -86,6 +89,7 @@
                 return;
             }
 
+           
             // 3. Gem authentication-cookien fra login-svaret.
             UpdateCookies(loginResponse);
 
@@ -102,6 +106,9 @@
 
             AuthSession.CsrfToken = authenticatedCsrfToken;
 
+
+            AuthSession.NotifyChanged();
+
             // 5. Kontrollér, at vores lokale session er opdateret.
             if (!AuthSession.IsAuthenticated)
             {
@@ -109,6 +116,7 @@
                 return;
             }
 
+           
             // 6. Gå til dashboard.
             Navigation.NavigateTo("/dashboard");
         }

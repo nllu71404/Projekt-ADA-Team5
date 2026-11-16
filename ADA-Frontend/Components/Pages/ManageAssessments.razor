@@ -1,5 +1,5 @@
 ﻿@page "/assessments"
-@rendermode InteractiveServer
+
 
 @using System.Net
 @using System.Net.Http.Json
@@ -39,6 +39,11 @@
     <MessagePopup Message="@message"
                   Success="@success"
                   OnClose="CloseMessage" />
+
+    <MessagePopup Message="@deleteMessage"
+                  Confirmation="true"
+                  OnClose="CancelDelete"
+                  OnConfirm="ConfirmDelete" />
 
     @if (!AuthSession.IsAuthenticated)
     {
@@ -92,6 +97,7 @@
                                 <th>Application</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -120,9 +126,38 @@
                                         <button class="btn btn-outline-primary btn-sm"
                                                 @onclick="() => GoToEditAssessment(assessment.AssessmentId)">
                                             <i class="bi bi-pencil me-1"></i>
-                                            Edit
+                                            
                                         </button>
+                                        <button class="btn btn-outline-danger btn-sm ms-1"
+                                                 @onclick="() => AskToDelete(assessment.AssessmentId)">
+                                            <i class="bi bi-trash me-1"></i>
+                                                
+                                        </button>
+
+                                             @if (assessmentToDelete == assessment.AssessmentId)
+                                             {
+                                                 <div class="mt-2">
+                                                    <span class="text-danger">
+                                                         Are you sure you want to delete this assessment?
+                                                    </span>
+
+                                        <div class="mt-2">
+                                          <button class="btn btn-danger btn-sm"
+                                             disabled="@isDeleting"
+                                             @onclick="ConfirmDelete">
+                                             @(isDeleting ? "Deleting..." : "Yes, delete")
+                                         </button>
+
+                                            <button class="btn btn-secondary btn-sm ms-1"
+                                              disabled="@isDeleting"
+                                                @onclick="CancelDelete">
+                                                 Cancel
+                                            </button>
+                                        </div>
+                                       </div>
+                                              }
                                     </td>
+                                   
                                 </tr>
                             }
                         </tbody>
@@ -140,6 +175,9 @@
     private bool isLoading = true;
     private bool success;
     private string message = "";
+    private string deleteMessage = "";
+    private Guid? assessmentToDelete;
+    private bool isDeleting;
 
     protected override async Task OnInitializedAsync()
     {
@@ -231,6 +269,90 @@
         Navigation.NavigateTo($"/assessments/edit/{assessmentId}");
     }
 
+    private void AskToDelete(Guid assessmentId)
+    {
+        assessmentToDelete = assessmentId;
+        deleteMessage = "Are you sure you want to delete this assessment? This action cannot be undone.";
+    }
+
+    private void CancelDelete()
+    {
+        assessmentToDelete = null;
+        deleteMessage = "";
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (assessmentToDelete == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(AuthSession.CsrfToken))
+        {
+            message = "Your security token is missing. Please log in again.";
+            success = false;
+            return;
+        }
+
+        isDeleting = true;
+        message = "";
+        success = false;
+        deleteMessage = "";
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Delete,
+                $"api/assessments/{assessmentToDelete}");
+
+            // Send authentication cookie.
+            AddSessionCookie(request);
+
+            // Send CSRF token.
+            request.Headers.Add(
+                "X-CSRF-TOKEN",
+                AuthSession.CsrfToken);
+
+            using var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                assessmentToDelete = null;
+
+                // Reload the assessment list.
+                await LoadAssessments();
+
+                success = true;
+                message = "Assessment deleted successfully!";
+            }
+            else if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                message = "This assessment cannot be deleted because respondents have already submitted answers.";
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                message = "Your session has expired. Please log in again.";
+            }
+            else if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                message = "You need the Admin role to delete assessments.";
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                message = $"Could not delete assessment: {error}";
+            }
+        }
+        catch (Exception ex)
+        {
+            message = $"Error deleting assessment: {ex.Message}";
+        }
+        finally
+        {
+            isDeleting = false;
+        }
+    }
     // Matches the response DTO from the backend GetAssessment query.
     private class AssessmentResponse
     {
