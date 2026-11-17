@@ -92,6 +92,7 @@ builder.Services.AddScoped<EmailTimingCalculator>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<ITicketStore, PostgresTicketStore>();
+builder.Services.AddSingleton<RespondentTicketStore>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -103,6 +104,12 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("AllRoles", policy =>
         policy.RequireRole("Admin", "User", "Viewer"));
+
+    options.AddPolicy("RespondentOnly", policy =>
+    {
+        policy.AddAuthenticationSchemes("RespondentCookie");
+        policy.RequireAuthenticatedUser();
+    });
 });
 
 builder.Services.AddCors(options =>
@@ -173,7 +180,7 @@ builder.Services
             };
     })
 
-    // Ny Cookie Authentication-konfiguration.
+    // User-Cookie Authentication-konfiguration.
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.Cookie.Name = "ADA.Auth";
@@ -202,9 +209,39 @@ builder.Services
 
             return Task.CompletedTask;
         };
+    })
+    // Separat Cookie Authentication til respondenter.
+    .AddCookie("RespondentCookie", options =>
+    {
+        options.Cookie.Name = "ADA.Respondent";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+
+        // API'et skal returnere 401 i stedet for redirect.
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode =
+                StatusCodes.Status401Unauthorized;
+
+            return Task.CompletedTask;
+        };
+
+        // API'et skal returnere 403 ved manglende rettigheder.
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode =
+                StatusCodes.Status403Forbidden;
+
+            return Task.CompletedTask;
+        };
     });
 
-// Forbinder Cookie Authentication med vores ticket store.
+
+// Forbinder User-Cookie Authentication med vores ticket store.
 builder.Services
     .AddOptions<CookieAuthenticationOptions>(
         CookieAuthenticationDefaults.AuthenticationScheme)
@@ -213,6 +250,13 @@ builder.Services
         options.SessionStore = ticketStore;
     });
 
+// Forbinder respondent-cookie med respondenternes ticket store.
+builder.Services
+    .AddOptions<CookieAuthenticationOptions>("RespondentCookie")
+    .Configure<RespondentTicketStore>((options, ticketStore) =>
+    {
+        options.SessionStore = ticketStore;
+    });
 
 // CSRF-beskyttelse for Cookie Authentication.
 builder.Services.AddAntiforgery(options =>
@@ -292,9 +336,13 @@ app.Use(async (context, next) =>
     var isAuthenticated =
         context.User.Identity?.IsAuthenticated == true;
 
+    var respondentAuth = await context.AuthenticateAsync("RespondentCookie");
+
+    var isRespondentAuthenticated = respondentAuth.Succeeded;
+
     if (!isSafeMethod &&
         !hasBearerToken &&
-        (isAuthenticated || isWebLoginEndpoint))
+        (isAuthenticated || isWebLoginEndpoint || isRespondentAuthenticated))
     {
         var antiforgery = context.RequestServices
             .GetRequiredService<IAntiforgery>();

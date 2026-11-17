@@ -353,6 +353,38 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.ToTable("Respondent", (string)null);
                 });
 
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.RespondentSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastActivity")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RespondentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("Ticket")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RespondentId");
+
+                    b.ToTable("RespondentSessions", (string)null);
+                });
+
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Role", b =>
                 {
                     b.Property<Guid>("RoleId")
@@ -860,6 +892,17 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Navigation("Region");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.RespondentSession", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Respondent", "Respondent")
+                        .WithMany()
+                        .HasForeignKey("RespondentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Respondent");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Theme", b =>
