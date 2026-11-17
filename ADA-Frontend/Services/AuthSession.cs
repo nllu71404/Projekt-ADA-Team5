@@ -8,9 +8,15 @@ public class AuthSession
 
     public string? CsrfToken { get; set; }
 
+    //Almindelige brugere
     public bool IsAuthenticated =>
         !string.IsNullOrWhiteSpace(CookieHeader) &&
         CookieHeader.Contains("ADA.Auth=");
+
+    //Respondenter
+    public bool IsRespondentAuthenticated =>
+    !string.IsNullOrWhiteSpace(CookieHeader) &&
+    CookieHeader.Contains("ADA.Respondent=");
 
     public void NotifyChanged()
     {

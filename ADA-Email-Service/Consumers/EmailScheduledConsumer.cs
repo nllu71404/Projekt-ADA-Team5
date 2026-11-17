@@ -30,10 +30,7 @@ public class EmailScheduledConsumer
         EmailScheduled @event,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
-            "EmailScheduled event received for Assessment {AssessmentId}. Email type: {EmailType}",
-            @event.AssessmentId,
-            @event.EmailType);
+        _logger.LogInformation("EmailScheduled event received for Assessment {AssessmentId}. Email type: {EmailType}", @event.AssessmentId, @event.EmailType);
 
         foreach (var respondent in @event.Respondents)
         {
@@ -41,8 +38,7 @@ public class EmailScheduledConsumer
             var accessToken = _tokenProtector.Unprotect(
                 respondent.ProtectedAccessToken);
 
-            var surveyLink =
-                $"https://localhost:7000/survey?token={Uri.EscapeDataString(accessToken)}";
+            var surveyLink = $"https://localhost:7237/testsurvey?token={Uri.EscapeDataString(accessToken)}";
 
             var subject = @event.EmailType switch
             {

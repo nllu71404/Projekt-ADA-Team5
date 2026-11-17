@@ -26,7 +26,7 @@ builder.Services.Configure<ResendClientOptions>(options =>
 
 builder.Services.AddTransient<IResend, ResendClient>();
 
-builder.Services.AddScoped<IEmailService, TestEmailService>(); //Kan ændres til "EmailService", når vi vil sende rigtige emails 
+builder.Services.AddScoped<IEmailService, EmailService>(); //Kan ændres til "EmailService", når vi vil sende rigtige emails 
 builder.Services.AddScoped<AssessmentCreatedConsumer>();
 builder.Services.AddScoped<EmailScheduledConsumer>();
 builder.Services.AddScoped<RabbitMqEmailScheduler>();

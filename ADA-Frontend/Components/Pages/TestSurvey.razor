@@ -1,0 +1,203 @@
+﻿@page "/testsurvey"
+
+@using System.Net
+@using System.Net.Http.Json
+@using ADA.Frontend.Services
+
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Navigation
+@inject AuthSession AuthSession
+
+<PageTitle>Test af respondent-login</PageTitle>
+
+<h3 class="text-center fw-bold">ADA</h3>
+<h5 class="text-center">Test af respondent-login</h5>
+
+<div class="mt-4">
+    @if (isLoading)
+    {
+        <p>Forsøger at logge ind som respondent...</p>
+    }
+    else if (isAuthenticated)
+    {
+        <div class="alert alert-success">
+            <strong>Login lykkedes!</strong>
+            <p>Respondenten er nu autentificeret.</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <strong>Login mislykkedes</strong>
+            <p>@message</p>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isLoading = true;
+    private bool isAuthenticated;
+    private string message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // 1. Hent magic link-token fra URL'en.
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers
+                .ParseQuery(uri.Query);
+
+            if (!query.TryGetValue("token", out var token) ||
+                string.IsNullOrWhiteSpace(token))
+            {
+                message = "Der blev ikke fundet et token i linket.";
+                return;
+            }
+
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            // 2. Hent CSRF-token.
+            var csrfToken = await FetchCsrfTokenAsync(client);
+
+            if (string.IsNullOrWhiteSpace(csrfToken))
+            {
+                message = "Kunne ikke hente CSRF-token.";
+                return;
+            }
+
+            // 3. Send magic link-token til backend.
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/respondents/exchange-magic-link");
+
+            request.Headers.TryAddWithoutValidation(
+                "X-CSRF-TOKEN",
+                csrfToken);
+
+            AddSessionCookie(request);
+
+            request.Content = JsonContent.Create(new
+            {
+                Token = token.ToString()
+            });
+
+            using var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                message = $"API'et afviste login. Statuskode: {(int)response.StatusCode}";
+                return;
+            }
+
+            // 4. Gem respondent-cookien.
+            UpdateCookies(response);
+
+            // 5. Hent nyt CSRF-token efter login.
+            var authenticatedCsrfToken =
+                await FetchCsrfTokenAsync(client);
+
+            if (string.IsNullOrWhiteSpace(authenticatedCsrfToken))
+            {
+                message = "Login lykkedes, men kunne ikke hente nyt CSRF-token.";
+                return;
+            }
+
+            // 6. Kontrollér respondent-sessionen.
+            AuthSession.CsrfToken = authenticatedCsrfToken;
+
+            AuthSession.NotifyChanged();
+
+            isAuthenticated = AuthSession.IsRespondentAuthenticated;
+
+            if (!isAuthenticated)
+            {
+                message = "Login lykkedes, men respondent-cookien blev ikke registreret.";
+                return;
+            }
+
+            // // 7. Fjern tokenet fra URL'en.
+            // Navigation.NavigateTo("/testsurvey", replace: true);
+        }
+        catch (Exception ex)
+        {
+            message = $"Der opstod en fejl: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task<string?> FetchCsrfTokenAsync(HttpClient client)
+    {
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            "api/auth/csrf-token");
+
+        AddSessionCookie(request);
+
+        using var response = await client.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        UpdateCookies(response);
+
+        var csrfData = await response.Content
+            .ReadFromJsonAsync<CsrfResponse>();
+
+        return csrfData?.RequestToken;
+    }
+
+    private void AddSessionCookie(HttpRequestMessage request)
+    {
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            request.Headers.TryAddWithoutValidation(
+                "Cookie",
+                AuthSession.CookieHeader);
+        }
+    }
+
+    private void UpdateCookies(HttpResponseMessage response)
+    {
+        if (!response.Headers.TryGetValues(
+            "Set-Cookie", out var setCookieHeaders))
+        {
+            return;
+        }
+
+        var cookies = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            foreach (var cookie in AuthSession.CookieHeader.Split(
+                ';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = cookie.Trim().Split('=', 2);
+
+                if (parts.Length == 2)
+                    cookies[parts[0]] = parts[1];
+            }
+        }
+
+        foreach (var setCookie in setCookieHeaders)
+        {
+            var cookiePair = setCookie.Split(';', 2)[0].Trim();
+            var parts = cookiePair.Split('=', 2);
+
+            if (parts.Length == 2)
+                cookies[parts[0]] = parts[1];
+        }
+
+        AuthSession.CookieHeader = string.Join(
+            "; ",
+            cookies.Select(cookie =>
+                $"{cookie.Key}={cookie.Value}"));
+    }
+
+    private record CsrfResponse(string RequestToken);
+}
