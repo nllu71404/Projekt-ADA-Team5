@@ -195,6 +195,71 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.ToTable("OutboxMessages", (string)null);
                 });
 
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.PeopleContact", b =>
+                {
+                    b.Property<Guid>("PeopleContactId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Department")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<string>("ExperienceLevel")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<Guid>("ImportBatchId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ImportedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<string>("Office")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Role")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<decimal?>("YearsOfExperience")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("PeopleContactId");
+
+                    b.HasIndex("CompanyId", "NormalizedEmail")
+                        .IsUnique()
+                        .HasDatabaseName("UX_PeopleContacts_CompanyId_NormalizedEmail");
+
+                    b.ToTable("PeopleContacts", (string)null);
+                });
+
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Question", b =>
                 {
                     b.Property<Guid>("QuestionId")
@@ -736,6 +801,17 @@ namespace ADAProjectAPIVerticalSlice.Migrations
                     b.Navigation("Respondent");
 
                     b.Navigation("Theme");
+                });
+
+            modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.PeopleContact", b =>
+                {
+                    b.HasOne("ADAProjectAPIVerticalSlice.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("ADAProjectAPIVerticalSlice.Entities.Question", b =>

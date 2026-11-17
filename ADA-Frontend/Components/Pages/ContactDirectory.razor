@@ -1,0 +1,226 @@
+﻿@page "/contacts"
+
+@using System.Net
+@using System.Text.Json
+@using ADA.Frontend.Services
+
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthSession AuthSession
+
+<PageTitle>Contact Directory</PageTitle>
+
+<div class="container py-4">
+    <a href="/dashboard">Back to dashboard</a>
+
+    <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between my-3">
+        <h1 class="mb-0">Contact Directory</h1>
+        <a href="/email-lists/import" class="btn btn-primary">Import Contacts</a>
+    </div>
+
+    @if (needsLogin)
+    {
+        <p>Please <a href="/login">log in</a> to view your company’s contacts.</p>
+    }
+    else
+    {
+        @if (directory is { } result)
+        {
+            <fieldset class="row g-3 mb-3" disabled="@isLoading">
+                <div class="col-sm-6">
+                    <label for="contact-office" class="form-label">Office</label>
+                    <select id="contact-office" class="form-select"
+                            @bind="office" @bind:after="ApplyFiltersAsync">
+                        <option value="">All offices</option>
+                        @foreach (var option in result.Offices)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="contact-department" class="form-label">Department</label>
+                    <select id="contact-department" class="form-select"
+                            @bind="department" @bind:after="ApplyFiltersAsync">
+                        <option value="">All departments</option>
+                        @foreach (var option in result.Departments)
+                        {
+                            <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+            </fieldset>
+        }
+
+        @if (isLoading)
+        {
+            <p role="status">Loading contacts…</p>
+        }
+        else if (errorMessage is not null)
+        {
+            <div class="alert alert-danger" role="alert">@errorMessage</div>
+        }
+        else if (directory is { } listing)
+        {
+            @if (listing.Contacts.Count == 0)
+            {
+                <p>No contacts match the current selection.</p>
+            }
+            else
+            {
+                <p role="status">@listing.TotalContacts contacts</p>
+
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Job title</th>
+                                <th scope="col">Office</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Region</th>
+                                <th scope="col">Years of experience</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var contact in listing.Contacts)
+                            {
+                                <tr @key="contact.Email">
+                                    <td>@(contact.FullName ?? "—")</td>
+                                    <td class="text-break">@contact.Email</td>
+                                    <td>@(contact.JobTitle ?? "—")</td>
+                                    <td>@(contact.Office ?? "—")</td>
+                                    <td>@(contact.Department ?? "—")</td>
+                                    <td>@(contact.Role ?? "—")</td>
+                                    <td>@(contact.Region ?? "—")</td>
+                                    <td>@(contact.YearsOfExperience?.ToString("0.##") ?? "—")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (listing.PageCount > 1)
+                {
+                    <div class="d-flex gap-3 align-items-center">
+                        <button type="button" class="btn btn-outline-secondary"
+                                disabled="@(listing.Page == 1)"
+                                @onclick="() => LoadContactsAsync(listing.Page - 1)">
+                            Previous
+                        </button>
+                        <span>Page @listing.Page of @listing.PageCount</span>
+                        <button type="button" class="btn btn-outline-secondary"
+                                disabled="@(listing.Page == listing.PageCount)"
+                                @onclick="() => LoadContactsAsync(listing.Page + 1)">
+                            Next
+                        </button>
+                    </div>
+                }
+            }
+        }
+    }
+</div>
+
+@code {
+    private DirectoryResponse? directory;
+    private string office = "";
+    private string department = "";
+    private bool isLoading;
+    private bool needsLogin;
+    private string? errorMessage;
+
+    protected override Task OnInitializedAsync() => LoadContactsAsync(1);
+
+    // En ny filtrering begynder på første side.
+    private Task ApplyFiltersAsync() => LoadContactsAsync(1);
+
+    private async Task LoadContactsAsync(int page)
+    {
+        if (isLoading)
+        {
+            return;
+        }
+
+        if (!AuthSession.IsAuthenticated)
+        {
+            needsLogin = true;
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            var url = $"api/contacts?page={page}"
+                + $"&office={Uri.EscapeDataString(office)}"
+                + $"&department={Uri.EscapeDataString(department)}";
+
+            using var client = HttpClientFactory.CreateClient("ADAApi");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            // Send den aktuelle brugers login-cookie til API'et.
+            request.Headers.TryAddWithoutValidation("Cookie", AuthSession.CookieHeader);
+
+            using var response = await client.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                directory = null;
+                needsLogin = true;
+                return;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                directory = null;
+                errorMessage = "Only admins can view the contact directory.";
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+            directory = await response.Content.ReadFromJsonAsync<DirectoryResponse>();
+
+            if (directory is null)
+            {
+                errorMessage = "The API returned no contact directory.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not load contacts. Try opening the directory again.";
+        }
+        catch (TaskCanceledException)
+        {
+            errorMessage = "The request timed out. Try again.";
+        }
+        catch (JsonException)
+        {
+            errorMessage = "The API returned a response the page could not read.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private sealed record ContactRow(
+    string? FullName,
+    string Email,
+    string? JobTitle,
+    string? Office,
+    string? Department,
+    string? Role,
+    string? Region,
+    decimal? YearsOfExperience);
+
+    private sealed record DirectoryResponse(
+        List<ContactRow> Contacts,
+        List<string> Offices,
+        List<string> Departments,
+        int Page,
+        int PageCount,
+        int TotalContacts);
+}
