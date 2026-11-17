@@ -8,6 +8,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.UpdateAssessment
 {
@@ -17,6 +18,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.UpdateAssessment
         public class Command : IRequest<Result<Guid>>
         {
             public Guid AssessmentId { get; set; }
+
+            public string? RequestId { get; set; }
 
             public string AssessmentName { get; set; } = string.Empty;
 
@@ -285,8 +288,14 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.UpdateAssessment
                     _dbContext.Respondents.Add(respondent);
                 }
 
-                // 10. Gem ændringerne.
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                if (_dbContext.Database.IsRelational())
+                {
+                    await _dbContext.SaveChangesWithAuditAsync(currentUserId, request.RequestId, cancellationToken);
+                }
+                else
+                {
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                }
 
                 return assessment.AssessmentId;
             }
@@ -302,11 +311,13 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.UpdateAssessment
                     async (
                         Guid assessmentId,
                         UpdateAssessmentRequest request,
-                        ISender sender) =>
-                    {
+                        ISender sender,
+                        HttpContext httpContext) =>
+                        {
                         var command = new Command
                         {
                             AssessmentId = assessmentId,
+                            RequestId = httpContext.TraceIdentifier,
                             AssessmentName = request.AssessmentName,
                             StartDate = request.StartDate,
                             EndDate = request.EndDate,

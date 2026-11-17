@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ADAProjectAPIVerticalSlice.Entities;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing;
 
 
 namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
@@ -37,12 +38,14 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
         public DbSet<RespondentSession> RespondentSessions { get; set; }
 
         public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+        public DbSet<AssessmentAuditChange> AssessmentAuditChanges => Set<AssessmentAuditChange>();
 
-
+        public DbSet<PeopleContact> PeopleContacts => Set<PeopleContact>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
 
             modelBuilder.Entity<Company>().ToTable("Company");
             modelBuilder.Entity<Application>().ToTable("Application");
@@ -204,6 +207,39 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Database
                 .WithMany()
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Én auditpost kan give flere rækker i visningen, én pr. ændret felt.
+            modelBuilder.Entity<AssessmentAuditChange>()
+                .HasNoKey()
+                .ToView("assessment_field_changes", "audit");
+
+            modelBuilder.Entity<PeopleContact>(contact =>
+            {
+                contact.ToTable("PeopleContacts");
+                contact.HasKey(person => person.PeopleContactId);
+
+                contact.Property(person => person.Email).HasMaxLength(254);
+                contact.Property(person => person.NormalizedEmail).HasMaxLength(254);
+                contact.Property(person => person.FullName).HasMaxLength(120);
+                contact.Property(person => person.JobTitle).HasMaxLength(120);
+                contact.Property(person => person.Department).HasMaxLength(120);
+                contact.Property(person => person.Role).HasMaxLength(120);
+                contact.Property(person => person.Region).HasMaxLength(120);
+                contact.Property(person => person.Office).HasMaxLength(120);
+                contact.Property(person => person.ExperienceLevel).HasMaxLength(120);
+
+                // En adresse må kun findes én gang inden for det samme firma.
+                contact.HasIndex(person => new { person.CompanyId, person.NormalizedEmail })
+                    .IsUnique()
+                    .HasDatabaseName("UX_PeopleContacts_CompanyId_NormalizedEmail");
+
+                // Firmaet skal have sine kontakter fjernet, før det kan slettes.
+                contact.HasOne(person => person.Company)
+                    .WithMany()
+                    .HasForeignKey(person => person.CompanyId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
 
             // Respondent -> RespondentSession
             modelBuilder.Entity<RespondentSession>()

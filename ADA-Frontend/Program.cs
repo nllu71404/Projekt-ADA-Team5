@@ -12,6 +12,10 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient("ADAApi", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7227/");
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    UseCookies = false
 });
 
 builder.Services.AddScoped<AuthSession>();

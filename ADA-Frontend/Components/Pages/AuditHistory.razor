@@ -1,0 +1,150 @@
+﻿@page "/audit-history"
+
+@using System.Net
+@using System.Text.Json
+@using ADA.Frontend.Services
+
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthSession AuthSession
+
+<PageTitle>Audit History</PageTitle>
+
+<div class="container py-4">
+    <a href="/dashboard">Back to dashboard</a>
+    <h1 class="mt-3">Audit History</h1>
+    <p class="text-muted">
+        Up to 200 recent assessment changes. Changes from the same save
+        share a request ID.
+    </p>
+
+    @if (isLoading)
+    {
+        <p role="status">Loading audit history…</p>
+    }
+    else if (needsLogin)
+    {
+        <p>Please <a href="/login">log in</a> to view audit history.</p>
+    }
+    else if (errorMessage is not null)
+    {
+        <div class="alert alert-danger" role="alert">@errorMessage</div>
+    }
+    else if (changes.Count == 0)
+    {
+        <p>Your company has no assessment audit history to display.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Time (UTC)</th>
+                        <th scope="col">Field</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Before</th>
+                        <th scope="col">After</th>
+                        <th scope="col">Changed by</th>
+                        <th scope="col">Assessment ID</th>
+                        <th scope="col">Request ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var change in changes)
+                    {
+                        <tr>
+                            <td class="text-nowrap">
+                                @change.ChangedAt.UtcDateTime.ToString("dd MMM yyyy HH:mm:ss")
+                            </td>
+                            <th scope="row">@change.FieldName</th>
+                            <td>@FormatOperation(change.Operation)</td>
+                            <td class="text-break">@(change.OldValue ?? "—")</td>
+                            <td class="text-break">@(change.NewValue ?? "—")</td>
+                            <td>@(change.ChangedBy ?? "Unknown")</td>
+                            <td class="text-break"><code>@change.AssessmentId</code></td>
+                            <td class="text-break"><code>@(change.RequestId ?? "—")</code></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private List<AuditHistoryRow> changes = new();
+    private bool isLoading = true;
+    private bool needsLogin;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (!AuthSession.IsAuthenticated)
+            {
+                needsLogin = true;
+                return;
+            }
+
+            using var client = HttpClientFactory.CreateClient("ADAApi");
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get, "api/audit-history");
+
+            request.Headers.TryAddWithoutValidation(
+                "Cookie", AuthSession.CookieHeader);
+
+            using var response = await client.SendAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                needsLogin = true;
+                return;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                errorMessage = "Only admins can view audit history.";
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+            changes = await response.Content
+                .ReadFromJsonAsync<List<AuditHistoryRow>>() ?? new();
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not load audit history. Try opening the page again.";
+        }
+        catch (TaskCanceledException)
+        {
+            errorMessage = "The audit history request timed out.";
+        }
+        catch (JsonException)
+        {
+            errorMessage = "The API returned audit history in an unexpected format.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private static string FormatOperation(string operation) => operation switch
+    {
+        "INSERT" => "Added",
+        "UPDATE" => "Changed",
+        "DELETE" => "Removed",
+        _ => operation
+    };
+
+    private sealed record AuditHistoryRow(
+        DateTimeOffset ChangedAt,
+        string AssessmentId,
+        string Operation,
+        string FieldName,
+        string? OldValue,
+        string? NewValue,
+        string? ChangedBy,
+        string? RequestId);
+}
