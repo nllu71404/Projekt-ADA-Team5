@@ -4,7 +4,7 @@ using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
- 
+
 
 // Tilpas namespace/imports for Result og Error til dit projekt.
 
@@ -44,7 +44,23 @@ public class GetSurvey
                    r.Assessment.StartDate,
                    r.Assessment.EndDate,
                    r.Assessment.SurveyId,
-                   ApplicationName = r.Assessment.Application.ApplicationName
+                   ApplicationName = r.Assessment.Application.ApplicationName,
+
+                   // NYT: det, respondenten kan vælge imellem. Det er MÅLINGENS roller, regioner og erfaringer
+                   // (r.Assessment.Roles osv.), altså dem, produktejeren oprettede målingen med. EF henter dem fra
+                   // tabellerne AssessmentRole, AssessmentRegion og AssessmentExperience. Det er ikke noget, der
+                   // ligger på respondenten selv (Respondent.RoleId osv. bliver først sat, når svaret sendes).
+                   AssessmentRoles = r.Assessment.Roles
+                       .OrderBy(x => x.RoleName)
+                       .Select(x => new { x.RoleId, x.RoleName })
+                       .ToList(),
+                   AssessmentRegions = r.Assessment.Regions
+                       .OrderBy(x => x.RegionName)
+                       .Select(x => new { x.RegionId, x.RegionName })
+                       .ToList(),
+                   AssessmentExperiences = r.Assessment.Experiences
+                       .Select(x => new { x.ExperienceId, x.ExperienceValue })
+                       .ToList()
                })
                 .SingleOrDefaultAsync(cancellationToken);
 
@@ -110,6 +126,21 @@ public class GetSurvey
                 SurveyDescription = survey.Description,
                 AssessmentName = respondent.AssessmentName,
 
+                // NYT: målingens valgmuligheder til siden "Om dig" i appen.
+                Roles = respondent.AssessmentRoles
+                    .Select(x => new SurveyRoleResponse { RoleId = x.RoleId, RoleName = x.RoleName })
+                    .ToList(),
+                Regions = respondent.AssessmentRegions
+                    .Select(x => new SurveyRegionResponse { RegionId = x.RegionId, RegionName = x.RegionName })
+                    .ToList(),
+                Experiences = respondent.AssessmentExperiences
+                    .Select(x => new SurveyExperienceResponse
+                    {
+                        ExperienceId = x.ExperienceId,
+                        ExperienceValue = x.ExperienceValue
+                    })
+                    .ToList(),
+
                 Themes = themes.Select(theme => new SurveyThemeResponse
                 {
                     ThemeId = theme.ThemeId,
@@ -160,6 +191,6 @@ public class GetSurvey
                 })
             .RequireAuthorization("UserOrAdmin");
         }
-        
+
     }
 }
