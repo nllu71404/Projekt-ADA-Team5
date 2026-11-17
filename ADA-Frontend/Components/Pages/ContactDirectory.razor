@@ -3,6 +3,7 @@
 @using System.Net
 @using System.Text.Json
 @using ADA.Frontend.Services
+@using System.Globalization
 
 @inject IHttpClientFactory HttpClientFactory
 @inject AuthSession AuthSession
@@ -26,26 +27,41 @@
         @if (directory is { } result)
         {
             <fieldset class="row g-3 mb-3" disabled="@isLoading">
-                <div class="col-sm-6">
-                    <label for="contact-office" class="form-label">Office</label>
-                    <select id="contact-office" class="form-select"
-                            @bind="office" @bind:after="ApplyFiltersAsync">
-                        <option value="">All offices</option>
-                        @foreach (var option in result.Offices)
+                <div class="col-sm-4">
+                    <label for="contact-role" class="form-label">Role</label>
+                    <select id="contact-role" class="form-select"
+                            @bind="role" @bind:after="ApplyFiltersAsync">
+                        <option value="">All roles</option>
+                        @foreach (var option in result.Roles)
                         {
                             <option value="@option">@option</option>
                         }
                     </select>
                 </div>
 
-                <div class="col-sm-6">
-                    <label for="contact-department" class="form-label">Department</label>
-                    <select id="contact-department" class="form-select"
-                            @bind="department" @bind:after="ApplyFiltersAsync">
-                        <option value="">All departments</option>
-                        @foreach (var option in result.Departments)
+                <div class="col-sm-4">
+                    <label for="contact-region" class="form-label">Region</label>
+                    <select id="contact-region" class="form-select"
+                            @bind="region" @bind:after="ApplyFiltersAsync">
+                        <option value="">All regions</option>
+                        @foreach (var option in result.Regions)
                         {
                             <option value="@option">@option</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-sm-4">
+                    <label for="contact-experience" class="form-label">Years of experience</label>
+                    <select id="contact-experience" class="form-select"
+                            @bind="yearsOfExperience" @bind:after="ApplyFiltersAsync">
+                        <option value="">Any experience</option>
+                        @foreach (var option in result.ExperienceYears)
+                        {
+                            @* Brug punktum i værdien til API'et og lokal talformatering i teksten. *@
+                            <option value="@(option.ToString(CultureInfo.InvariantCulture))">
+                                @option.ToString("0.##")
+                            </option>
                         }
                     </select>
                 </div>
@@ -76,9 +92,6 @@
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Job title</th>
-                                <th scope="col">Office</th>
-                                <th scope="col">Department</th>
                                 <th scope="col">Role</th>
                                 <th scope="col">Region</th>
                                 <th scope="col">Years of experience</th>
@@ -90,9 +103,6 @@
                                 <tr @key="contact.Email">
                                     <td>@(contact.FullName ?? "—")</td>
                                     <td class="text-break">@contact.Email</td>
-                                    <td>@(contact.JobTitle ?? "—")</td>
-                                    <td>@(contact.Office ?? "—")</td>
-                                    <td>@(contact.Department ?? "—")</td>
                                     <td>@(contact.Role ?? "—")</td>
                                     <td>@(contact.Region ?? "—")</td>
                                     <td>@(contact.YearsOfExperience?.ToString("0.##") ?? "—")</td>
@@ -125,8 +135,9 @@
 
 @code {
     private DirectoryResponse? directory;
-    private string office = "";
-    private string department = "";
+    private string role = "";
+    private string region = "";
+    private string yearsOfExperience = "";
     private bool isLoading;
     private bool needsLogin;
     private string? errorMessage;
@@ -155,8 +166,13 @@
         try
         {
             var url = $"api/contacts?page={page}"
-                + $"&office={Uri.EscapeDataString(office)}"
-                + $"&department={Uri.EscapeDataString(department)}";
+            + $"&role={Uri.EscapeDataString(role)}"
+            + $"&region={Uri.EscapeDataString(region)}";
+
+            if (yearsOfExperience.Length > 0)
+            {
+                url += $"&yearsOfExperience={Uri.EscapeDataString(yearsOfExperience)}";
+            }
 
             using var client = HttpClientFactory.CreateClient("ADAApi");
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -218,8 +234,9 @@
 
     private sealed record DirectoryResponse(
         List<ContactRow> Contacts,
-        List<string> Offices,
-        List<string> Departments,
+        List<string> Roles,
+        List<string> Regions,
+        List<decimal> ExperienceYears,
         int Page,
         int PageCount,
         int TotalContacts);

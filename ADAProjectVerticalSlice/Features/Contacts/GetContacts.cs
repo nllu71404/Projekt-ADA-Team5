@@ -21,13 +21,18 @@ public static class GetContacts
 
     public sealed record Response(
         List<ContactRow> Contacts,
-        List<string> Offices,
-        List<string> Departments,
+        List<string> Roles,
+        List<string> Regions,
+        List<decimal> ExperienceYears,
         int Page,
         int PageCount,
         int TotalContacts);
 
-    public sealed record Query(string? Office, string? Department, int? Page)
+    public sealed record Query(
+        string? Role,
+        string? Region,
+        decimal? YearsOfExperience,
+        int? Page)
         : IRequest<Result<Response>>;
 
     public sealed class Handler(
@@ -58,31 +63,45 @@ public static class GetContacts
                 .AsNoTracking()
                 .Where(contact => contact.CompanyId == id);
 
-            var offices = await companyContacts
-                .Where(contact => contact.Office != null && contact.Office != "")
-                .Select(contact => contact.Office!)
+            // Hent filtermuligheder fra hele firmaets kontaktliste før filtrering og sideinddeling.
+            var roles = await companyContacts
+                .Where(contact => contact.Role != null && contact.Role != "")
+                .Select(contact => contact.Role!)
                 .Distinct()
-                .OrderBy(office => office)
+                .OrderBy(role => role)
                 .ToListAsync(cancellationToken);
 
-            var departments = await companyContacts
-                .Where(contact => contact.Department != null && contact.Department != "")
-                .Select(contact => contact.Department!)
+            var regions = await companyContacts
+                .Where(contact => contact.Region != null && contact.Region != "")
+                .Select(contact => contact.Region!)
                 .Distinct()
-                .OrderBy(department => department)
+                .OrderBy(region => region)
                 .ToListAsync(cancellationToken);
 
-            // Når begge filtre er valgt, skal kontakten opfylde dem begge.
+            var experienceYears = await companyContacts
+                .Where(contact => contact.YearsOfExperience.HasValue)
+                .Select(contact => contact.YearsOfExperience.GetValueOrDefault())
+                .Distinct()
+                .OrderBy(years => years)
+                .ToListAsync(cancellationToken);
+
+            // Kontakten skal opfylde alle de valgte filtre.
             var filtered = companyContacts;
 
-            if (!string.IsNullOrWhiteSpace(request.Office))
+            if (!string.IsNullOrWhiteSpace(request.Role))
             {
-                filtered = filtered.Where(contact => contact.Office == request.Office);
+                filtered = filtered.Where(contact => contact.Role == request.Role);
             }
 
-            if (!string.IsNullOrWhiteSpace(request.Department))
+            if (!string.IsNullOrWhiteSpace(request.Region))
             {
-                filtered = filtered.Where(contact => contact.Department == request.Department);
+                filtered = filtered.Where(contact => contact.Region == request.Region);
+            }
+
+            if (request.YearsOfExperience is decimal yearsOfExperience)
+            {
+                filtered = filtered.Where(contact =>
+                    contact.YearsOfExperience == yearsOfExperience);
             }
 
             var total = await filtered.CountAsync(cancellationToken);
@@ -106,7 +125,7 @@ public static class GetContacts
                 .ToListAsync(cancellationToken);
 
             return Result.Success(new Response(
-                contacts, offices, departments, page, pageCount, total));
+                contacts, roles, regions, experienceYears, page, pageCount, total));
         }
     }
 
@@ -117,14 +136,15 @@ public static class GetContacts
             app.MapGet(
                 "/api/contacts",
                 async (
-                    string? office,
-                    string? department,
-                    int? page,
-                    ISender sender,
-                    CancellationToken cancellationToken) =>
-                {
+                        string? role,
+                        string? region,
+                        decimal? yearsOfExperience,
+                        int? page,
+                        ISender sender,
+                        CancellationToken cancellationToken) =>
+                    {
                     var result = await sender.Send(
-                        new Query(office, department, page), cancellationToken);
+                        new Query(role, region, yearsOfExperience, page), cancellationToken);
 
                     return result.IsSuccess
                         ? Results.Ok(result.Value)
