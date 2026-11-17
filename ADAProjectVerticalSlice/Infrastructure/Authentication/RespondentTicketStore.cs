@@ -227,7 +227,7 @@ namespace ADAProjectAPIVerticalSlice.Infrastructure.Authentication
             await dbContext.SaveChangesAsync();
         }
 
-        // Finder udløbstidspunktet, men aldrig senere end assessmentens slutdato.
+        // Finder udløbstidspunktet, men aldrig senere end målingens slutdato.
         private static DateTime GetExpiration(
             AuthenticationTicket ticket,
             DateTime now,
