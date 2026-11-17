@@ -38,6 +38,8 @@
     }
     else
     {
+  <div class="row g-4 align-items-start">
+    <div class="col-lg-7">
         <div class="card shadow-sm">
             <div class="card-body">
 
@@ -75,6 +77,8 @@
                     <label class="form-label">Roles</label>
                     <input class="form-control"
                            @bind="roleNames"
+                           @bind:after="LoadRecipientPreviewAsync"
+                           disabled="@(isLoadingRecipientPreview || isSaving)"
                            placeholder="Developer, Manager, Consultant" />
                     <small class="text-muted">
                         Separate roles with commas.
@@ -89,8 +93,10 @@
                 {
                     <div class="form-check" @key="region.RegionId">
                         <input type="checkbox"
-                               class="form-check-input"
-                               @bind="region.Selected" />
+                             class="form-check-input"
+                             @bind="region.Selected"
+                             @bind:after="LoadRecipientPreviewAsync"
+                             disabled="@(isLoadingRecipientPreview || isSaving)" />
                         <label class="form-check-label">
                             @region.RegionName
                         </label>
@@ -113,22 +119,8 @@
                     </div>
                 }
 
-                <hr />
-
-                <div class="mb-3">
-                    <label class="form-label">Respondent Emails</label>
-                    <textarea class="form-control"
-                              rows="4"
-                              @bind="respondentEmails"
-                              placeholder="person1@example.com&#10;person2@example.com">
-                    </textarea>
-                    <small class="text-muted">
-                        One email per line.
-                    </small>
-                </div>
-
                 <button class="btn btn-primary"
-                        disabled="@isSaving"
+                        disabled="@(isSaving || isLoadingRecipientPreview)"
                         @onclick="HandleCreateAssessment">
                     @(isSaving ? "Creating..." : "Create Assessment")
                 </button>
@@ -140,6 +132,57 @@
 
             </div>
         </div>
+      </div>
+
+            <aside class="col-lg-5" aria-labelledby="recipients-heading">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 id="recipients-heading">Recipients</h5>
+                        @if (isLoadingRecipientPreview)
+                        {
+                            <p role="status">Loading recipients…</p>
+                        }
+                        else if (recipientPreviewError is not null)
+                        {
+                            <p class="text-danger" role="alert">@recipientPreviewError</p>
+                        }
+                        else if (recipientPreview is { } preview)
+                        {
+                            <p role="status">@preview.TotalCount matching contacts</p>
+
+                            @if (preview.Recipients.Count > 0)
+                            {
+                                <ul>
+                                    @foreach (var recipient in preview.Recipients)
+                                    {
+                                        <li class="text-break">@recipient.Email</li>
+                                    }
+                                </ul>
+                            }
+
+                            @if (preview.TotalCount > preview.Recipients.Count)
+                            {
+                                <p class="text-warning">
+                                    Showing @preview.Recipients.Count of @preview.TotalCount matches.
+                                    Narrow the filters before creating the assessment.
+                                </p>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">Enter a role or select a region to see matching contacts.</p>
+                        }
+                        <textarea id="manual-recipient-emails"
+                                  class="form-control"
+                                  rows="4"
+                                  @bind="respondentEmails"
+                                  disabled="@isSaving"></textarea>
+                        <small class="text-muted">One email per line.</small>
+                    </div>
+                </div>
+            </aside>
+
+    </div>
     }
 </div>
 
@@ -159,6 +202,11 @@
     private string message = "";
     private bool success;
     private bool isSaving;
+
+    
+    private RecipientPreviewResponse? recipientPreview;
+    private string? recipientPreviewError;
+    private bool isLoadingRecipientPreview;
 
     private static readonly Guid SurveyId =
         Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -224,6 +272,93 @@
     }
 
 
+    private async Task LoadRecipientPreviewAsync()
+    {
+        if (isLoadingRecipientPreview || isSaving)
+        {
+            return;
+        }
+
+        ClearRecipientPreview();
+
+        
+
+        // Brug de samme valgte regioner og roller som ved oprettelse af målingen.
+        var selectedRegionIds = regions
+            .Where(region => region.Selected)
+            .Select(region => region.RegionId)
+            .ToArray();
+
+        var selectedRoleNames = SplitValues(roleNames);
+
+        if (selectedRegionIds.Length == 0 && selectedRoleNames.Count == 0)
+        {
+            recipientPreviewError = "Select a region or enter a role to preview recipients.";
+            return;
+        }
+
+        if (!AuthSession.IsAuthenticated ||
+            string.IsNullOrWhiteSpace(AuthSession.CsrfToken))
+        {
+            recipientPreviewError = "Please log in again to preview recipients.";
+            return;
+        }
+
+        isLoadingRecipientPreview = true;
+
+        try
+        {
+            using var client = HttpClientFactory.CreateClient("ADAApi");
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post, "api/assessments/recipients/preview");
+
+            // Send cookie og CSRF-token på samme måde som ved oprettelse.
+            AddSessionCookie(request);
+            request.Headers.Add("X-CSRF-TOKEN", AuthSession.CsrfToken);
+            request.Content = JsonContent.Create(new
+            {
+                regionIds = selectedRegionIds,
+                roleNames = selectedRoleNames
+            });
+
+            using var response = await client.SendAsync(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var error = await response.Content.ReadFromJsonAsync<RecipientPreviewError>();
+                recipientPreviewError = error?.Message ?? error?.Error
+                    ?? "Check the selected regions and roles.";
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+            recipientPreview = await response.Content
+                .ReadFromJsonAsync<RecipientPreviewResponse>();
+
+            if (recipientPreview is null)
+            {
+                recipientPreviewError = "The API returned no recipient preview.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            recipientPreviewError = "Could not load the preview. Try again.";
+        }
+        catch (TaskCanceledException)
+        {
+            recipientPreviewError = "The preview request timed out. Try again.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            recipientPreviewError = "The API returned a preview the page could not read.";
+        }
+        finally
+        {
+            isLoadingRecipientPreview = false;
+        }
+    }
+
+
     // Create a new assessment.
     private async Task HandleCreateAssessment()
     {
@@ -276,6 +411,21 @@
             return;
         }
 
+        // Modtagerlisten skal svare til den komplette forhåndsvisning.
+        if (isLoadingRecipientPreview ||
+            recipientPreview is not { } preview ||
+            preview.TotalCount != preview.Recipients.Count)
+        {
+            message = "Wait for a complete recipient preview or narrow the filters.";
+            return;
+        }
+
+        // Saml kontaktlisten og de manuelle adresser uden dubletter.
+        var emails = SplitValues(respondentEmails)
+            .Concat(preview.Recipients.Select(recipient => recipient.Email))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
         var payload = new
         {
             AssessmentName = assessmentName,
@@ -291,7 +441,7 @@
             RoleNames = roles,
             RegionIds = selectedRegions,
             ExperienceIds = selectedExperiences,
-            RespondentEmails = SplitValues(respondentEmails)
+            RespondentEmails = emails
         };
 
         isSaving = true;
@@ -302,6 +452,8 @@
 
             using var request = new HttpRequestMessage(
                 HttpMethod.Post, "api/assessments");
+
+
 
             // Send the authentication cookie.
             AddSessionCookie(request);
@@ -382,7 +534,19 @@
         {
             experience.Selected = false;
         }
+
+        ClearRecipientPreview();
     }
+
+    
+
+    private void ClearRecipientPreview()
+    {
+        // En ny region eller rolle gør den tidligere forhåndsvisning ugyldig.
+        recipientPreview = null;
+        recipientPreviewError = null;
+    }
+
     // Attach the stored authentication cookie to a request.
     private void AddSessionCookie(HttpRequestMessage request)
     {
@@ -447,6 +611,12 @@
             .ToList();
     }
 
+    private sealed record RecipientPreviewRow(string? FullName, string Email);
+
+    private sealed record RecipientPreviewResponse(
+        int TotalCount, List<RecipientPreviewRow> Recipients);
+
+    private sealed record RecipientPreviewError(string? Message, string? Error);
 
     private class RegionOption
     {

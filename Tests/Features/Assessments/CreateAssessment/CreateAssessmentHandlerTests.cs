@@ -65,7 +65,6 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
             _handler = new CreateAssessment.Handler(
                 _dbContext,
                 _validator,
-                _publisher.Object,
                 _emailTimingCalculator,
                 _currentUserService.Object);
 
@@ -266,13 +265,17 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
                 string.IsNullOrWhiteSpace(respondent.AccessToken));
 
             // Event
-            _publisher.Verify(
-                p => p.PublishAsync(
-                    It.Is<AssessmentCreated>(e =>
-                        e.AssessmentId == assessment.AssessmentId),
-                    "assessment-created",
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            var outboxMessage = await _dbContext.OutboxMessages.SingleAsync();
+
+            Assert.AreEqual(nameof(AssessmentCreated), outboxMessage.Type);
+            Assert.AreEqual("assessment-created", outboxMessage.RoutingKey);
+
+            var assessmentCreated =
+                System.Text.Json.JsonSerializer.Deserialize<AssessmentCreated>(
+                    outboxMessage.Payload);
+
+            Assert.IsNotNull(assessmentCreated);
+            Assert.AreEqual(assessment.AssessmentId, assessmentCreated.AssessmentId);
         }
 
         [TestMethod]
@@ -301,12 +304,7 @@ namespace Tests.Features.Assessments.CreateAssessmentTests
                 0,
                 await _dbContext.Assessments.CountAsync());
 
-            _publisher.Verify(
-                p => p.PublishAsync(
-                    It.IsAny<AssessmentCreated>(),
-                    "assessment-created",
-                    It.IsAny<CancellationToken>()),
-                Times.Never);
+            Assert.IsFalse(await _dbContext.OutboxMessages.AnyAsync());
         }
 
         [TestMethod]

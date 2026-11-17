@@ -4,6 +4,7 @@ using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.DeleteAssessment
 {
@@ -12,6 +13,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.DeleteAssessment
         public class Command : IRequest<Result<Guid>>
         {
             public Guid AssessmentId { get; set; }
+            public string? RequestId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Guid>>
@@ -80,7 +82,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.DeleteAssessment
                 // Respondents are deleted through the configured cascade relationship.
                 _dbContext.Assessments.Remove(assessment);
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesWithAuditAsync(userId, request.RequestId, cancellationToken);
 
                 return assessment.AssessmentId;
             }
@@ -92,10 +94,13 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.DeleteAssessment
             {
                 app.MapDelete(
                     "api/assessments/{assessmentId:guid}",
-                    async (Guid assessmentId, ISender sender) =>
+                    async (Guid assessmentId, ISender sender, HttpContext httpContext) =>
                     {
-                        var result = await sender.Send(
-                            new Command { AssessmentId = assessmentId });
+                        var result = await sender.Send(new Command
+                        {
+                            AssessmentId = assessmentId,
+                            RequestId = httpContext.TraceIdentifier
+                        });
 
                         if (result.IsFailure)
                         {

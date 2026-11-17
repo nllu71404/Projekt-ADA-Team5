@@ -1,0 +1,525 @@
+﻿@page "/email-lists/import"
+
+@using System.Net
+@using System.Text
+@using System.Text.Json
+@using ADA.Frontend.Services
+@using ADA.Frontend.Components.Buttons
+
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthSession AuthSession
+
+@* Brug samme navigation som på siden til redigering af målinger. *@
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <BackToDashboardButton />
+    <LogoutButton />
+</div>
+
+<PageTitle>Import Email List</PageTitle>
+
+<div class="container py-4">
+    <h1>Import Email List</h1>
+
+    @if (needsLogin || !AuthSession.IsAuthenticated)
+    {
+        <p>Please <a href="/login">log in</a> to preview an email list.</p>
+    }
+    else
+    {
+        <fieldset disabled="@isLoading">
+            <div class="mb-3">
+                <label for="csv-file" class="form-label">CSV file</label>
+                <InputFile id="csv-file" class="form-control"
+                           accept=".csv,text/csv" OnChange="SelectFile" />
+                <div class="form-text">
+                    Use a UTF-8 CSV file with column names on the first row.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="csv-separator" class="form-label">Separator</label>
+                <select id="csv-separator" class="form-select"
+                        @bind="delimiter" @bind:after="ClearPreview">
+                    <option value=",">Comma (,)</option>
+                    <option value=";">Semicolon (;)</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-primary"
+                    disabled="@(selectedFile is null || isLoading)"
+                    @onclick="LoadPreviewAsync">
+                Preview CSV
+            </button>
+        </fieldset>
+
+        @if (isLoading)
+        {
+            <p class="mt-3" role="status">Reading the CSV…</p>
+        }
+
+        @if (errorMessage is not null)
+        {
+            <div class="alert alert-danger mt-3" role="alert">@errorMessage</div>
+        }
+
+        @if (preview is { } result)
+        {
+            <h2 class="h4 mt-4">Preview</h2>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            @foreach (var column in result.Columns)
+                            {
+                                <th scope="col"
+                                    class="@(column.Index == emailColumnIndex ? "table-primary" : "")">
+                                    @(column.Index + 1). @column.Label
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in result.Rows)
+                        {
+                            <tr>
+                                @foreach (var column in result.Columns)
+                                {
+                                    <td class="@(column.Index == emailColumnIndex ? "table-primary" : "")">
+                                        @row[column.Index]
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (result.HasMoreRows)
+            {
+                <p class="text-muted">Showing the first 10 rows.</p>
+            }
+
+            @if (result.Rows.Count > 0)
+            {
+                <fieldset class="mt-3" disabled="@isLoading">
+                    <legend class="h5">Choose what to import</legend>
+                    <p class="text-muted">
+                        Assign one column to Email. Leave any other column you don't want to use on Don't import.
+                    </p>
+
+                    @foreach (var column in result.Columns)
+                    {
+                        var inputId = $"map-column-{column.Index}";
+                        var selectedField = GetMappedField(column.Index);
+
+                        <div class="row g-2 align-items-center mb-2" @key="column.Index">
+                            <label for="@inputId" class="col-sm-5 col-form-label">
+                                @(column.Index + 1). @column.Label
+                            </label>
+                            <div class="col-sm-7">
+                                <select id="@inputId" class="form-select"
+                                        @bind:get="selectedField"
+                                        @bind:set="(string? value) => SetMappedField(column.Index, value)">
+                                    <option value="">Don't import</option>
+                                    @if (emailColumnIndex is null || emailColumnIndex == column.Index)
+                                    {
+                                        <option value="email">Email (required)</option>
+                                    }
+                                    @foreach (var field in optionalColumns)
+                                    {
+                                        @if (field.ColumnIndex is null || field.ColumnIndex == column.Index)
+                                        {
+                                            <option value="@field.Key">@field.Label</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    }
+
+                    <button type="button" class="btn btn-primary mt-3"
+                            disabled="@(emailColumnIndex is null || isLoading)"
+                            @onclick="ValidateCsvAsync">
+                        Validate CSV
+                    </button>
+                </fieldset>
+            }
+
+            @if (validation is { } report)
+            {
+                <h2 class="h4 mt-4">Validation results</h2>
+                <p role="status">
+                    @report.RowsChecked checked · @report.ValidCount valid ·
+                    @report.InvalidCount invalid · @report.DuplicateCount duplicates
+                </p>
+
+                @if (report.Issues.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">CSV record</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Result</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var issue in report.Issues)
+                                {
+                                    <tr>
+                                        <td>@issue.RecordNumber</td>
+                                        <td class="text-break">@(issue.Email ?? "—")</td>
+                                        <td>@(issue.Kind == "duplicate" ? "Duplicate" : "Invalid")</td>
+                                        <td>@issue.Message</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p>All mapped fields passed validation.</p>
+                }
+
+                @if (report.InvalidCount > 0)
+                {
+                    <p>Fix the invalid records and validate the file again before importing.</p>
+                }
+                else if (importResult is null)
+                {
+                    <p class="text-muted">
+                        Duplicate emails and contacts already in the directory will be skipped.
+                    </p>
+
+                    <button type="button" class="btn btn-success"
+                            disabled="@isLoading" @onclick="ConfirmImportAsync">
+                        Confirm Import
+                    </button>
+                }
+
+                @if (importResult is { } saved)
+                {
+                    <p class="alert alert-success mt-3" role="status">
+                        @saved.ImportedCount imported ·
+                        @saved.ExistingCount skipped (already in the directory) ·
+                        @saved.DuplicateCount skipped (duplicates in CSV)
+                    </p>
+                }
+            }
+
+        }
+    }
+</div>
+
+@code {
+    private const long MaxFileBytes = 1_000_000;
+
+    private IBrowserFile? selectedFile;
+    private PreviewResponse? preview;
+    private ValidationResponse? validation;
+    private ImportResponse? importResult;
+    private string delimiter = ",";
+    private int? emailColumnIndex;
+    private bool isLoading;
+    private bool needsLogin;
+    private string? errorMessage;
+
+    // Felterne svarer til ColumnMapping i API'et.
+    private readonly OptionalColumn[] optionalColumns =
+    [
+        new("fullName", "Full name"),
+        new("jobTitle", "Job title"),
+        new("department", "Department"),
+        new("role", "Role"),
+        new("region", "Region"),
+        // Kontor kan mappes uafhængigt af region.
+        new("office", "Office"),
+        new("yearsOfExperience", "Years of experience"),
+        new("experienceLevel", "Experience level")
+    ];
+
+    private void SelectFile(InputFileChangeEventArgs args)
+    {
+        selectedFile = args.File;
+        ClearPreview();
+    }
+
+    private async Task LoadPreviewAsync()
+    {
+        ClearPreview();
+
+        preview = await SendCsvAsync<PreviewResponse>(
+            "api/email-lists/import/preview",
+            csvText => new { csvText, delimiter });
+
+        if (preview is { } result)
+        {
+            // Foreslå kolonnemappinger, når forhåndsvisningen er indlæst.
+            SuggestMapping(result, "email", "Email", "E-mail", "Mail", "Work Email");
+            SuggestMapping(result, "fullName", "Full Name", "Fulde navn");
+            SuggestMapping(result, "role", "Role", "Rolle", "Job Title / Role");
+            SuggestMapping(result, "region", "Region");
+            SuggestMapping(result, "yearsOfExperience", "Years of Experience", "Års erfaring");
+        }
+    }
+
+    private async Task ValidateCsvAsync()
+    {
+        if (emailColumnIndex is not int selectedColumn || isLoading)
+        {
+            return;
+        }
+
+        ClearValidation();
+
+        validation = await SendMappedCsvAsync<ValidationResponse>(
+            "api/email-lists/import/validate", selectedColumn);
+    }
+
+    private async Task ConfirmImportAsync()
+    {
+        if (isLoading ||
+            importResult is not null ||
+            validation is not { InvalidCount: 0 } ||
+            emailColumnIndex is not int selectedColumn)
+        {
+            return;
+        }
+
+        errorMessage = null;
+
+        // API'et validerer filen og mappingen igen, før kontakterne gemmes.
+        importResult = await SendMappedCsvAsync<ImportResponse>(
+            "api/email-lists/import/confirm", selectedColumn);
+    }
+
+    private void SuggestMapping(
+        PreviewResponse result, string fieldKey, params string[] headers)
+    {
+        // Foreslå kun en mapping, når præcis én ledig kolonne passer.
+        var matches = result.Columns
+            .Where(column => GetMappedField(column.Index) == "" &&
+                headers.Contains(column.Label.Trim(), StringComparer.OrdinalIgnoreCase))
+            .ToList();
+
+        if (matches.Count == 1)
+        {
+            SetMappedField(matches[0].Index, fieldKey);
+        }
+    }
+
+    private string GetMappedField(int columnIndex)
+    {
+        if (emailColumnIndex == columnIndex)
+        {
+            return "email";
+        }
+
+        return optionalColumns
+            .FirstOrDefault(field => field.ColumnIndex == columnIndex)?.Key ?? "";
+    }
+
+    private void SetMappedField(int columnIndex, string? fieldKey)
+    {
+        // Ét felt kan kun få sin værdi fra én CSV-kolonne.
+        var target = optionalColumns.FirstOrDefault(field => field.Key == fieldKey);
+        if ((fieldKey == "email" && emailColumnIndex is int emailIndex && emailIndex != columnIndex) ||
+            (target?.ColumnIndex is int targetIndex && targetIndex != columnIndex))
+        {
+            return;
+        }
+
+        if (emailColumnIndex == columnIndex)
+        {
+            emailColumnIndex = null;
+        }
+
+        var previous = optionalColumns.FirstOrDefault(field => field.ColumnIndex == columnIndex);
+        if (previous is not null)
+        {
+            previous.ColumnIndex = null;
+        }
+
+        if (fieldKey == "email")
+        {
+            emailColumnIndex = columnIndex;
+        }
+        else if (target is not null)
+        {
+            target.ColumnIndex = columnIndex;
+        }
+
+        // Rapporten gælder kun for den mapping, der blev sendt til API'et.
+        ClearValidation();
+    }
+
+    private void ClearPreview()
+    {
+        // En ny fil eller et nyt skilletegn kan ændre kolonnernes placering.
+        preview = null;
+        emailColumnIndex = null;
+
+        foreach (var field in optionalColumns)
+        {
+            field.ColumnIndex = null;
+        }
+
+        ClearValidation();
+    }
+
+    private void ClearValidation()
+    {
+        // Resultaterne gælder kun for den aktuelle fil og kolonnemapping.
+        validation = null;
+        importResult = null;
+        errorMessage = null;
+    }
+
+    private Task<T?> SendMappedCsvAsync<T>(string url, int selectedColumn)
+        where T : class
+    {
+        // Indeks 0 er første kolonne. Null betyder, at feltet springes over.
+        var mapping = optionalColumns.ToDictionary(
+            field => field.Key,
+            field => field.ColumnIndex);
+
+        return SendCsvAsync<T>(
+            url,
+            csvText => new
+            {
+                csvText,
+                delimiter,
+                emailColumnIndex = selectedColumn,
+                optionalColumns = mapping
+            });
+    }
+
+    private async Task<T?> SendCsvAsync<T>(
+        string url, Func<string, object> createPayload) where T : class
+    {
+        if (selectedFile is not { } file || isLoading)
+        {
+            return null;
+        }
+
+        if (!AuthSession.IsAuthenticated ||
+            string.IsNullOrWhiteSpace(AuthSession.CsrfToken))
+        {
+            needsLogin = true;
+            return null;
+        }
+
+        if (file.Size > MaxFileBytes)
+        {
+            errorMessage = "Choose a CSV file no larger than 1 MB.";
+            return null;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            // Læs hele filen igen, så valideringen også får poster uden for forhåndsvisningen.
+            await using var stream = file.OpenReadStream(MaxFileBytes);
+            using var reader = new StreamReader(stream, new UTF8Encoding(false, true));
+            var csvText = await reader.ReadToEndAsync();
+
+            using var client = HttpClientFactory.CreateClient("ADAApi");
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            // POST-kaldene bruger den loggede admins cookie og CSRF-token.
+            request.Headers.TryAddWithoutValidation("Cookie", AuthSession.CookieHeader);
+            request.Headers.Add("X-CSRF-TOKEN", AuthSession.CsrfToken);
+            request.Content = JsonContent.Create(createPayload(csvText));
+
+            using var response = await client.SendAsync(request);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    needsLogin = true;
+                    return null;
+
+                case HttpStatusCode.Forbidden:
+                    errorMessage = "Only admins can work with email lists.";
+                    return null;
+
+                case HttpStatusCode.BadRequest:
+                case HttpStatusCode.Conflict:
+                    var error = await response.Content.ReadFromJsonAsync<PreviewError>();
+                    errorMessage = error?.Message ?? error?.Error
+                        ?? "The API could not read this CSV.";
+                    return null;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<T>();
+            if (result is null)
+            {
+                errorMessage = "The API returned an empty result.";
+            }
+
+            return result;
+        }
+        catch (DecoderFallbackException)
+        {
+            errorMessage = "Save the CSV as UTF-8 and try again.";
+        }
+        catch (IOException)
+        {
+            errorMessage = "Could not read the file. Select it again and retry.";
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "The CSV request failed. Check that the API is running and retry.";
+        }
+        catch (TaskCanceledException)
+        {
+            errorMessage = "The request timed out. Try again.";
+        }
+        catch (JsonException)
+        {
+            errorMessage = "The API returned a response the page could not read.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+
+        return null;
+    }
+
+    private sealed record OptionalColumn(string Key, string Label)
+    {
+        public int? ColumnIndex { get; set; }
+    }
+
+    private sealed record ImportResponse(
+        int ImportedCount,
+        int ExistingCount,
+        int DuplicateCount,
+        Guid? ImportBatchId);
+
+    private sealed record ValidationResponse(
+        int RowsChecked,
+        int ValidCount,
+        int InvalidCount,
+        int DuplicateCount,
+        List<ValidationIssue> Issues);
+
+    private sealed record ValidationIssue(
+        int RecordNumber, string? Email, string Kind, string Message);
+
+    private sealed record PreviewColumn(int Index, string Label);
+
+    private sealed record PreviewResponse(
+        List<PreviewColumn> Columns,
+        List<string[]> Rows,
+        bool HasMoreRows);
+
+    private sealed record PreviewError(string? Message, string? Error);
+}

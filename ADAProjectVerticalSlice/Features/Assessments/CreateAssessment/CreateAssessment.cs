@@ -11,6 +11,7 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using ADAProjectAPIVerticalSlice.Infrastructure.Database.Auditing;
 
 namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 {
@@ -37,7 +38,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
             public List<Guid> ExperienceIds { get; set; } = new List<Guid>();
             public List<string> RespondentEmails { get; set; } = new List<string>();
 
-
+            public string? RequestId { get; set; }
 
 
         }
@@ -313,7 +314,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 _dbContext.OutboxMessages.Add(outboxMessage);
 
                 // Gem ALT samlet i databasen.
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.SaveChangesWithAuditAsync(currentUserId, request.RequestId, cancellationToken);
 
                 // Returner ID på den nye Assessment.
                 return assessment.AssessmentId;
@@ -330,16 +331,17 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // request indeholder data fra HTTP-requesten. ISender er MediatR's interface til at sende Commands og Queries videre til deres Handler.
                 app.MapPost(
                     "api/assessments",
-                    async (CreateAssessmentRequest request, ISender sender) =>
-                    {
+                   async (CreateAssessmentRequest request, ISender sender, HttpContext httpContext) =>
+                   {
 
                         //Mapping fra CreateAssessmentRequest til CreateAssessment.Command. Dette gør det muligt at holde API-modellen adskilt fra Command-modellen.
                         //Mapster gør denne mapping automatisk ud fra properties med samme navn.
                         var command = request.Adapt<CreateAssessment.Command>();
 
+                        command.RequestId = httpContext.TraceIdentifier;
 
-                        // Sender Command'en til MediatR, som finder den korrekte Handler og kalder Handle() metoden.
-                        var result = await sender.Send(command);
+                       // Sender Command'en til MediatR, som finder den korrekte Handler og kalder Handle() metoden.
+                       var result = await sender.Send(command);
 
                         if (result.IsFailure)
                         {
