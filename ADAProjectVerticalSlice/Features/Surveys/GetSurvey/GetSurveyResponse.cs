@@ -4,7 +4,33 @@
     public string SurveyDescription { get; set; } = string.Empty;
     public string AssessmentName { get; set; } = string.Empty;
 
+    // NYT: det, respondenten kan vælge imellem (det, målingen blev oprettet med)
+    public List<SurveyRoleResponse> Roles { get; set; } = new();
+    public List<SurveyRegionResponse> Regions { get; set; } = new();
+    public List<SurveyExperienceResponse> Experiences { get; set; } = new();
+
     public List<SurveyThemeResponse> Themes { get; set; } = new();
+}
+
+// NYT
+public class SurveyRoleResponse
+{
+    public Guid RoleId { get; set; }
+    public string RoleName { get; set; } = string.Empty;
+}
+
+// NYT
+public class SurveyRegionResponse
+{
+    public Guid RegionId { get; set; }
+    public string RegionName { get; set; } = string.Empty;
+}
+
+// NYT
+public class SurveyExperienceResponse
+{
+    public Guid ExperienceId { get; set; }
+    public string ExperienceValue { get; set; } = string.Empty;
 }
 
 public class SurveyThemeResponse
