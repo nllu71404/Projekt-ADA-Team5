@@ -13,7 +13,7 @@ public sealed class AddCompanyIdToAuditRows : Migration
     {
         migrationBuilder.Sql("""
             ALTER TABLE audit.row_changes
-                ADD COLUMN company_id uuid;
+                ADD COLUMN IF NOT EXISTS company_id uuid;
 
             CREATE FUNCTION audit.set_row_change_company()
             RETURNS trigger

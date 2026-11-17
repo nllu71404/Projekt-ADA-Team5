@@ -11,6 +11,8 @@ namespace ADAProjectAPIVerticalSlice.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("""
+    ALTER TABLE audit.row_changes
+    ADD COLUMN IF NOT EXISTS company_id uuid;
     CREATE VIEW audit.assessment_field_changes AS
     SELECT
         a.id AS "AuditId",
