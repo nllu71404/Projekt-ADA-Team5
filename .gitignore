@@ -8,3 +8,5 @@ obj/
 # User-specific files
 *.user
 *.suo
+
+*/logs/log-*.txt
