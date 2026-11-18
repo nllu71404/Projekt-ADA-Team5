@@ -49,5 +49,21 @@ public class SurveyQuestionResponse
     public string QuestionPolarity { get; set; } = string.Empty;
     public string QuestionType { get; set; } = string.Empty;
 
-    public List<int> AnswerOptions { get; set; } = new() { 1, 2, 3, 4, 5 };
+    public List<int> AnswerOptions { get; set; } =
+        new() { 1, 2, 3, 4, 5 };
 }
+
+public record SurveyRoleOption(
+    Guid RoleId,
+    string RoleName
+);
+
+public record SurveyRegionOption(
+    Guid RegionId,
+    string RegionName
+);
+
+public record SurveyExperienceOption(
+    Guid ExperienceId,
+    string ExperienceValue
+);

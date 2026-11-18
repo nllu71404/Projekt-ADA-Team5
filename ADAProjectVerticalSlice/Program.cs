@@ -271,6 +271,14 @@ builder.Services.AddAntiforgery(options =>
     //Dette er fordi frontend og backend kan ligge på forskellige origins. 
 });
 
+// Python
+builder.Services.AddHttpClient("PythonAnalysis", client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:8001");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+
 var app = builder.Build();
 
 

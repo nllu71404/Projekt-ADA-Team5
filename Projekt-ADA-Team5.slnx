@@ -2,6 +2,9 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
+  <Project Path="ADA-Analyse/ADA-Analyse.pyproj" Type="888888a0-9f3d-457c-b088-3a5042f75d52" Id="f47a00fc-c822-4195-a9ab-c8b78958605c">
+    <Build Project="false" />
+  </Project>
   <Project Path="ADA-Contracts/ADA-Contracts.csproj" Id="b6462b0c-e939-43a9-9bd7-0c00ad7a1c8e" />
   <Project Path="ADA-Email-Service/ADA-EmailConsumer.csproj" Id="5bdf3488-7535-483c-ae2c-38242ad9b2d4" />
   <Project Path="ADA-Frontend/ADA-Frontend.csproj" Id="cbce5f0a-4829-47f8-8f34-642c6f43413a" />

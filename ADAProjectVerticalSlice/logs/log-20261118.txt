@@ -1,0 +1,456 @@
+2026-11-18 09:52:11.467 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:52:11.821 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:52:11.823 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:52:12.114 +01:00 [INF] Received HTTP response headers after 287.8715ms - 200
+2026-11-18 09:52:12.116 +01:00 [INF] End processing HTTP request after 302.776ms - 200
+2026-11-18 09:57:52.156 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:57:52.464 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:57:52.466 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:57:52.588 +01:00 [INF] Received HTTP response headers after 119.2345ms - 200
+2026-11-18 09:57:52.590 +01:00 [INF] End processing HTTP request after 131.0251ms - 200
+2026-11-18 09:57:56.484 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 09:57:56.484 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 09:57:56.488 +01:00 [INF] Received HTTP response headers after 3.8679ms - 404
+2026-11-18 09:57:56.488 +01:00 [INF] End processing HTTP request after 4.573ms - 404
+2026-11-18 09:57:57.769 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:57:57.769 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:57:57.771 +01:00 [INF] Received HTTP response headers after 1.6192ms - 404
+2026-11-18 09:57:57.771 +01:00 [INF] End processing HTTP request after 1.8855ms - 404
+2026-11-18 09:57:58.988 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 09:57:58.988 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 09:57:58.990 +01:00 [INF] Received HTTP response headers after 1.733ms - 404
+2026-11-18 09:57:58.990 +01:00 [INF] End processing HTTP request after 1.9412ms - 404
+2026-11-18 09:58:00.433 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:58:00.433 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:58:00.434 +01:00 [INF] Received HTTP response headers after 1.7273ms - 404
+2026-11-18 09:58:00.434 +01:00 [INF] End processing HTTP request after 2.0606ms - 404
+2026-11-18 09:58:01.734 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 09:58:01.734 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 09:58:01.736 +01:00 [INF] Received HTTP response headers after 1.7134ms - 404
+2026-11-18 09:58:01.736 +01:00 [INF] End processing HTTP request after 1.9755ms - 404
+2026-11-18 09:59:35.587 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:59:35.953 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:35.955 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:36.062 +01:00 [INF] Received HTTP response headers after 103.9688ms - 200
+2026-11-18 09:59:36.064 +01:00 [INF] End processing HTTP request after 116.6248ms - 200
+2026-11-18 09:59:51.102 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:51.102 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:51.148 +01:00 [INF] Received HTTP response headers after 46.3499ms - 200
+2026-11-18 09:59:51.148 +01:00 [INF] End processing HTTP request after 47.1902ms - 200
+2026-11-18 09:59:53.271 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:53.271 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:53.319 +01:00 [INF] Received HTTP response headers after 48.4838ms - 200
+2026-11-18 09:59:53.320 +01:00 [INF] End processing HTTP request after 48.7683ms - 200
+2026-11-18 10:00:50.522 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:00:50.522 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:00:50.569 +01:00 [INF] Received HTTP response headers after 46.6161ms - 200
+2026-11-18 10:00:50.569 +01:00 [INF] End processing HTTP request after 46.9337ms - 200
+2026-11-18 10:01:44.147 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:01:44.147 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:01:44.196 +01:00 [INF] Received HTTP response headers after 48.0955ms - 200
+2026-11-18 10:01:44.196 +01:00 [INF] End processing HTTP request after 48.4954ms - 200
+2026-11-18 10:01:49.443 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:01:49.444 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:01:49.447 +01:00 [INF] Received HTTP response headers after 3.1621ms - 404
+2026-11-18 10:01:49.447 +01:00 [INF] End processing HTTP request after 3.4749ms - 404
+2026-11-18 10:01:50.972 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:01:50.972 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:01:50.973 +01:00 [INF] Received HTTP response headers after 1.5089ms - 404
+2026-11-18 10:01:50.973 +01:00 [INF] End processing HTTP request after 1.7028ms - 404
+2026-11-18 10:01:52.360 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:01:52.360 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:01:52.362 +01:00 [INF] Received HTTP response headers after 1.6798ms - 404
+2026-11-18 10:01:52.362 +01:00 [INF] End processing HTTP request after 1.975ms - 404
+2026-11-18 10:01:53.600 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:01:53.600 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:01:53.602 +01:00 [INF] Received HTTP response headers after 1.8596ms - 404
+2026-11-18 10:01:53.602 +01:00 [INF] End processing HTTP request after 2.1913ms - 404
+2026-11-18 10:01:54.885 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:01:54.885 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:01:54.886 +01:00 [INF] Received HTTP response headers after 1.6147ms - 404
+2026-11-18 10:01:54.886 +01:00 [INF] End processing HTTP request after 1.8996ms - 404
+2026-11-18 10:01:56.039 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:01:56.039 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:01:56.040 +01:00 [INF] Received HTTP response headers after 1.4664ms - 404
+2026-11-18 10:01:56.040 +01:00 [INF] End processing HTTP request after 1.6471ms - 404
+2026-11-18 10:05:00.334 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 10:05:00.653 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:05:00.654 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:05:00.762 +01:00 [INF] Received HTTP response headers after 105.3405ms - 200
+2026-11-18 10:05:00.764 +01:00 [INF] End processing HTTP request after 117.2626ms - 200
+2026-11-18 10:05:03.124 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:03.125 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:03.174 +01:00 [INF] Received HTTP response headers after 49.2808ms - 200
+2026-11-18 10:05:03.174 +01:00 [INF] End processing HTTP request after 50.1256ms - 200
+2026-11-18 10:05:07.079 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:05:07.079 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:05:07.130 +01:00 [INF] Received HTTP response headers after 50.3353ms - 200
+2026-11-18 10:05:07.130 +01:00 [INF] End processing HTTP request after 50.6463ms - 200
+2026-11-18 10:05:08.550 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:05:08.550 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:05:08.598 +01:00 [INF] Received HTTP response headers after 47.2658ms - 200
+2026-11-18 10:05:08.598 +01:00 [INF] End processing HTTP request after 47.5263ms - 200
+2026-11-18 10:05:09.570 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:05:09.570 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:05:09.619 +01:00 [INF] Received HTTP response headers after 48.7475ms - 200
+2026-11-18 10:05:09.619 +01:00 [INF] End processing HTTP request after 49.0239ms - 200
+2026-11-18 10:05:12.425 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:05:12.425 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:05:12.476 +01:00 [INF] Received HTTP response headers after 51.1115ms - 200
+2026-11-18 10:05:12.477 +01:00 [INF] End processing HTTP request after 51.495ms - 200
+2026-11-18 10:05:13.601 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:05:13.601 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:05:13.651 +01:00 [INF] Received HTTP response headers after 50.0159ms - 200
+2026-11-18 10:05:13.652 +01:00 [INF] End processing HTTP request after 50.6272ms - 200
+2026-11-18 10:05:14.593 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:14.593 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:14.640 +01:00 [INF] Received HTTP response headers after 47.0557ms - 200
+2026-11-18 10:05:14.640 +01:00 [INF] End processing HTTP request after 47.4078ms - 200
+2026-11-18 12:05:37.297 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-18 12:06:12.900 +01:00 [ERR] An error occurred using the connection to database 'ADA' on server 'tcp://localhost:5432'.
+2026-11-18 12:14:09.663 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 12:14:10.396 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:14:10.399 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:14:12.527 +01:00 [INF] HTTP request failed after 2122.6111ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:14:12.532 +01:00 [INF] HTTP request failed after 2149.0872ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:14:12.561 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-18 12:15:45.777 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 12:15:46.357 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:15:46.360 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:15:48.492 +01:00 [INF] HTTP request failed after 2127.586ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:15:48.497 +01:00 [INF] HTTP request failed after 2152.4125ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:15:48.528 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-18 12:15:56.019 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:15:56.019 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:15:58.071 +01:00 [INF] HTTP request failed after 2051.6868ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:15:58.073 +01:00 [INF] HTTP request failed after 2055.1392ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:15:58.110 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-18 12:16:24.622 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2470b80e-d6ff-42aa-a5ed-7e269aea7244
+2026-11-18 12:16:24.622 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2470b80e-d6ff-42aa-a5ed-7e269aea7244
+2026-11-18 12:16:26.676 +01:00 [INF] HTTP request failed after 2053.963ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:16:26.677 +01:00 [INF] HTTP request failed after 2055.1351ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:19:09.508 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 12:19:10.314 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:19:10.319 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:19:12.486 +01:00 [INF] HTTP request failed after 2158.8352ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:19:12.491 +01:00 [INF] HTTP request failed after 2189.5816ms
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:19:12.527 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): Der kunne ikke oprettes forbindelse, fordi destinationscomputeren aktivt nægtede det.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-18 12:24:35.102 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 12:24:35.794 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:24:35.799 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:24:35.929 +01:00 [INF] HTTP request failed after 122.9442ms
+System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:24:35.934 +01:00 [INF] HTTP request failed after 156.9662ms
+System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-18 12:24:35.966 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-18 12:25:57.786 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 12:25:58.722 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:25:58.731 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:25:59.252 +01:00 [INF] Received HTTP response headers after 506.5987ms - 200
+2026-11-18 12:25:59.263 +01:00 [INF] End processing HTTP request after 560.3618ms - 200
+2026-11-18 12:26:36.264 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2470b80e-d6ff-42aa-a5ed-7e269aea7244
+2026-11-18 12:26:36.265 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2470b80e-d6ff-42aa-a5ed-7e269aea7244
+2026-11-18 12:26:36.358 +01:00 [INF] Received HTTP response headers after 92.93ms - 200
+2026-11-18 12:26:36.358 +01:00 [INF] End processing HTTP request after 94.8578ms - 200
+2026-11-18 12:26:40.450 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:26:40.451 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:26:40.628 +01:00 [INF] Received HTTP response headers after 176.9378ms - 200
+2026-11-18 12:26:40.628 +01:00 [INF] End processing HTTP request after 177.7934ms - 200
+2026-11-18 12:26:51.966 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:26:51.967 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:26:52.077 +01:00 [INF] Received HTTP response headers after 109.8907ms - 200
+2026-11-18 12:26:52.077 +01:00 [INF] End processing HTTP request after 110.5207ms - 200
+2026-11-18 12:30:03.125 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:30:03.125 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:30:03.240 +01:00 [INF] Received HTTP response headers after 114.7185ms - 200
+2026-11-18 12:30:03.241 +01:00 [INF] End processing HTTP request after 115.6482ms - 200
+2026-11-18 12:31:58.803 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:31:58.803 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:31:58.937 +01:00 [INF] Received HTTP response headers after 133.237ms - 200
+2026-11-18 12:31:58.937 +01:00 [INF] End processing HTTP request after 134.4636ms - 200
+2026-11-18 12:32:57.299 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:32:57.299 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 12:32:57.456 +01:00 [INF] Received HTTP response headers after 156.4929ms - 200
+2026-11-18 12:32:57.456 +01:00 [INF] End processing HTTP request after 157.6044ms - 200

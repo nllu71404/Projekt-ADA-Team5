@@ -15,6 +15,33 @@
       {
         "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "ADA-Analyse\\ADA-Analyse.pyproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "New Profile (3)",
+    "Projects": [
+      {
+        "Path": "ADAProjectVerticalSlice\\ADAProjectVerticalSlice.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "ADA-Analyse\\ADA-Analyse.pyproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ADA-Frontend\\ADA-Frontend.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
+        "Action": "Start"
       }
     ]
   }

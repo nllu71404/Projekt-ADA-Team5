@@ -1,32 +1,33 @@
 ﻿@page "/dashboard"
+@rendermode InteractiveServer
 
+@using System.Net.Http
+@using ADA.Frontend.Services
 @using ADA.Frontend.Components.Buttons
 
+@inject AnalysisService AnalysisService
 
-
-<PageTitle>ADA management system</PageTitle>
+<PageTitle>ADA Management System</PageTitle>
 
 <div class="container py-4">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="mb-4 d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="fw-bold">ADA managament system</h1>
-           
+            <h1 class="fw-bold">ADA Management System</h1>
         </div>
 
-         <LogoutButton />
+        <LogoutButton />
     </div>
 
-    
-
-    <!-- Dashboard cards -->
+    <!-- DASHBOARD NAVIGATION -->
     <div class="row g-4">
 
         <!-- Assessments -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
+
                     <h4 class="card-title">Assessments</h4>
 
                     <p class="card-text text-muted">
@@ -34,38 +35,45 @@
                         for your applications.
                     </p>
 
-                    <a href="/assessments/create" class="btn btn-primary">
+                    <a href="/assessments/create"
+                       class="btn btn-primary mb-2">
                         Create Assessment
                     </a>
-                    <a href="/assessments" class="btn btn-primary">
-                        View and manage Assessments
+
+                    <a href="/assessments"
+                       class="btn btn-primary mb-2">
+                        View and Manage Assessments
                     </a>
+
                 </div>
             </div>
         </div>
 
         <!-- Surveys -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h4 class="card-title">Surveys</h4>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
 
-                    <p class="card-text text-muted">
-                        View surveys and their questions
-                        and responses.
-                    </p>
+                        <h4 class="card-title">Surveys</h4>
 
-                    <button class="btn btn-primary" disabled>
-                        View Surveys
-                    </button>
+                        <p class="card-text text-muted">
+                            Open a survey and answer its questions.
+                        </p>
+
+                        <a href="/surveys"
+                           class="btn btn-primary">
+                            View Surveys
+                        </a>
+
+                    </div>
                 </div>
             </div>
-        </div>
 
         <!-- Regions & Experiences -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
+
                     <h4 class="card-title">
                         Regions & Experiences
                     </h4>
@@ -78,51 +86,448 @@
                     <button class="btn btn-primary" disabled>
                         View Data
                     </button>
+
                 </div>
             </div>
         </div>
 
+        <!-- Audit History -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
+
                     <h4 class="card-title">Audit History</h4>
 
                     <p class="card-text text-muted">
-                        See who changed your company's assessments, what changed,
-                        and when.
+                        See who changed your company's
+                        assessments, what changed and when.
                     </p>
 
-                    <a href="/audit-history" class="btn btn-primary">
+                    <a href="/audit-history"
+                       class="btn btn-primary">
                         View Audit History
                     </a>
+
                 </div>
             </div>
         </div>
 
+        <!-- Contact Directory -->
         <div class="col-md-4">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
+
                     <h4 class="card-title">Contact Directory</h4>
 
                     <p class="card-text text-muted">
-                        View and filter your company’s contacts, or import contacts from a CSV.
+                        View and filter your company's contacts,
+                        or import contacts from a CSV.
                     </p>
 
-                    <a href="/contacts" class="btn btn-primary">
+                    <a href="/contacts"
+                       class="btn btn-primary mb-2">
                         View Contacts
                     </a>
 
-                    <a href="/email-lists/import" class="btn btn-outline-primary">
+                    <a href="/email-lists/import"
+                       class="btn btn-outline-primary mb-2">
                         Import Contacts
                     </a>
+
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Survey Statistics -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        Survey Statistics
+                    </h4>
+
+                    <p class="card-text text-muted">
+                        View detailed statistics for individual
+                        surveys, including question scores,
+                        themes and respondent comparisons.
+                    </p>
+
+                    <a href="/survey-statistics"
+                       class="btn btn-primary">
+                        View Statistics
+                    </a>
+
                 </div>
             </div>
         </div>
 
 
     </div>
+
+    <!-- PYTHON DATA ANALYSIS -->
+    <section class="mt-5">
+
+        <!-- Statistics Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h3 class="fw-bold mb-0">
+                Assessment Statistics
+            </h3>
+
+            <button class="btn btn-outline-primary"
+                    @onclick="LoadAnalysisAsync"
+                    disabled="@isLoading">
+
+                @(isLoading ? "Loading..." : "Refresh Statistics")
+
+            </button>
+
+        </div>
+
+        @if (isLoading)
+        {
+            <!-- Loading -->
+            <div class="alert alert-info" role="status">
+                Loading assessment statistics from Python...
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <!-- Error -->
+            <div class="alert alert-danger" role="alert">
+                @errorMessage
+            </div>
+        }
+        else if (analysis != null)
+        {
+            <!-- STATISTICS CARDS -->
+            <div class="row g-4">
+
+                <!-- Total Assessments -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="text-muted">
+                                Total Assessments
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                @(analysis?.TotalAssessments ?? 0)
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Total assessments created
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Assessments -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="text-muted">
+                                Active Assessments
+                            </h5>
+
+                            <h2 class="fw-bold text-success">
+                                @(analysis?.ActiveAssessments ?? 0)
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Assessments currently within
+                                their scheduled dates
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Assessments -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="text-muted">
+                                Upcoming Assessments
+                            </h5>
+
+                            <h2 class="fw-bold text-primary">
+                                @(analysis?.UpcomingAssessments ?? 0)
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Assessments scheduled to start
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Past Assessments -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="text-muted">
+                                Past Assessments
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                @(analysis?.PastAssessments ?? 0)
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Assessments past their end date
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Assessment Duration -->
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+
+                            <h5 class="text-muted">
+                                Average Duration
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                @(analysis?.AverageDurationDays.ToString("F1") ?? "0.0")
+                                days
+                            </h2>
+
+                            <p class="text-muted mb-0">
+                                Average scheduled assessment length
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- MONTHLY ASSESSMENT STATISTICS -->
+            <div class="card shadow-sm mt-4">
+
+                <div class="card-body">
+
+                    <h4 class="card-title mb-3">
+                        Assessments Started per Month
+                    </h4>
+
+                    <p class="text-muted">
+                        Monthly distribution calculated
+                        by Python using Pandas.
+                    </p>
+
+                    @if (analysis?.AssessmentsByMonth is { Count: > 0 } months)
+                    {
+                        <div class="table-responsive">
+
+                            <table class="table table-striped table-hover">
+
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Assessments Started</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var month in months)
+                                    {
+                                        <tr>
+                                            <td>@month.Month</td>
+                                            <td>@month.Count</td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            No monthly assessment data available.
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        }
+        else
+        {
+            <!-- No Data -->
+            <div class="alert alert-warning">
+                No assessment statistics are available.
+            </div>
+        }
+
+    </section>
+
+    
+    <!-- RESPONDENT STATISTICS -->
+    <h4 class="mt-5 mb-3">Respondent Statistics</h4>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Respondents</h6>
+                    <h2>@(analysis?.TotalRespondents ?? 0)</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Answered</h6>
+                    <h2 class="text-success">
+                        @(analysis?.AnsweredRespondents ?? 0)
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Not Answered</h6>
+                    <h2>
+                        @(analysis?.UnansweredRespondents ?? 0)
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Response Rate</h6>
+                    <h2>
+                        @(analysis?.ResponseRatePercent.ToString("F1") ?? "0")%
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RESPONSE RATE BY ASSESSMENT -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+
+            <h5 class="mb-3">Response Rate by Assessment</h5>
+
+            @if (analysis?.ResponsesByAssessment is { Count: > 0 } rows)
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Assessment</th>
+                                <th>Respondents</th>
+                                <th>Answered</th>
+                                <th>Response Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in rows)
+                            {
+                                <tr>
+                                    <td>@item.AssessmentName</td>
+                                    <td>@item.TotalRespondents</td>
+                                    <td>@item.AnsweredRespondents</td>
+                                    <td>
+                                        @item.ResponseRatePercent.ToString("F1")%
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">
+                    No respondent statistics available.
+                </p>
+            }
+
+        </div>
+    </div>
+
+
 </div>
 
 @code {
-   
+
+    // Statistics calculated by Python
+    private AnalysisResult? analysis;
+
+    // UI state
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    // Load statistics on page initialization
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAnalysisAsync();
+    }
+
+    // Retrieve Python statistics through the C# API
+    private async Task LoadAnalysisAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+        analysis = null;
+
+        try
+        {
+            AnalysisResult? result =
+                await AnalysisService.GetAnalysisAsync();
+
+            if (result is null)
+            {
+                errorMessage =
+                    "The API returned no assessment statistics.";
+
+                return;
+            }
+
+            analysis = result;
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage =
+                $"API connection failed: {ex.Message}";
+        }
+        catch (InvalidOperationException ex)
+        {
+            errorMessage = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            errorMessage =
+                $"Unable to load assessment statistics: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }

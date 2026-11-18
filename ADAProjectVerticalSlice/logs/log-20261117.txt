@@ -1,37 +1,7 @@
-2026-11-17 10:00:02.078 +01:00 [ERR] Failed executing DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
-CREATE VIEW audit.assessment_field_changes AS
-SELECT
-    a.id AS "AuditId",
-    a.changed_at AS "ChangedAt",
-    a.company_id AS "CompanyId",
-    a.row_pk ->> 'AssessmentId' AS "AssessmentId",
-    a.operation AS "Operation",
-    field.label AS "FieldName",
-    a.old_data ->> field.json_key AS "OldValue",
-    a.new_data ->> field.json_key AS "NewValue",
-    a.actor_id AS "ActorId",
-    a.request_id AS "RequestId"
-FROM audit.row_changes AS a
-JOIN (
-    VALUES
-        ('Assessment', 'AssessmentName', 'Survey name'),
-        ('Assessment', 'StartDate', 'Start date'),
-        ('Assessment', 'EndDate', 'End date'),
-        ('AssessmentRole', 'RoleId', 'Role'),
-        ('AssessmentRegion', 'RegionId', 'Region'),
-        ('AssessmentExperience', 'ExperienceId', 'Experience level')
-) AS field(table_name, json_key, label)
-    ON field.table_name = a.table_name
-WHERE a.schema_name = 'public'
-  -- Kundevisningen kræver et firma-id, der blev gemt med auditposten.
-  AND a.company_id IS NOT NULL
-  AND (a.row_pk ->> 'AssessmentId') IS NOT NULL
-  AND (a.old_data -> field.json_key)
-      IS DISTINCT FROM (a.new_data -> field.json_key);
-2026-11-17 10:25:28.132 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 15:13:46.346 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+2026-11-17 11:15:34.283 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 11:34:06.930 +01:00 [ERR] An unhandled exception has occurred while executing the request.
 Microsoft.AspNetCore.Http.BadHttpRequestException: Failed to read parameter "Command request" from the request body as JSON.
- ---> System.Text.Json.JsonException: The JSON value could not be converted to ADAProjectAPIVerticalSlice.Features.Respondents.ExchangeMagicLink.ExchangeMagicLink+Command. Path: $ | LineNumber: 0 | BytePositionInLine: 136.
+ ---> System.Text.Json.JsonException: The JSON value could not be converted to ADAProjectAPIVerticalSlice.Features.Authentication.Login.Login+Command. Path: $ | LineNumber: 0 | BytePositionInLine: 8.
    at System.Text.Json.ThrowHelper.ThrowJsonException_DeserializeUnableToConvertValue(Type propertyType)
    at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value)
    at System.Text.Json.Serialization.JsonConverter`1.TryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value, Boolean& isPopulatedValue)
@@ -48,18 +18,308 @@ Microsoft.AspNetCore.Http.BadHttpRequestException: Failed to read parameter "Com
    at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
 --- End of stack trace from previous location ---
    at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
-   at Program.<>c.<<<Main>$>b__0_14>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 366
+   at Program.<>c.<<<Main>$>b__0_13>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 317
 --- End of stack trace from previous location ---
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
    at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
    at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
-   at Program.<>c.<<<Main>$>b__0_13>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 284
+   at Program.<>c.<<<Main>$>b__0_12>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 239
 --- End of stack trace from previous location ---
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
-2026-11-17 15:16:04.445 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 15:20:12.086 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 15:24:35.797 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 15:26:45.896 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 15:31:21.502 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 18:18:34.724 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
-2026-11-17 18:25:55.479 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 11:38:26.432 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 11:38:26.736 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:38:26.738 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:38:26.800 +01:00 [INF] Received HTTP response headers after 60.2074ms - 200
+2026-11-17 11:38:26.802 +01:00 [INF] End processing HTTP request after 70.5175ms - 200
+2026-11-17 11:38:56.485 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:38:56.485 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:38:56.489 +01:00 [INF] Received HTTP response headers after 3.8258ms - 200
+2026-11-17 11:38:56.489 +01:00 [INF] End processing HTTP request after 4.7829ms - 200
+2026-11-17 11:39:02.605 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:02.605 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:02.608 +01:00 [INF] Received HTTP response headers after 3.1333ms - 200
+2026-11-17 11:39:02.608 +01:00 [INF] End processing HTTP request after 3.3568ms - 200
+2026-11-17 11:39:09.410 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:09.410 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:09.413 +01:00 [INF] Received HTTP response headers after 2.9345ms - 200
+2026-11-17 11:39:09.413 +01:00 [INF] End processing HTTP request after 3.1407ms - 200
+2026-11-17 11:39:10.011 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.011 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.013 +01:00 [INF] Received HTTP response headers after 1.9449ms - 200
+2026-11-17 11:39:10.013 +01:00 [INF] End processing HTTP request after 2.1642ms - 200
+2026-11-17 11:39:10.235 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.236 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.237 +01:00 [INF] Received HTTP response headers after 1.9543ms - 200
+2026-11-17 11:39:10.238 +01:00 [INF] End processing HTTP request after 2.1942ms - 200
+2026-11-17 11:39:10.451 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.451 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:39:10.453 +01:00 [INF] Received HTTP response headers after 1.7947ms - 200
+2026-11-17 11:39:10.453 +01:00 [INF] End processing HTTP request after 1.9698ms - 200
+2026-11-17 11:48:59.187 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 11:50:44.775 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 11:50:45.087 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:50:45.088 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:50:45.129 +01:00 [INF] Received HTTP response headers after 39.3965ms - 200
+2026-11-17 11:50:45.131 +01:00 [INF] End processing HTTP request after 48.8734ms - 200
+2026-11-17 11:51:03.095 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:51:03.095 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:51:03.099 +01:00 [INF] Received HTTP response headers after 3.6276ms - 200
+2026-11-17 11:51:03.099 +01:00 [INF] End processing HTTP request after 4.5247ms - 200
+2026-11-17 11:51:05.613 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:51:05.613 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 11:51:05.615 +01:00 [INF] Received HTTP response headers after 2.1825ms - 200
+2026-11-17 11:51:05.615 +01:00 [INF] End processing HTTP request after 2.3918ms - 200
+2026-11-17 11:57:31.961 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 12:00:47.018 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 12:00:47.341 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:00:47.342 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:00:47.384 +01:00 [INF] Received HTTP response headers after 39.0182ms - 200
+2026-11-17 12:00:47.385 +01:00 [INF] End processing HTTP request after 49.3789ms - 200
+2026-11-17 12:13:00.800 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 12:13:01.137 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:01.139 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:01.179 +01:00 [INF] Received HTTP response headers after 38.47ms - 200
+2026-11-17 12:13:01.181 +01:00 [INF] End processing HTTP request after 48.1825ms - 200
+2026-11-17 12:13:12.281 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:12.281 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:12.286 +01:00 [INF] Received HTTP response headers after 4.9087ms - 200
+2026-11-17 12:13:12.286 +01:00 [INF] End processing HTTP request after 5.7568ms - 200
+2026-11-17 12:13:13.483 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:13.483 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:13.485 +01:00 [INF] Received HTTP response headers after 1.9754ms - 200
+2026-11-17 12:13:13.485 +01:00 [INF] End processing HTTP request after 2.1868ms - 200
+2026-11-17 12:13:15.928 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:15.928 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:15.930 +01:00 [INF] Received HTTP response headers after 1.977ms - 200
+2026-11-17 12:13:15.930 +01:00 [INF] End processing HTTP request after 2.2374ms - 200
+2026-11-17 12:13:16.407 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.407 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.410 +01:00 [INF] Received HTTP response headers after 2.4329ms - 200
+2026-11-17 12:13:16.410 +01:00 [INF] End processing HTTP request after 2.7017ms - 200
+2026-11-17 12:13:16.624 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.624 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.626 +01:00 [INF] Received HTTP response headers after 2.2428ms - 200
+2026-11-17 12:13:16.626 +01:00 [INF] End processing HTTP request after 2.5403ms - 200
+2026-11-17 12:13:16.850 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.850 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:16.852 +01:00 [INF] Received HTTP response headers after 1.7383ms - 200
+2026-11-17 12:13:16.852 +01:00 [INF] End processing HTTP request after 1.9406ms - 200
+2026-11-17 12:13:17.126 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:17.126 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:13:17.128 +01:00 [INF] Received HTTP response headers after 2.0135ms - 200
+2026-11-17 12:13:17.128 +01:00 [INF] End processing HTTP request after 2.2733ms - 200
+2026-11-17 12:15:38.952 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 12:15:44.018 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:15:44.020 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:15:44.063 +01:00 [INF] Received HTTP response headers after 39.6218ms - 200
+2026-11-17 12:15:44.065 +01:00 [INF] End processing HTTP request after 51.8371ms - 200
+2026-11-17 12:15:48.507 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:15:48.507 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:15:48.510 +01:00 [INF] Received HTTP response headers after 2.6817ms - 200
+2026-11-17 12:15:48.510 +01:00 [INF] End processing HTTP request after 3.3845ms - 200
+2026-11-17 12:19:31.858 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 12:19:32.207 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:32.209 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:32.250 +01:00 [INF] Received HTTP response headers after 39.0019ms - 200
+2026-11-17 12:19:32.251 +01:00 [INF] End processing HTTP request after 51.5684ms - 200
+2026-11-17 12:19:42.475 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:42.476 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:42.481 +01:00 [INF] Received HTTP response headers after 4.8888ms - 200
+2026-11-17 12:19:42.481 +01:00 [INF] End processing HTTP request after 5.9452ms - 200
+2026-11-17 12:19:44.788 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:44.788 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:44.790 +01:00 [INF] Received HTTP response headers after 2.0867ms - 200
+2026-11-17 12:19:44.790 +01:00 [INF] End processing HTTP request after 2.2894ms - 200
+2026-11-17 12:19:53.382 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:53.382 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:19:53.385 +01:00 [INF] Received HTTP response headers after 3.0753ms - 200
+2026-11-17 12:19:53.385 +01:00 [INF] End processing HTTP request after 3.3198ms - 200
+2026-11-17 12:20:09.769 +01:00 [INF] Start processing HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:20:09.769 +01:00 [INF] Sending HTTP request POST http://127.0.0.1:8001/analyze
+2026-11-17 12:20:09.772 +01:00 [INF] Received HTTP response headers after 3.0057ms - 200
+2026-11-17 12:20:09.772 +01:00 [INF] End processing HTTP request after 3.4256ms - 200
+2026-11-17 16:02:46.768 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 16:02:47.096 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:02:47.098 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:02:49.184 +01:00 [INF] HTTP request failed after 2083.1076ms
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-17 16:02:49.187 +01:00 [INF] HTTP request failed after 2097.1017ms
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-17 16:02:49.225 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-17 16:03:23.961 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:03:23.961 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:03:25.988 +01:00 [INF] HTTP request failed after 2026.9095ms
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-17 16:03:25.988 +01:00 [INF] HTTP request failed after 2028.3881ms
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+2026-11-17 16:03:26.010 +01:00 [ERR] Python analysis service unavailable.
+System.Net.Http.HttpRequestException: No connection could be made because the target machine actively refused it. (127.0.0.1:8001)
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.InjectNewHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionWaiter`1.WaitForConnectionWithTelemetryAsync(HttpRequestMessage request, HttpConnectionPool pool, Boolean async, CancellationToken requestCancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Analysis.GetAnalysis.<>c.<<AddRoutes>b__0_0>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Analysis\GetAnalysis.cs:line 22
+2026-11-17 16:16:02.865 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 16:16:03.200 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:03.202 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:03.307 +01:00 [INF] Received HTTP response headers after 102.3737ms - 200
+2026-11-17 16:16:03.309 +01:00 [INF] End processing HTTP request after 114.4961ms - 200
+2026-11-17 16:16:12.917 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:12.917 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:12.966 +01:00 [INF] Received HTTP response headers after 48.798ms - 200
+2026-11-17 16:16:12.966 +01:00 [INF] End processing HTTP request after 49.7067ms - 200
+2026-11-17 16:16:18.171 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:18.171 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:16:18.219 +01:00 [INF] Received HTTP response headers after 47.6883ms - 200
+2026-11-17 16:16:18.219 +01:00 [INF] End processing HTTP request after 48.0169ms - 200
+2026-11-17 16:35:50.828 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 16:35:51.130 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:35:51.131 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:35:51.231 +01:00 [INF] Received HTTP response headers after 97.8335ms - 200
+2026-11-17 16:35:51.233 +01:00 [INF] End processing HTTP request after 108.4529ms - 200
+2026-11-17 16:40:06.327 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.AspNetCore.Http.BadHttpRequestException: Failed to read parameter "Command request" from the request body as JSON.
+ ---> System.Text.Json.JsonException: The JSON value could not be converted to ADAProjectAPIVerticalSlice.Features.Authentication.Login.Login+Command. Path: $ | LineNumber: 0 | BytePositionInLine: 7.
+   at System.Text.Json.ThrowHelper.ThrowJsonException_DeserializeUnableToConvertValue(Type propertyType)
+   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value)
+   at System.Text.Json.Serialization.JsonConverter`1.TryRead(Utf8JsonReader& reader, Type typeToConvert, JsonSerializerOptions options, ReadStack& state, T& value, Boolean& isPopulatedValue)
+   at System.Text.Json.Serialization.JsonConverter`1.ReadCore(Utf8JsonReader& reader, T& value, JsonSerializerOptions options, ReadStack& state)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.ContinueDeserialize[TReadBufferState,TStream](TReadBufferState& bufferState, JsonReaderState& jsonReaderState, ReadStack& readStack, T& value)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsync[TReadBufferState,TStream](TStream utf8Json, TReadBufferState bufferState, CancellationToken cancellationToken)
+   at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.DeserializeAsObjectAsync(PipeReader utf8Json, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.HttpRequestJsonExtensions.ReadFromJsonAsync(HttpRequest request, JsonTypeInfo jsonTypeInfo, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.HttpRequestJsonExtensions.ReadFromJsonAsync(HttpRequest request, JsonTypeInfo jsonTypeInfo, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<HandleRequestBodyAndCompileRequestDelegateForJson>g__TryReadBodyAsync|102_0(HttpContext httpContext, Type bodyType, String parameterTypeName, String parameterName, Boolean allowEmptyRequestBody, Boolean throwOnBadRequest, JsonTypeInfo jsonTypeInfo)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.Log.InvalidJsonRequestBody(HttpContext httpContext, String parameterTypeName, String parameterName, Exception exception, Boolean shouldThrow)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<HandleRequestBodyAndCompileRequestDelegateForJson>g__TryReadBodyAsync|102_0(HttpContext httpContext, Type bodyType, String parameterTypeName, String parameterName, Boolean allowEmptyRequestBody, Boolean throwOnBadRequest, JsonTypeInfo jsonTypeInfo)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_13>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 316
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Program.<>c.<<<Main>$>b__0_12>d.MoveNext() in G:\Datamatiker\Visual Studio Code\4. Semester\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 238
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-11-17 16:53:30.210 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 16:53:38.873 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:53:38.875 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 16:53:38.986 +01:00 [INF] Received HTTP response headers after 107.9194ms - 200
+2026-11-17 16:53:38.987 +01:00 [INF] End processing HTTP request after 119.2946ms - 200
+2026-11-17 17:19:22.447 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-17 17:19:22.793 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:19:22.795 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:19:22.991 +01:00 [INF] Received HTTP response headers after 193.5481ms - 200
+2026-11-17 17:19:22.993 +01:00 [INF] End processing HTTP request after 206.4442ms - 200
+2026-11-17 17:19:26.079 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:19:26.079 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:19:26.130 +01:00 [INF] Received HTTP response headers after 50.8357ms - 200
+2026-11-17 17:19:26.130 +01:00 [INF] End processing HTTP request after 51.8889ms - 200
+2026-11-17 17:24:36.747 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:24:36.747 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:24:36.804 +01:00 [INF] Received HTTP response headers after 56.7682ms - 200
+2026-11-17 17:24:36.804 +01:00 [INF] End processing HTTP request after 57.1646ms - 200
+2026-11-17 17:24:38.961 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:24:38.962 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-17 17:24:39.014 +01:00 [INF] Received HTTP response headers after 52.8188ms - 200
+2026-11-17 17:24:39.015 +01:00 [INF] End processing HTTP request after 53.2534ms - 200

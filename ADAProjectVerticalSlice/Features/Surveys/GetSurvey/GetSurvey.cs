@@ -1,20 +1,18 @@
-﻿using ADAProjectAPIVerticalSlice.Features.Surveys.GetSurvey;
-using ADAProjectAPIVerticalSlice.Infrastructure.Database;
+﻿using ADAProjectAPIVerticalSlice.Infrastructure.Database;
 using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-
-// Tilpas namespace/imports for Result og Error til dit projekt.
-
 namespace ADAProjectAPIVerticalSlice.Features.Surveys.GetSurvey;
 
 public class GetSurvey
 {
-    public record Query(string Token) : IRequest<Result<GetSurveyResponse>>;
+    public record Query(string Token)
+        : IRequest<Result<GetSurveyResponse>>;
 
-    public class Handler : IRequestHandler<Query, Result<GetSurveyResponse>>
+    public class Handler
+        : IRequestHandler<Query, Result<GetSurveyResponse>>
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -27,57 +25,48 @@ public class GetSurvey
             Query request,
             CancellationToken cancellationToken)
         {
+            // 1. Kontroller token
             if (string.IsNullOrWhiteSpace(request.Token))
             {
-                return Result.Failure<GetSurveyResponse>(Error.NullValue);
+                return Result.Failure<GetSurveyResponse>(
+                    Error.NullValue);
             }
 
-            // 1. Find respondenten og den tilhørende måling.
+            // 2. Find respondent og assessment
             var respondent = await _dbContext.Respondents
                 .AsNoTracking()
                 .Where(r => r.AccessToken == request.Token)
-               .Select(r => new
-               {
-                   r.RespondentId,
-                   r.HasAnswered,
-                   r.Assessment.AssessmentName,
-                   r.Assessment.StartDate,
-                   r.Assessment.EndDate,
-                   r.Assessment.SurveyId,
-                   ApplicationName = r.Assessment.Application.ApplicationName,
-
-                   // NYT: det, respondenten kan vælge imellem. Det er MÅLINGENS roller, regioner og erfaringer
-                   // (r.Assessment.Roles osv.), altså dem, produktejeren oprettede målingen med. EF henter dem fra
-                   // tabellerne AssessmentRole, AssessmentRegion og AssessmentExperience. Det er ikke noget, der
-                   // ligger på respondenten selv (Respondent.RoleId osv. bliver først sat, når svaret sendes).
-                   AssessmentRoles = r.Assessment.Roles
-                       .OrderBy(x => x.RoleName)
-                       .Select(x => new { x.RoleId, x.RoleName })
-                       .ToList(),
-                   AssessmentRegions = r.Assessment.Regions
-                       .OrderBy(x => x.RegionName)
-                       .Select(x => new { x.RegionId, x.RegionName })
-                       .ToList(),
-                   AssessmentExperiences = r.Assessment.Experiences
-                       .Select(x => new { x.ExperienceId, x.ExperienceValue })
-                       .ToList()
-               })
+                .Select(r => new
+                {
+                    r.RespondentId,
+                    r.AssessmentId,
+                    r.HasAnswered,
+                    r.Assessment.AssessmentName,
+                    r.Assessment.StartDate,
+                    r.Assessment.EndDate,
+                    r.Assessment.SurveyId,
+                    ApplicationName =
+                        r.Assessment.Application.ApplicationName
+                })
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (respondent is null || respondent.HasAnswered)
             {
-                return Result.Failure<GetSurveyResponse>(Error.NullValue);
+                return Result.Failure<GetSurveyResponse>(
+                    Error.NullValue);
             }
 
-            // 2. Kontrollér, at målingen er åben.
+            // 3. Kontroller om målingen er åben
             var now = DateTime.UtcNow;
 
-            if (now < respondent.StartDate || now > respondent.EndDate)
+            if (now < respondent.StartDate ||
+                now > respondent.EndDate)
             {
-                return Result.Failure<GetSurveyResponse>(Error.NullValue);
+                return Result.Failure<GetSurveyResponse>(
+                    Error.NullValue);
             }
 
-            // 3. Hent surveyens titel og beskrivelse.
+            // 4. Hent survey
             var survey = await _dbContext.Surveys
                 .AsNoTracking()
                 .Where(s => s.SurveyId == respondent.SurveyId)
@@ -90,11 +79,24 @@ public class GetSurvey
 
             if (survey is null)
             {
-                return Result.Failure<GetSurveyResponse>(Error.NullValue);
+                return Result.Failure<GetSurveyResponse>(
+                    Error.NullValue);
             }
 
-            // 4. Hent temaer og spørgsmål separat.
-            // Det kræver ikke navigation properties på Survey eller Theme.
+            // 5. Hent assessment med roller,
+            // regioner og erfaringer
+            var assessment = await _dbContext.Assessments
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(a => a.Roles)
+                .Include(a => a.Regions)
+                .Include(a => a.Experiences)
+                .SingleAsync(
+                    a => a.AssessmentId == respondent.AssessmentId,
+                    cancellationToken
+                );
+
+            // 6. Hent temaer
             var themes = await _dbContext.Themes
                 .AsNoTracking()
                 .Where(t => t.SurveyId == respondent.SurveyId)
@@ -106,6 +108,7 @@ public class GetSurvey
                 })
                 .ToListAsync(cancellationToken);
 
+            // 7. Hent spørgsmål
             var questions = await _dbContext.Questions
                 .AsNoTracking()
                 .Where(q => q.SurveyId == respondent.SurveyId)
@@ -119,68 +122,99 @@ public class GetSurvey
                 })
                 .ToListAsync(cancellationToken);
 
-            // 5. Saml spørgsmålene under de rigtige temaer.
+            // 8. Byg svarobjekt
             var response = new GetSurveyResponse
             {
                 SurveyTitle = survey.Title,
                 SurveyDescription = survey.Description,
                 AssessmentName = respondent.AssessmentName,
 
-                // NYT: målingens valgmuligheder til siden "Om dig" i appen.
-                Roles = respondent.AssessmentRoles
-                    .Select(x => new SurveyRoleResponse { RoleId = x.RoleId, RoleName = x.RoleName })
-                    .ToList(),
-                Regions = respondent.AssessmentRegions
-                    .Select(x => new SurveyRegionResponse { RegionId = x.RegionId, RegionName = x.RegionName })
-                    .ToList(),
-                Experiences = respondent.AssessmentExperiences
-                    .Select(x => new SurveyExperienceResponse
-                    {
-                        ExperienceId = x.ExperienceId,
-                        ExperienceValue = x.ExperienceValue
-                    })
-                    .ToList(),
+                // HERE ARE YOUR THREE PROPERTIES
 
-                Themes = themes.Select(theme => new SurveyThemeResponse
+                Roles = assessment.Roles
+                .Select(r => new SurveyRoleResponse
                 {
-                    ThemeId = theme.ThemeId,
-                    Title = theme.Title,
-                    Description = theme.Description,
+                    RoleId = r.RoleId,
+                    RoleName = r.RoleName
+                })
+                .ToList(),
 
-                    Questions = questions
-                        .Where(q => q.ThemeId == theme.ThemeId)
-                        .Select(q => new SurveyQuestionResponse
-                        {
-                            QuestionId = q.QuestionId,
-                            QuestionText = q.QuestionText.Replace(
-                            "[System]",
-                            respondent.ApplicationName),
-                            QuestionPolarity = q.QuestionPolarity,
-                            QuestionType = q.QuestionType,
-                            AnswerOptions = new List<int> { 1, 2, 3, 4, 5 }
-                        })
-                        .ToList()
-                }).ToList()
+                        // Available regions for this assessment
+                        Regions = assessment.Regions
+                .Select(r => new SurveyRegionResponse
+                {
+                    RegionId = r.RegionId,
+                    RegionName = r.RegionName
+                })
+                .ToList(),
+
+                        // Available experience levels for this assessment
+                        Experiences = assessment.Experiences
+                .Select(e => new SurveyExperienceResponse
+                {
+                    ExperienceId = e.ExperienceId,
+                    ExperienceValue = e.ExperienceValue
+                })
+                .ToList(),
+
+                // Survey themes and questions
+                Themes = themes.Select(theme =>
+                    new SurveyThemeResponse
+                    {
+                        ThemeId = theme.ThemeId,
+                        Title = theme.Title,
+                        Description = theme.Description,
+
+                        Questions = questions
+                            .Where(q =>
+                                q.ThemeId == theme.ThemeId)
+                            .Select(q =>
+                                new SurveyQuestionResponse
+                                {
+                                    QuestionId = q.QuestionId,
+
+                                    QuestionText =
+                                        q.QuestionText.Replace(
+                                            "[System]",
+                                            respondent.ApplicationName
+                                        ),
+
+                                    QuestionPolarity =
+                                        q.QuestionPolarity,
+
+                                    QuestionType =
+                                        q.QuestionType,
+
+                                    AnswerOptions =
+                                        new List<int>
+                                        {
+                                            1, 2, 3, 4, 5
+                                        }
+                                })
+                            .ToList()
+                    })
+                    .ToList()
             };
 
             return response;
         }
     }
 
+    // Carter endpoint
     public class Endpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            // HTTP GET
             app.MapGet(
-                "api/respondents/survey",
-                async (string token, ISender sender) =>
+                "/api/respondents/survey",
+                async (
+                    string token,
+                    ISender sender,
+                    CancellationToken ct) =>
                 {
-                    // Opretter Query'en med respondentens adgangstoken.
                     var query = new Query(token);
 
-                    // Sender Query'en til MediatR, som finder den korrekte Handler.
-                    var result = await sender.Send(query);
+                    var result = await sender.Send(query, ct);
 
                     if (result.IsFailure)
                     {
@@ -189,8 +223,7 @@ public class GetSurvey
 
                     return Results.Ok(result.Value);
                 })
-            .RequireAuthorization("UserOrAdmin");
+                .AllowAnonymous();
         }
-
     }
 }

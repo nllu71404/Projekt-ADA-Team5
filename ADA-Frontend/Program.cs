@@ -20,6 +20,9 @@ builder.Services.AddHttpClient("ADAApi", client =>
 
 builder.Services.AddScoped<AuthSession>();
 
+//Python
+builder.Services.AddScoped<AnalysisService>();
+builder.Services.AddScoped<SurveyStatisticsService>();
 
 var app = builder.Build();
 
