@@ -15,6 +15,10 @@
       {
         "Path": "ADA-Email-Service\\ADA-EmailConsumer.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "ADA-Analyse\\ADA-Analyse.pyproj",
+        "Action": "Start"
       }
     ]
   }

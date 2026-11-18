@@ -256,12 +256,13 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
 }
 
 // Endpoint
+// Carter endpoint
 public class Endpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost(
-            "api/respondents/survey/submit",
+            "/api/respondents/survey/submit",
             async (
                 SubmitSurveyResponseRequest request,
                 ISender sender,
@@ -273,17 +274,21 @@ public class Endpoint : ICarterModule
                     request.Comments,
                     request.RoleId,
                     request.RegionId,
-                    request.ExperienceId);
+                    request.ExperienceId
+                );
 
                 var result = await sender.Send(
                     command,
-                    cancellationToken);
+                    cancellationToken
+                );
 
                 if (result.IsFailure)
+                {
                     return Results.BadRequest(result.Error);
+                }
 
                 return Results.NoContent();
             })
-        .RequireAuthorization("UserOrAdmin");
+            .AllowAnonymous();
     }
 }
