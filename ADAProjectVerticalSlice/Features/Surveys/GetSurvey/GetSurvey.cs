@@ -131,26 +131,7 @@ public class GetSurvey
 
                 // HERE ARE YOUR THREE PROPERTIES
 
-                Roles = assessment.Roles
-                    .Select(r => new SurveyRoleOption(
-                        r.RoleId,
-                        r.RoleName
-                    ))
-                    .ToList(),
-
-                Regions = assessment.Regions
-                    .Select(r => new SurveyRegionOption(
-                        r.RegionId,
-                        r.RegionName
-                    ))
-                    .ToList(),
-
-                Experiences = assessment.Experiences
-                    .Select(e => new SurveyExperienceOption(
-                        e.ExperienceId,
-                        e.ExperienceValue
-                    ))
-                    .ToList(),
+               
 
                 // Survey themes and questions
                 Themes = themes.Select(theme =>

@@ -10,11 +10,6 @@
     public List<SurveyExperienceResponse> Experiences { get; set; } = new();
 
     public List<SurveyThemeResponse> Themes { get; set; } = new();
-
-    // Options the respondent can select
-    public List<SurveyRoleOption> Roles { get; set; } = new();
-    public List<SurveyRegionOption> Regions { get; set; } = new();
-    public List<SurveyExperienceOption> Experiences { get; set; } = new();
 }
 
 // NYT
