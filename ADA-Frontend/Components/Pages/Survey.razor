@@ -1,0 +1,426 @@
+﻿@page "/surveys"
+@page "/survey"
+@rendermode InteractiveServer
+
+@using ADA.Frontend.Services
+@using System.Net.Http.Json
+
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Answer Survey</PageTitle>
+
+<div class="container py-4" style="max-width: 900px">
+
+    <h1>Answer Survey</h1>
+
+    @if (string.IsNullOrWhiteSpace(Token))
+    {
+        <!-- Enter survey token -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+
+                <h4>Open your survey</h4>
+
+                <p class="text-muted">
+                    Enter your survey access token to continue.
+                </p>
+
+                <input class="form-control"
+                       placeholder="Survey access token"
+                       @bind="enteredToken"
+                       @bind:event="oninput" />
+
+                <button class="btn btn-primary mt-3"
+                        disabled="@string.IsNullOrWhiteSpace(enteredToken)"
+                        @onclick="OpenSurvey">
+                    Open Survey
+                </button>
+
+            </div>
+        </div>
+    }
+    else if (isLoading)
+    {
+        <p>Loading survey...</p>
+    }
+    else if (submitted)
+    {
+        <div class="alert alert-success mt-4">
+            Thank you! Your answers have been submitted.
+        </div>
+    }
+    else if (survey is not null)
+    {
+        <!-- Survey information -->
+        <div class="mt-4 mb-4">
+            <h2>@survey.SurveyTitle</h2>
+            <p class="text-muted">
+                Assessment: @survey.AssessmentName
+            </p>
+            <p>@survey.SurveyDescription</p>
+        </div>
+
+        <!-- Respondent information -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+
+                <h4>About you</h4>
+
+                <div class="row g-3">
+
+                    <!-- Role -->
+                    <div class="col-md-4">
+                        <label class="form-label">Role</label>
+
+                        <select class="form-select" @bind="roleId">
+                            <option value="@Guid.Empty">
+                                Select role
+                            </option>
+
+                            @foreach (var role in survey.Roles)
+                            {
+                                <option value="@role.RoleId">
+                                    @role.RoleName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Region -->
+                    <div class="col-md-4">
+                        <label class="form-label">Region</label>
+
+                        <select class="form-select" @bind="regionId">
+                            <option value="@Guid.Empty">
+                                Select region
+                            </option>
+
+                            @foreach (var region in survey.Regions)
+                            {
+                                <option value="@region.RegionId">
+                                    @region.RegionName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="col-md-4">
+                        <label class="form-label">Experience</label>
+
+                        <select class="form-select" @bind="experienceId">
+                            <option value="@Guid.Empty">
+                                Select experience
+                            </option>
+
+                            @foreach (var experience in survey.Experiences)
+                            {
+                                <option value="@experience.ExperienceId">
+                                    @experience.ExperienceValue
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Themes and questions -->
+        @foreach (var theme in survey.Themes)
+        {
+            <div class="card shadow-sm mb-4"
+                 @key="theme.ThemeId">
+
+                <div class="card-body">
+
+                    <h4>@theme.Title</h4>
+
+                    <p class="text-muted">
+                        @theme.Description
+                    </p>
+
+                    @foreach (var question in theme.Questions)
+                    {
+                        <fieldset class="border-top pt-3 mt-3"
+                                  @key="question.QuestionId">
+
+                            <legend class="fs-6 fw-semibold">
+                                @question.QuestionText
+                            </legend>
+
+                            <div class="d-flex flex-wrap gap-3 mt-2">
+
+                                @foreach (var point in question.AnswerOptions)
+                                {
+                                    <label class="form-check form-check-inline">
+
+                                        <input type="radio"
+                                               class="form-check-input"
+                                               name="@($"question-{question.QuestionId:N}")"
+                                               value="@point"
+                                               checked="@(answers.TryGetValue(question.QuestionId, out var chosen) && chosen == point)"
+                                               @onchange="_ => SetAnswer(question.QuestionId, point)" />
+
+                                        <span class="form-check-label">
+                                            @point
+                                        </span>
+
+                                    </label>
+                                }
+
+                            </div>
+                        </fieldset>
+                    }
+
+                    <!-- Optional comment -->
+                    <div class="mt-3">
+
+                        <label class="form-label">
+                            Comment (optional)
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="3"
+                                  @oninput="e => SetComment(theme.ThemeId, e.Value?.ToString() ?? string.Empty)">
+                        </textarea>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
+        <!-- Error -->
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert alert-danger">
+                @errorMessage
+            </div>
+        }
+
+        <!-- Submit -->
+        <button class="btn btn-success btn-lg"
+                disabled="@isSubmitting"
+                @onclick="SubmitAsync">
+
+            @(isSubmitting ? "Submitting..." : "Submit Survey")
+
+        </button>
+    }
+
+    @if (survey is null &&
+         !isLoading &&
+         !submitted &&
+         !string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger mt-4">
+            @errorMessage
+        </div>
+    }
+
+</div>
+
+@code {
+
+    // Token from URL: /survey?token=...
+    [SupplyParameterFromQuery(Name = "token")]
+    public string? Token { get; set; }
+
+    private string enteredToken = string.Empty;
+    private string? loadedToken;
+
+    private SurveyResponseDto? survey;
+
+    private readonly Dictionary<Guid, int> answers = new();
+    private readonly Dictionary<Guid, string> comments = new();
+
+    private Guid roleId = Guid.Empty;
+    private Guid regionId = Guid.Empty;
+    private Guid experienceId = Guid.Empty;
+
+    private bool isLoading = false;
+    private bool isSubmitting = false;
+    private bool submitted = false;
+
+    private string errorMessage = string.Empty;
+
+    // Runs when the token in the URL changes
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Token == loadedToken)
+            return;
+
+        loadedToken = Token;
+
+        survey = null;
+        submitted = false;
+        errorMessage = string.Empty;
+
+        answers.Clear();
+        comments.Clear();
+
+        roleId = Guid.Empty;
+        regionId = Guid.Empty;
+        experienceId = Guid.Empty;
+
+        if (string.IsNullOrWhiteSpace(Token))
+            return;
+
+        isLoading = true;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            var url =
+                $"api/respondents/survey?token={Uri.EscapeDataString(Token)}";
+
+            using var response = await client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    "Survey not found, closed or already answered.";
+
+                return;
+            }
+
+            survey = await response.Content
+                .ReadFromJsonAsync<SurveyResponseDto>();
+
+            if (survey is null)
+            {
+                errorMessage = "Could not load survey.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not connect to the backend API.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            errorMessage = "The survey response was invalid.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    // Navigate to the selected survey
+    private void OpenSurvey()
+    {
+        if (string.IsNullOrWhiteSpace(enteredToken))
+            return;
+
+        var token = Uri.EscapeDataString(enteredToken.Trim());
+
+        Navigation.NavigateTo($"/survey?token={token}");
+    }
+
+    // Save selected answer locally
+    private void SetAnswer(Guid questionId, int point)
+    {
+        answers[questionId] = point;
+    }
+
+    // Save optional comment locally
+    private void SetComment(Guid themeId, string value)
+    {
+        comments[themeId] = value;
+    }
+
+    // Submit all answers to C# backend
+    private async Task SubmitAsync()
+    {
+        if (survey is null || string.IsNullOrWhiteSpace(Token))
+            return;
+
+        errorMessage = string.Empty;
+
+        var questions = survey.Themes
+            .SelectMany(t => t.Questions)
+            .ToList();
+
+        // Validate respondent information
+        if (roleId == Guid.Empty ||
+            regionId == Guid.Empty ||
+            experienceId == Guid.Empty)
+        {
+            errorMessage =
+                "Please select role, region and experience.";
+
+            return;
+        }
+
+        // Validate answers
+        if (questions.Count == 0 ||
+            questions.Any(q => !answers.ContainsKey(q.QuestionId)))
+        {
+            errorMessage =
+                "Please answer every question.";
+
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            // Build submission request
+            var request = new
+            {
+                Token = Token,
+
+                RoleId = roleId,
+                RegionId = regionId,
+                ExperienceId = experienceId,
+
+                Answers = questions.Select(q => new
+                {
+                    QuestionId = q.QuestionId,
+                    Point = answers[q.QuestionId]
+                }).ToList(),
+
+                Comments = survey.Themes
+                    .Where(t =>
+                        comments.TryGetValue(t.ThemeId, out var text) &&
+                        !string.IsNullOrWhiteSpace(text))
+                    .Select(t => new
+                    {
+                        ThemeId = t.ThemeId,
+                        FreeForm = comments[t.ThemeId]
+                    }).ToList()
+            };
+
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            using var response = await client.PostAsJsonAsync(
+                "api/respondents/survey/submit",
+                request
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                submitted = true;
+                survey = null;
+            }
+            else
+            {
+                errorMessage =
+                    $"Submission failed (HTTP {(int)response.StatusCode}). " +
+                    "Check your answers or survey access.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not connect to the backend API.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}

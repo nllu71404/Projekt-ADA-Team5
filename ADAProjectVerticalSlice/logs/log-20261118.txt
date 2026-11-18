@@ -1,0 +1,108 @@
+2026-11-18 09:52:11.467 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:52:11.821 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:52:11.823 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:52:12.114 +01:00 [INF] Received HTTP response headers after 287.8715ms - 200
+2026-11-18 09:52:12.116 +01:00 [INF] End processing HTTP request after 302.776ms - 200
+2026-11-18 09:57:52.156 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:57:52.464 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:57:52.466 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:57:52.588 +01:00 [INF] Received HTTP response headers after 119.2345ms - 200
+2026-11-18 09:57:52.590 +01:00 [INF] End processing HTTP request after 131.0251ms - 200
+2026-11-18 09:57:56.484 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 09:57:56.484 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 09:57:56.488 +01:00 [INF] Received HTTP response headers after 3.8679ms - 404
+2026-11-18 09:57:56.488 +01:00 [INF] End processing HTTP request after 4.573ms - 404
+2026-11-18 09:57:57.769 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:57:57.769 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:57:57.771 +01:00 [INF] Received HTTP response headers after 1.6192ms - 404
+2026-11-18 09:57:57.771 +01:00 [INF] End processing HTTP request after 1.8855ms - 404
+2026-11-18 09:57:58.988 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 09:57:58.988 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 09:57:58.990 +01:00 [INF] Received HTTP response headers after 1.733ms - 404
+2026-11-18 09:57:58.990 +01:00 [INF] End processing HTTP request after 1.9412ms - 404
+2026-11-18 09:58:00.433 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:58:00.433 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 09:58:00.434 +01:00 [INF] Received HTTP response headers after 1.7273ms - 404
+2026-11-18 09:58:00.434 +01:00 [INF] End processing HTTP request after 2.0606ms - 404
+2026-11-18 09:58:01.734 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 09:58:01.734 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 09:58:01.736 +01:00 [INF] Received HTTP response headers after 1.7134ms - 404
+2026-11-18 09:58:01.736 +01:00 [INF] End processing HTTP request after 1.9755ms - 404
+2026-11-18 09:59:35.587 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 09:59:35.953 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:35.955 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:36.062 +01:00 [INF] Received HTTP response headers after 103.9688ms - 200
+2026-11-18 09:59:36.064 +01:00 [INF] End processing HTTP request after 116.6248ms - 200
+2026-11-18 09:59:51.102 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:51.102 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:51.148 +01:00 [INF] Received HTTP response headers after 46.3499ms - 200
+2026-11-18 09:59:51.148 +01:00 [INF] End processing HTTP request after 47.1902ms - 200
+2026-11-18 09:59:53.271 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:53.271 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 09:59:53.319 +01:00 [INF] Received HTTP response headers after 48.4838ms - 200
+2026-11-18 09:59:53.320 +01:00 [INF] End processing HTTP request after 48.7683ms - 200
+2026-11-18 10:00:50.522 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:00:50.522 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:00:50.569 +01:00 [INF] Received HTTP response headers after 46.6161ms - 200
+2026-11-18 10:00:50.569 +01:00 [INF] End processing HTTP request after 46.9337ms - 200
+2026-11-18 10:01:44.147 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:01:44.147 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:01:44.196 +01:00 [INF] Received HTTP response headers after 48.0955ms - 200
+2026-11-18 10:01:44.196 +01:00 [INF] End processing HTTP request after 48.4954ms - 200
+2026-11-18 10:01:49.443 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:01:49.444 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:01:49.447 +01:00 [INF] Received HTTP response headers after 3.1621ms - 404
+2026-11-18 10:01:49.447 +01:00 [INF] End processing HTTP request after 3.4749ms - 404
+2026-11-18 10:01:50.972 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:01:50.972 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:01:50.973 +01:00 [INF] Received HTTP response headers after 1.5089ms - 404
+2026-11-18 10:01:50.973 +01:00 [INF] End processing HTTP request after 1.7028ms - 404
+2026-11-18 10:01:52.360 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:01:52.360 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:01:52.362 +01:00 [INF] Received HTTP response headers after 1.6798ms - 404
+2026-11-18 10:01:52.362 +01:00 [INF] End processing HTTP request after 1.975ms - 404
+2026-11-18 10:01:53.600 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:01:53.600 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:01:53.602 +01:00 [INF] Received HTTP response headers after 1.8596ms - 404
+2026-11-18 10:01:53.602 +01:00 [INF] End processing HTTP request after 2.1913ms - 404
+2026-11-18 10:01:54.885 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:01:54.885 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:01:54.886 +01:00 [INF] Received HTTP response headers after 1.6147ms - 404
+2026-11-18 10:01:54.886 +01:00 [INF] End processing HTTP request after 1.8996ms - 404
+2026-11-18 10:01:56.039 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:01:56.039 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:01:56.040 +01:00 [INF] Received HTTP response headers after 1.4664ms - 404
+2026-11-18 10:01:56.040 +01:00 [INF] End processing HTTP request after 1.6471ms - 404
+2026-11-18 10:05:00.334 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 10:05:00.653 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:05:00.654 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 10:05:00.762 +01:00 [INF] Received HTTP response headers after 105.3405ms - 200
+2026-11-18 10:05:00.764 +01:00 [INF] End processing HTTP request after 117.2626ms - 200
+2026-11-18 10:05:03.124 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:03.125 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:03.174 +01:00 [INF] Received HTTP response headers after 49.2808ms - 200
+2026-11-18 10:05:03.174 +01:00 [INF] End processing HTTP request after 50.1256ms - 200
+2026-11-18 10:05:07.079 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:05:07.079 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/12783343-04cc-4fdd-901e-367675088c46
+2026-11-18 10:05:07.130 +01:00 [INF] Received HTTP response headers after 50.3353ms - 200
+2026-11-18 10:05:07.130 +01:00 [INF] End processing HTTP request after 50.6463ms - 200
+2026-11-18 10:05:08.550 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:05:08.550 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2930cd99-77ab-4247-b360-2cdcf856ac3a
+2026-11-18 10:05:08.598 +01:00 [INF] Received HTTP response headers after 47.2658ms - 200
+2026-11-18 10:05:08.598 +01:00 [INF] End processing HTTP request after 47.5263ms - 200
+2026-11-18 10:05:09.570 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:05:09.570 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/11479880-a280-49c2-9fea-1c099b53504f
+2026-11-18 10:05:09.619 +01:00 [INF] Received HTTP response headers after 48.7475ms - 200
+2026-11-18 10:05:09.619 +01:00 [INF] End processing HTTP request after 49.0239ms - 200
+2026-11-18 10:05:12.425 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:05:12.425 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/79f8d33e-f949-445b-bbc9-0e89d387b8e3
+2026-11-18 10:05:12.476 +01:00 [INF] Received HTTP response headers after 51.1115ms - 200
+2026-11-18 10:05:12.477 +01:00 [INF] End processing HTTP request after 51.495ms - 200
+2026-11-18 10:05:13.601 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:05:13.601 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/a21f7058-f3e2-477b-80aa-cbe87560dd60
+2026-11-18 10:05:13.651 +01:00 [INF] Received HTTP response headers after 50.0159ms - 200
+2026-11-18 10:05:13.652 +01:00 [INF] End processing HTTP request after 50.6272ms - 200
+2026-11-18 10:05:14.593 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:14.593 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/7d9257a0-c22f-4f46-a017-92a9ddf7b0ec
+2026-11-18 10:05:14.640 +01:00 [INF] Received HTTP response headers after 47.0557ms - 200
+2026-11-18 10:05:14.640 +01:00 [INF] End processing HTTP request after 47.4078ms - 200

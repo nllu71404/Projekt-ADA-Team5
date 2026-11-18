@@ -10,6 +10,11 @@
     public List<SurveyExperienceResponse> Experiences { get; set; } = new();
 
     public List<SurveyThemeResponse> Themes { get; set; } = new();
+
+    // Options the respondent can select
+    public List<SurveyRoleOption> Roles { get; set; } = new();
+    public List<SurveyRegionOption> Regions { get; set; } = new();
+    public List<SurveyExperienceOption> Experiences { get; set; } = new();
 }
 
 // NYT
@@ -49,5 +54,21 @@ public class SurveyQuestionResponse
     public string QuestionPolarity { get; set; } = string.Empty;
     public string QuestionType { get; set; } = string.Empty;
 
-    public List<int> AnswerOptions { get; set; } = new() { 1, 2, 3, 4, 5 };
+    public List<int> AnswerOptions { get; set; } =
+        new() { 1, 2, 3, 4, 5 };
 }
+
+public record SurveyRoleOption(
+    Guid RoleId,
+    string RoleName
+);
+
+public record SurveyRegionOption(
+    Guid RegionId,
+    string RegionName
+);
+
+public record SurveyExperienceOption(
+    Guid ExperienceId,
+    string ExperienceValue
+);

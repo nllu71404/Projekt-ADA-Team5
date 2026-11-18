@@ -1,0 +1,21 @@
+# Web API
+fastapi==0.128.8
+uvicorn==0.39.0
+pydantic==2.13.5
+
+# Data analysis
+pandas==2.3.3
+numpy==2.0.2
+
+# Configuration
+python-dotenv==1.2.1
+
+# HTTP requests (if Python calls an external API)
+httpx
+
+# Optional: Graphs and visualisations
+matplotlib==3.9.4
+seaborn==0.13.2
+
+# PostgreSQL
+psycopg[binary]==3.2.13
