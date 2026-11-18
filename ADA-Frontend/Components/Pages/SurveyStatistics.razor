@@ -9,10 +9,11 @@
 
 <PageTitle>Survey Statistics</PageTitle>
 
-<div class="container py-4">
+<div class="container py-4 survey-statistics-page">
 
     <div class="mb-4">
-        <a href="/dashboard" class="btn btn-outline-secondary mb-3">
+        <a href="/dashboard"
+           class="btn btn-outline-secondary mb-3">
             Back to Dashboard
         </a>
 
@@ -72,6 +73,7 @@
             </div>
         </div>
 
+        <!-- ERROR MESSAGE -->
         @if (!string.IsNullOrWhiteSpace(errorMessage))
         {
             <div class="alert alert-danger">
@@ -79,6 +81,7 @@
             </div>
         }
 
+        <!-- LOADING -->
         @if (loadingStatistics)
         {
             <div class="alert alert-info">
@@ -104,55 +107,71 @@
                 <!-- OVERALL STATISTICS -->
                 <div class="row g-4 mb-4">
 
+                    <!-- Average Score -->
                     <div class="col-md-3">
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
+
                                 <h6 class="text-muted">
                                     Average Score
                                 </h6>
+
                                 <h2 class="fw-bold">
                                     @statistics.Overall.AverageScore.ToString("F2")
                                     / 5
                                 </h2>
+
                             </div>
                         </div>
                     </div>
 
+                    <!-- Completed Surveys -->
                     <div class="col-md-3">
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
+
                                 <h6 class="text-muted">
                                     Completed Surveys
                                 </h6>
+
                                 <h2 class="fw-bold">
                                     @statistics.CompletedRespondents
                                 </h2>
+
                             </div>
                         </div>
                     </div>
 
+                    <!-- Favorable Answers -->
                     <div class="col-md-3">
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
+
                                 <h6 class="text-muted">
                                     Favorable Answers
                                 </h6>
+
                                 <h2 class="fw-bold text-success">
                                     @statistics.Overall.FavorablePercent.ToString("F1")%
                                 </h2>
+
                             </div>
                         </div>
                     </div>
 
+                    <!-- Standard Deviation -->
                     <div class="col-md-3">
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
+
                                 <h6 class="text-muted">
                                     Standard Deviation
                                 </h6>
+
                                 <h2 class="fw-bold">
                                     @(statistics.Overall.StandardDeviation?.ToString("F2") ?? "N/A")
                                 </h2>
+
                             </div>
                         </div>
                     </div>
@@ -169,32 +188,53 @@
 
                         @if (statistics.Themes.Count == 0)
                         {
-                            <p>No theme results available.</p>
+                            <p class="text-muted">
+                                No theme results available.
+                            </p>
                         }
 
                         @foreach (var theme in statistics.Themes)
                         {
                             <div class="mb-4" @key="theme.ThemeId">
 
-                                <div class="d-flex justify-content-between">
-                                    <strong>@theme.Title</strong>
+                                <!-- Theme name and score -->
+                                <div class="d-flex justify-content-between mb-2">
+
+                                    <strong>
+                                        @theme.Title
+                                    </strong>
 
                                     <span>
                                         @theme.Statistics.AverageScore.ToString("F2")
                                         / 5
                                     </span>
+
                                 </div>
 
-                                <progress class="w-100"
-                                          value="@theme.Statistics.AverageScore"
-                                          max="5">
-                                </progress>
+                                <!-- STATIC PROGRESS BAR: NO ANIMATION -->
+                                <div class="progress static-progress"
+                                     style="height: 14px;">
 
-                                <small class="text-muted">
+                                    <div class="progress-bar bg-primary"
+                                         role="progressbar"
+                                         style="width: @GetBarWidth(theme.Statistics.AverageScore);"
+                                         aria-valuenow="@theme.Statistics.AverageScore"
+                                         aria-valuemin="0"
+                                         aria-valuemax="5">
+                                    </div>
+
+                                </div>
+
+                                <!-- Theme details -->
+                                <small class="text-muted d-block mt-2">
+
                                     @theme.Statistics.AnswerCount answers
+
                                     |
+
                                     @theme.Statistics.FavorablePercent.ToString("F1")%
                                     favorable
+
                                 </small>
 
                             </div>
@@ -212,6 +252,7 @@
                         </h4>
 
                         <div class="table-responsive">
+
                             <table class="table table-striped">
 
                                 <thead>
@@ -225,6 +266,7 @@
                                 </thead>
 
                                 <tbody>
+
                                     @foreach (var question in statistics.Questions)
                                     {
                                         <tr @key="question.QuestionId">
@@ -251,9 +293,11 @@
 
                                         </tr>
                                     }
+
                                 </tbody>
 
                             </table>
+
                         </div>
 
                     </div>
@@ -267,31 +311,42 @@
                             Score Distribution
                         </h4>
 
-                        <table class="table table-striped">
+                        <div class="table-responsive">
 
-                            <thead>
-                                <tr>
-                                    <th>Score</th>
-                                    <th>Number of Answers</th>
-                                </tr>
-                            </thead>
+                            <table class="table table-striped">
 
-                            <tbody>
-                                @foreach (var item in statistics.Overall.Distribution)
-                                {
+                                <thead>
                                     <tr>
-                                        <td>@item.Score / 5</td>
-                                        <td>@item.Count</td>
+                                        <th>Score</th>
+                                        <th>Number of Answers</th>
                                     </tr>
-                                }
-                            </tbody>
+                                </thead>
 
-                        </table>
+                                <tbody>
+
+                                    @foreach (var item in statistics.Overall.Distribution)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.Score / 5
+                                            </td>
+
+                                            <td>
+                                                @item.Count
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
 
                     </div>
                 </div>
 
-                <!-- GROUP COMPARISONS -->
+                <!-- RESPONDENT COMPARISONS -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
 
@@ -300,7 +355,9 @@
                         </h4>
 
                         <div class="table-responsive">
+
                             <table class="table table-striped">
+
                                 <thead>
                                     <tr>
                                         <th>Category</th>
@@ -309,38 +366,79 @@
                                         <th>Average Score</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
+
+                                    <!-- Compare by Role -->
                                     @foreach (var group in statistics.ByRole)
                                     {
                                         <tr>
+
                                             <td>Role</td>
-                                            <td>@group.Name</td>
-                                            <td>@group.Statistics.RespondentCount</td>
-                                            <td>@group.Statistics.AverageScore.ToString("F2")</td>
+
+                                            <td>
+                                                @group.Name
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.RespondentCount
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.AverageScore.ToString("F2")
+                                            </td>
+
                                         </tr>
                                     }
 
+                                    <!-- Compare by Region -->
                                     @foreach (var group in statistics.ByRegion)
                                     {
                                         <tr>
+
                                             <td>Region</td>
-                                            <td>@group.Name</td>
-                                            <td>@group.Statistics.RespondentCount</td>
-                                            <td>@group.Statistics.AverageScore.ToString("F2")</td>
+
+                                            <td>
+                                                @group.Name
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.RespondentCount
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.AverageScore.ToString("F2")
+                                            </td>
+
                                         </tr>
                                     }
 
+                                    <!-- Compare by Experience -->
                                     @foreach (var group in statistics.ByExperience)
                                     {
                                         <tr>
+
                                             <td>Experience</td>
-                                            <td>@group.Name</td>
-                                            <td>@group.Statistics.RespondentCount</td>
-                                            <td>@group.Statistics.AverageScore.ToString("F2")</td>
+
+                                            <td>
+                                                @group.Name
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.RespondentCount
+                                            </td>
+
+                                            <td>
+                                                @group.Statistics.AverageScore.ToString("F2")
+                                            </td>
+
                                         </tr>
                                     }
+
                                 </tbody>
+
                             </table>
+
                         </div>
 
                         @if (statistics.ByRole.Count == 0 &&
@@ -357,21 +455,64 @@
             }
         }
     }
+
 </div>
 
+<!-- NO ANIMATIONS OR TRANSITIONS -->
+<style>
+
+    .survey-statistics-page *,
+    .survey-statistics-page *::before,
+    .survey-statistics-page *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .survey-statistics-page .static-progress {
+        height: 14px;
+        overflow: hidden;
+        border-radius: 6px;
+        background-color: #e9ecef;
+    }
+
+        .survey-statistics-page .static-progress .progress-bar {
+            height: 100%;
+            transition: none !important;
+            animation: none !important;
+        }
+
+</style>
+
 @code {
+
+    // Assessments
     private List<SurveyAssessmentDto> assessments = new();
 
+    // Selected assessment statistics
     private SurveyStatisticsDto? statistics;
 
     private string selectedAssessmentId = "";
     private string selectedAssessmentName = "";
 
+    // Error message
     private string errorMessage = "";
 
+    // Loading states
     private bool loadingAssessments = true;
     private bool loadingStatistics = false;
 
+    // Calculate width immediately without animation
+    private static string GetBarWidth(double score)
+    {
+        var percentage = Math.Clamp(score * 20.0, 0.0, 100.0);
+
+        return percentage.ToString(
+            "0.##",
+            System.Globalization.CultureInfo.InvariantCulture
+        ) + "%";
+    }
+
+    // Load assessments when the page opens
     protected override async Task OnInitializedAsync()
     {
         if (!AuthSession.IsAuthenticated)
@@ -391,7 +532,8 @@
         }
         catch (Exception ex)
         {
-            errorMessage = $"Could not load assessments: {ex.Message}";
+            errorMessage =
+                $"Could not load assessments: {ex.Message}";
         }
         finally
         {
@@ -399,18 +541,25 @@
         }
     }
 
+    // Load statistics when assessment changes
     private async Task OnAssessmentChangedAsync(
         ChangeEventArgs e)
     {
         selectedAssessmentId = e.Value?.ToString() ?? "";
+
         statistics = null;
         errorMessage = "";
 
-        if (!Guid.TryParse(selectedAssessmentId, out var assessmentId))
+        if (!Guid.TryParse(
+            selectedAssessmentId,
+            out var assessmentId))
+        {
             return;
+        }
 
         var assessment = assessments
-            .FirstOrDefault(a => a.AssessmentId == assessmentId);
+            .FirstOrDefault(a =>
+                a.AssessmentId == assessmentId);
 
         selectedAssessmentName =
             assessment?.AssessmentName ?? "";
