@@ -280,17 +280,17 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                 // Her gemmer vi de beskyttede tokens til email-flowet.
                 var respondentContracts = new List<RespondentEmailContract>();
 
-                // Generer respondentens hemmelige magic link-token.
-                var accessToken = GenerateAccessToken();
-
-                // Beregn en hash, som kan gemmes i databasen.
-                var accessTokenHash = HashAccessToken(accessToken);
-
-                // Beskyt det oprindelige token, så Email Service kan åbne det igen.
-                var protectedAccessToken = _tokenProtector.Protect(accessToken);
 
                 foreach (var email in request.RespondentEmails)
                 {
+                    // Generer respondentens hemmelige magic link-token.
+                    var accessToken = GenerateAccessToken();
+
+                    // Beregn en hash, som kan gemmes i databasen.
+                    var accessTokenHash = HashAccessToken(accessToken);
+
+                    // Beskyt det oprindelige token, så Email Service kan åbne det igen.
+                    var protectedAccessToken = _tokenProtector.Protect(accessToken);
                     var respondent = new Respondent
                     {
                         RespondentId = Guid.NewGuid(),
