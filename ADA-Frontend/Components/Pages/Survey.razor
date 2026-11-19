@@ -7,6 +7,7 @@
 
 @inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
+@inject AuthSession AuthSession
 
 <PageTitle>Answer Survey</PageTitle>
 
@@ -14,33 +15,8 @@
 
     <h1>Answer Survey</h1>
 
-    @if (string.IsNullOrWhiteSpace(Token))
-    {
-        <!-- Enter survey token -->
-        <div class="card shadow-sm mt-4">
-            <div class="card-body">
-
-                <h4>Open your survey</h4>
-
-                <p class="text-muted">
-                    Enter your survey access token to continue.
-                </p>
-
-                <input class="form-control"
-                       placeholder="Survey access token"
-                       @bind="enteredToken"
-                       @bind:event="oninput" />
-
-                <button class="btn btn-primary mt-3"
-                        disabled="@string.IsNullOrWhiteSpace(enteredToken)"
-                        @onclick="OpenSurvey">
-                    Open Survey
-                </button>
-
-            </div>
-        </div>
-    }
-    else if (isLoading)
+   
+    @if (isLoading)
     {
         <p>Loading survey...</p>
     }
@@ -223,14 +199,6 @@
 </div>
 
 @code {
-
-    // Token from URL: /survey?token=...
-    [SupplyParameterFromQuery(Name = "token")]
-    public string? Token { get; set; }
-
-    private string enteredToken = string.Empty;
-    private string? loadedToken;
-
     private SurveyResponseDto? survey;
 
     private readonly Dictionary<Guid, int> answers = new();
@@ -240,68 +208,134 @@
     private Guid regionId = Guid.Empty;
     private Guid experienceId = Guid.Empty;
 
-    private bool isLoading = false;
+    private bool isLoading = true;
     private bool isSubmitting = false;
     private bool submitted = false;
 
     private string errorMessage = string.Empty;
 
-    // Runs when the token in the URL changes
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        if (Token == loadedToken)
-            return;
-
-        loadedToken = Token;
-
-        survey = null;
-        submitted = false;
-        errorMessage = string.Empty;
-
-        answers.Clear();
-        comments.Clear();
-
-        roleId = Guid.Empty;
-        regionId = Guid.Empty;
-        experienceId = Guid.Empty;
-
-        if (string.IsNullOrWhiteSpace(Token))
-            return;
-
-        isLoading = true;
-
         try
         {
+            // 1. Hent magic link-token fra URL'en
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers
+                .ParseQuery(uri.Query);
+
+            if (!query.TryGetValue("token", out var token) ||
+                string.IsNullOrWhiteSpace(token))
+            {
+                errorMessage = "Der blev ikke fundet et token i linket.";
+                return;
+            }
+
             var client = HttpClientFactory.CreateClient("ADAApi");
 
-            var url =
-                $"api/respondents/survey?token={Uri.EscapeDataString(Token)}";
+            // 2. Hent CSRF-token før login
+            var csrfToken = await FetchCsrfTokenAsync(client);
 
-            using var response = await client.GetAsync(url);
+            if (string.IsNullOrWhiteSpace(csrfToken))
+            {
+                errorMessage = "Kunne ikke hente CSRF-token.";
+                return;
+            }
+
+            // 3. Udveksl magic link-tokenet til en respondent-cookie
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/respondents/exchange-magic-link");
+
+            request.Headers.TryAddWithoutValidation(
+                "X-CSRF-TOKEN",
+                csrfToken);
+
+            AddSessionCookie(request);
+
+            request.Content = JsonContent.Create(new
+            {
+                Token = token.ToString()
+            });
+
+            using var response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {
                 errorMessage =
-                    "Survey not found, closed or already answered.";
+                    $"Login mislykkedes. Statuskode: {(int)response.StatusCode}";
 
                 return;
             }
 
-            survey = await response.Content
+            // 4. Gem respondent-cookien
+            UpdateCookies(response);
+
+            // 5. Hent nyt CSRF-token efter login
+            var authenticatedCsrfToken =
+                await FetchCsrfTokenAsync(client);
+
+            if (string.IsNullOrWhiteSpace(authenticatedCsrfToken))
+            {
+                errorMessage =
+                    "Login lykkedes, men kunne ikke hente nyt CSRF-token.";
+
+                return;
+            }
+
+            AuthSession.CsrfToken = authenticatedCsrfToken;
+            AuthSession.NotifyChanged();
+
+            // 6. Kontrollér at respondent-cookien er gemt
+            if (!AuthSession.IsRespondentAuthenticated)
+            {
+                errorMessage =
+                    "Login lykkedes, men respondent-cookien blev ikke registreret.";
+
+                return;
+            }
+
+            // 7. Hent surveyen via den autentificerede session
+            using var surveyRequest = new HttpRequestMessage(
+                HttpMethod.Get,
+                "api/respondents/survey");
+
+            AddSessionCookie(surveyRequest);
+
+            using var surveyResponse =
+                await client.SendAsync(surveyRequest);
+
+            if (!surveyResponse.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    "Surveyen kunne ikke hentes. Den er muligvis lukket eller allerede besvaret.";
+
+                return;
+            }
+
+            survey = await surveyResponse.Content
                 .ReadFromJsonAsync<SurveyResponseDto>();
 
             if (survey is null)
             {
-                errorMessage = "Could not load survey.";
+                errorMessage = "Kunne ikke indlæse surveyen.";
+                return;
             }
+
+            // // 8. Fjern magic link-tokenet fra adresselinjen
+            // Navigation.NavigateTo("/survey", replace: true);
         }
         catch (HttpRequestException)
         {
-            errorMessage = "Could not connect to the backend API.";
+            errorMessage = "Kunne ikke oprette forbindelse til backend API'et.";
         }
         catch (System.Text.Json.JsonException)
         {
-            errorMessage = "The survey response was invalid.";
+            errorMessage = "Backend returnerede et ugyldigt svar.";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Der opstod en fejl: {ex.Message}";
         }
         finally
         {
@@ -309,33 +343,94 @@
         }
     }
 
-    // Navigate to the selected survey
-    private void OpenSurvey()
+    // Henter CSRF-token og opdaterer cookies
+    private async Task<string?> FetchCsrfTokenAsync(HttpClient client)
     {
-        if (string.IsNullOrWhiteSpace(enteredToken))
-            return;
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            "api/auth/csrf-token");
 
-        var token = Uri.EscapeDataString(enteredToken.Trim());
+        AddSessionCookie(request);
 
-        Navigation.NavigateTo($"/survey?token={token}");
+        using var response = await client.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        UpdateCookies(response);
+
+        var csrfData = await response.Content
+            .ReadFromJsonAsync<CsrfResponse>();
+
+        return csrfData?.RequestToken;
     }
 
-    // Save selected answer locally
+    // Tilføjer den gemte session-cookie til en request
+    private void AddSessionCookie(HttpRequestMessage request)
+    {
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            request.Headers.TryAddWithoutValidation(
+                "Cookie",
+                AuthSession.CookieHeader);
+        }
+    }
+
+    // Gemmer cookies fra backend
+    private void UpdateCookies(HttpResponseMessage response)
+    {
+        if (!response.Headers.TryGetValues(
+            "Set-Cookie", out var setCookieHeaders))
+        {
+            return;
+        }
+
+        var cookies = new Dictionary<string, string>(
+            StringComparer.OrdinalIgnoreCase);
+
+        if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+        {
+            foreach (var cookie in AuthSession.CookieHeader.Split(
+                ';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var parts = cookie.Trim().Split('=', 2);
+
+                if (parts.Length == 2)
+                    cookies[parts[0]] = parts[1];
+            }
+        }
+
+        foreach (var setCookie in setCookieHeaders)
+        {
+            var cookiePair = setCookie.Split(';', 2)[0].Trim();
+            var parts = cookiePair.Split('=', 2);
+
+            if (parts.Length == 2)
+                cookies[parts[0]] = parts[1];
+        }
+
+        AuthSession.CookieHeader = string.Join(
+            "; ",
+            cookies.Select(cookie =>
+                $"{cookie.Key}={cookie.Value}"));
+    }
+
+    // Gemmer respondentens valgte svar
     private void SetAnswer(Guid questionId, int point)
     {
         answers[questionId] = point;
     }
 
-    // Save optional comment locally
+    // Gemmer respondentens kommentar
     private void SetComment(Guid themeId, string value)
     {
         comments[themeId] = value;
     }
 
-    // Submit all answers to C# backend
+    // Indsender besvarelsen
     private async Task SubmitAsync()
     {
-        if (survey is null || string.IsNullOrWhiteSpace(Token))
+        if (survey is null)
             return;
 
         errorMessage = string.Empty;
@@ -344,7 +439,7 @@
             .SelectMany(t => t.Questions)
             .ToList();
 
-        // Validate respondent information
+        // Kontrollér respondentens oplysninger
         if (roleId == Guid.Empty ||
             regionId == Guid.Empty ||
             experienceId == Guid.Empty)
@@ -355,13 +450,18 @@
             return;
         }
 
-        // Validate answers
+        // Kontrollér at alle spørgsmål er besvaret
         if (questions.Count == 0 ||
             questions.Any(q => !answers.ContainsKey(q.QuestionId)))
         {
-            errorMessage =
-                "Please answer every question.";
+            errorMessage = "Please answer every question.";
+            return;
+        }
 
+        if (string.IsNullOrWhiteSpace(AuthSession.CsrfToken) ||
+            !AuthSession.IsRespondentAuthenticated)
+        {
+            errorMessage = "Your session has expired. Please open your survey link again.";
             return;
         }
 
@@ -369,11 +469,9 @@
 
         try
         {
-            // Build submission request
-            var request = new
+            // Byg request uden magic link-token
+            var requestBody = new
             {
-                Token = Token,
-
                 RoleId = roleId,
                 RegionId = regionId,
                 ExperienceId = experienceId,
@@ -397,10 +495,19 @@
 
             var client = HttpClientFactory.CreateClient("ADAApi");
 
-            using var response = await client.PostAsJsonAsync(
-                "api/respondents/survey/submit",
-                request
-            );
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/respondents/survey/submit");
+
+            request.Headers.TryAddWithoutValidation(
+                "X-CSRF-TOKEN",
+                AuthSession.CsrfToken);
+
+            AddSessionCookie(request);
+
+            request.Content = JsonContent.Create(requestBody);
+
+            using var response = await client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -423,4 +530,6 @@
             isSubmitting = false;
         }
     }
+
+    private record CsrfResponse(string RequestToken);
 }

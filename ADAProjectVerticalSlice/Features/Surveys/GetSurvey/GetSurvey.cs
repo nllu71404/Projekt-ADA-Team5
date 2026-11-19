@@ -3,12 +3,13 @@ using ADAProjectAPIVerticalSlice.Shared;
 using Carter;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ADAProjectAPIVerticalSlice.Features.Surveys.GetSurvey;
 
 public class GetSurvey
 {
-    public record Query(string Token)
+    public record Query(Guid RespondentId)
         : IRequest<Result<GetSurveyResponse>>;
 
     public class Handler
@@ -25,17 +26,12 @@ public class GetSurvey
             Query request,
             CancellationToken cancellationToken)
         {
-            // 1. Kontroller token
-            if (string.IsNullOrWhiteSpace(request.Token))
-            {
-                return Result.Failure<GetSurveyResponse>(
-                    Error.NullValue);
-            }
+            
 
             // 2. Find respondent og assessment
             var respondent = await _dbContext.Respondents
                 .AsNoTracking()
-                .Where(r => r.AccessToken == request.Token)
+                .Where(r => r.RespondentId == request.RespondentId)
                 .Select(r => new
                 {
                     r.RespondentId,
@@ -200,7 +196,7 @@ public class GetSurvey
         }
     }
 
-    // Carter endpoint
+   
     public class Endpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
@@ -208,11 +204,21 @@ public class GetSurvey
             app.MapGet(
                 "/api/respondents/survey",
                 async (
-                    string token,
                     ISender sender,
+                    HttpContext httpContext,
                     CancellationToken ct) =>
                 {
-                    var query = new Query(token);
+                    var respondentIdValue = httpContext.User
+                        .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                    if (!Guid.TryParse(
+                        respondentIdValue,
+                        out var respondentId))
+                    {
+                        return Results.Unauthorized();
+                    }
+
+                    var query = new Query(respondentId);
 
                     var result = await sender.Send(query, ct);
 
@@ -223,7 +229,7 @@ public class GetSurvey
 
                     return Results.Ok(result.Value);
                 })
-                .AllowAnonymous();
+                .RequireAuthorization("RespondentAccess");
         }
     }
 }

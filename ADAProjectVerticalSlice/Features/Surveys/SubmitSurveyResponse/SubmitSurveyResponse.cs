@@ -6,12 +6,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ADA_Contracts.Events;
 using ADAProjectAPIVerticalSlice.Infrastructure.Messaging;
+using System.Security.Claims;
 
 namespace ADAProjectAPIVerticalSlice.Features.Surveys.SubmitSurveyResponse;
 
 // Command
 public record SubmitSurveyResponseCommand(
-    string Token,
+   Guid RespondentId,
     List<AnswerSubmission> Answers,
     List<CommentSubmission> Comments, 
     Guid RoleId,
@@ -35,15 +36,13 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
         SubmitSurveyResponseCommand request,
         CancellationToken cancellationToken)
     {
-        // 1. Valider respondentens token
-        if (string.IsNullOrWhiteSpace(request.Token))
-            return Result.Failure(Error.InvalidRespondentToken);
+       
 
-        // 2. Valider de indsendte svar
+        // Valider de indsendte svar
         if (request.Answers is null || request.Answers.Count == 0)
             return Result.Failure(Error.NoAnswersProvided);
 
-        // 3. Find respondenten og den tilknyttede assessment, application, roller, regioner og erfaringer
+        // Find respondenten og den tilknyttede assessment, application, roller, regioner og erfaringer
         var respondent = await _dbContext.Respondents
             .Include(r => r.Assessment)
             .ThenInclude(a => a.Application)
@@ -54,11 +53,11 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             .Include(r => r.Assessment)
             .ThenInclude(a => a.Experiences)
             .SingleOrDefaultAsync(
-                r => r.AccessToken == request.Token,
-                cancellationToken);
+                r => r.RespondentId == request.RespondentId,
+                 cancellationToken);
 
         if (respondent is null)
-            return Result.Failure(Error.InvalidRespondentToken);
+            return Result.Failure(Error.InvalidRespondent);
 
         if (respondent.HasAnswered)
             return Result.Failure(Error.SurveyAlreadyAnswered);
@@ -71,7 +70,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
         if (!validRole || !validRegion || !validExperience)
             return Result.Failure(Error.InvalidRoleRegionExperience);
 
-        // 4. Tjek om surveyen er åben for besvarelse
+        // Tjek om surveyen er åben for besvarelse
         var now = DateTime.UtcNow;
 
         if (now < respondent.Assessment.StartDate ||
@@ -80,7 +79,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             return Result.Failure(Error.SurveyNotOpen);
         }
 
-        // 5. Hent alle spørgsmål for den tilknyttede survey
+        // Hent alle spørgsmål for den tilknyttede survey
         var surveyId = respondent.Assessment.SurveyId;
 
         var questions = await _dbContext.Questions
@@ -101,7 +100,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             .Select(q => q.QuestionId)
             .ToHashSet();
 
-        // 6. Tjek at alle indsendte svar refererer til gyldige spørgsmål
+        // Tjek at alle indsendte svar refererer til gyldige spørgsmål
         if (request.Answers.Any(a => !questionIds.Contains(a.QuestionId)))
             return Result.Failure(Error.InvalidQuestion);
 
@@ -114,15 +113,15 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             return Result.Failure(Error.DuplicateAnswer);
         }
 
-        // 8. Valider at alle point er mellem 1 og 5
+        // Valider at alle point er mellem 1 og 5
         if (request.Answers.Any(a => a.Point < 1 || a.Point > 5))
             return Result.Failure(Error.InvalidAnswerPoint);
 
-        // 9. Der skal være et svar for hvert spørgsmål
+        // Der skal være et svar for hvert spørgsmål
         if (request.Answers.Count != questions.Count)
             return Result.Failure(Error.IncompleteAnswers);
 
-        // 10. Valider kommentarer
+        // Valider kommentarer
         var themeIds = questions
             .Select(q => q.ThemeId)
             .ToHashSet();
@@ -142,7 +141,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             return Result.Failure(Error.DuplicateComment);
         }
 
-        // 11. Opret Answer entities
+        // Opret Answer entities
         var answers = request.Answers.Select(a => new Answer
         {
             AnswerId = Guid.NewGuid(),
@@ -151,7 +150,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             Point = a.Point
         }).ToList();
 
-        // 12. Opret Comment entities
+        // Opret Comment entities
         // Tomme kommentarer ignoreres
         var comments = request.Comments
             .Where(c => !string.IsNullOrWhiteSpace(c.FreeForm))
@@ -164,7 +163,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             })
             .ToList();
 
-        // 13. Gem svar og kommentarer i databasen inden for en transaktion
+        // Gem svar og kommentarer i databasen inden for en transaktion
         await using var transaction =
             await _dbContext.Database.BeginTransactionAsync(
                 cancellationToken);
@@ -182,7 +181,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
         await transaction.CommitAsync(cancellationToken);
 
 
-        // 14. Opret eventets svar
+        // Opret eventets svar
         var submittedAnswers = answers.Select(answer =>
         {
             var question = questions.Single(
@@ -199,7 +198,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             );
         }).ToList();
 
-        // 15. Opret eventets kommentarer
+        // Opret eventets kommentarer
         var submittedComments = comments.Select(comment =>
         {
             var theme = questions.First(
@@ -212,7 +211,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             );
         }).ToList();
 
-        // 16. Opret ResponseSubmitted-eventet
+        // Opret ResponseSubmitted-eventet
         
         var roleName = assessment.Roles
             .Single(r => r.RoleId == request.RoleId)
@@ -243,7 +242,7 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
             Comments: submittedComments
             );
 
-        // 17. Publicér eventet til RabbitMQ
+        // Publicér eventet til RabbitMQ
         await _publisher.PublishAsync(
             responseSubmitted,
             "response-submitted",
@@ -256,7 +255,6 @@ public class Handler : IRequestHandler<SubmitSurveyResponseCommand, Result>
 }
 
 // Endpoint
-// Carter endpoint
 public class Endpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -266,29 +264,30 @@ public class Endpoint : ICarterModule
             async (
                 SubmitSurveyResponseRequest request,
                 ISender sender,
+                HttpContext httpContext,
                 CancellationToken cancellationToken) =>
             {
+                var respondentIdValue = httpContext.User
+          .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (!Guid.TryParse(respondentIdValue, out var respondentId))
+                    return Results.Unauthorized();
+
                 var command = new SubmitSurveyResponseCommand(
-                    request.Token,
+                    respondentId,
                     request.Answers,
                     request.Comments,
                     request.RoleId,
                     request.RegionId,
-                    request.ExperienceId
-                );
+                    request.ExperienceId);
 
-                var result = await sender.Send(
-                    command,
-                    cancellationToken
-                );
+                var result = await sender.Send(command, cancellationToken);
 
                 if (result.IsFailure)
-                {
                     return Results.BadRequest(result.Error);
-                }
 
                 return Results.NoContent();
             })
-            .AllowAnonymous();
+    .RequireAuthorization("RespondentAccess");
+     }
     }
-}

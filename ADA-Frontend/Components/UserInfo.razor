@@ -7,7 +7,7 @@
 @inject AuthSession AuthSession
 @inject NavigationManager Navigation
 
-@if (!IsLoginPage)
+@if (!IsLoginOrSurveyPage)
 {
     @if (!AuthSession.IsAuthenticated)
     {
@@ -46,10 +46,18 @@
 @code {
     private UserInfoResponse? user;
     private string loadStatus = "";
-    private bool IsLoginPage =>
+    private bool IsLoginOrSurveyPage =>
     new Uri(Navigation.Uri).AbsolutePath
         .TrimEnd('/')
-        .Equals("/login", StringComparison.OrdinalIgnoreCase);
+        .Equals("/login", StringComparison.OrdinalIgnoreCase)
+    ||
+    new Uri(Navigation.Uri).AbsolutePath
+        .TrimEnd('/')
+        .Equals("/surveys", StringComparison.OrdinalIgnoreCase)
+    ||
+    new Uri(Navigation.Uri).AbsolutePath
+        .TrimEnd('/')
+        .Equals("/survey", StringComparison.OrdinalIgnoreCase);
 
     protected override async Task OnInitializedAsync()
     {

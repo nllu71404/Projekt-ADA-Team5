@@ -65,4 +65,33 @@ public class JwtTokenService : IJwtTokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    public Task<string> CreateRespondentTokenAsync(
+    string respondentId,
+    string email)
+    {
+        var claims = new List<Claim>
+    {
+        new(JwtRegisteredClaimNames.Sub, respondentId),
+        new(ClaimTypes.NameIdentifier, respondentId),
+        new(ClaimTypes.Email, email)
+    };
+
+        var signingKey = new SymmetricSecurityKey(
+            Convert.FromBase64String(
+                _configuration["Jwt:SigningKey"]!));
+
+        var credentials = new SigningCredentials(
+            signingKey,
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(60),
+            signingCredentials: credentials);
+
+        return Task.FromResult(
+            new JwtSecurityTokenHandler().WriteToken(token));
+    }
 }

@@ -105,13 +105,18 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AllRoles", policy =>
         policy.RequireRole("Admin", "User", "Viewer"));
 
-    options.AddPolicy("RespondentOnly", policy =>
+
+    options.AddPolicy("RespondentAccess", policy =>
     {
-        policy.AddAuthenticationSchemes("RespondentCookie");
+        policy.AddAuthenticationSchemes(
+            "RespondentCookie",
+            JwtBearerDefaults.AuthenticationScheme);
+
         policy.RequireAuthenticatedUser();
     });
 });
 
+// Tillader CORS-forespørgsler fra frontend-appen
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowDevelopment", policy =>
@@ -159,7 +164,7 @@ builder.Services
         };
     })
 
-    // Eksisterende JWT-konfiguration.
+    // JWT-konfiguration.
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters =

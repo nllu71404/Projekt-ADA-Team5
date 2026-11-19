@@ -38,7 +38,7 @@ public class EmailScheduledConsumer
             var accessToken = _tokenProtector.Unprotect(
                 respondent.ProtectedAccessToken);
 
-            var surveyLink = $"https://localhost:7237/testsurvey?token={Uri.EscapeDataString(accessToken)}";
+            var surveyLink = $"https://localhost:7237/survey?token={Uri.EscapeDataString(accessToken)}";
 
             var subject = @event.EmailType switch
             {

@@ -1,0 +1,175 @@
+﻿@page "/survey-preview"
+@rendermode InteractiveServer
+
+@using ADA.Frontend.Services
+@using System.Net.Http.Json
+@using ADA.Frontend.Components.Buttons
+
+@inject IHttpClientFactory HttpClientFactory
+@inject AuthSession AuthSession
+
+<!-- Header -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+   
+    <BackToDashboardButton />
+    <LogoutButton />
+
+</div>
+
+<PageTitle>Survey Preview</PageTitle>
+
+<div class="container py-4" style="max-width: 900px">
+
+    <h1>Survey Preview</h1>
+
+    <p class="text-muted">
+        Preview of the standard ADA survey. This is what respondents will see.
+    </p>
+
+    @if (isLoading)
+    {
+        <p>Loading survey...</p>
+    }
+    else if (survey is not null)
+    {
+        <!-- Survey information -->
+        <div class="mt-4 mb-4">
+            <h2>@survey.SurveyTitle</h2>
+            <p>@survey.SurveyDescription</p>
+        </div>
+
+        <!-- Themes and questions -->
+        @foreach (var theme in survey.Themes)
+        {
+            <div class="card shadow-sm mb-4"
+                 @key="theme.ThemeId">
+
+                <div class="card-body">
+
+                    <h4>@theme.Title</h4>
+
+                    <p class="text-muted">
+                        @theme.Description
+                    </p>
+
+                    @foreach (var question in theme.Questions)
+                    {
+                        <fieldset class="border-top pt-3 mt-3"
+                                  @key="question.QuestionId">
+
+                            <legend class="fs-6 fw-semibold">
+                                @question.QuestionText
+                            </legend>
+
+                            <!-- Visual answer scale -->
+                            <div class="d-flex flex-wrap gap-3 mt-2">
+
+                                @foreach (var point in question.AnswerOptions)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio"
+                                               class="form-check-input"
+                                               disabled />
+
+                                        <span class="form-check-label">
+                                            @point
+                                        </span>
+                                    </div>
+                                }
+
+                            </div>
+                        </fieldset>
+                    }
+
+                    <!-- Optional comment preview -->
+                    <div class="mt-3">
+
+                        <label class="form-label">
+                            Comment (optional)
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="3"
+                                  placeholder="Write your comment here..."
+                                  disabled>
+                        </textarea>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-danger mt-4">
+            @errorMessage
+        </div>
+    }
+
+</div>
+
+@code {
+    private SurveyResponseDto? survey;
+
+    private bool isLoading = true;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Kontroller at PO'en er logget ind
+            if (!AuthSession.IsAuthenticated)
+            {
+                errorMessage = "You must be logged in to view the survey preview.";
+                return;
+            }
+
+            var client = HttpClientFactory.CreateClient("ADAApi");
+
+            // Hent den gemte cookie fra AuthSession
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "api/surveys/preview");
+
+            if (!string.IsNullOrWhiteSpace(AuthSession.CookieHeader))
+            {
+                request.Headers.TryAddWithoutValidation(
+                    "Cookie",
+                    AuthSession.CookieHeader);
+            }
+
+            // Send request til backend
+            using var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    $"Could not load survey preview. HTTP {(int)response.StatusCode}.";
+
+                return;
+            }
+
+            survey = await response.Content
+                .ReadFromJsonAsync<SurveyResponseDto>();
+
+            if (survey is null)
+            {
+                errorMessage = "Could not read the survey.";
+            }
+        }
+        catch (HttpRequestException)
+        {
+            errorMessage = "Could not connect to the backend API.";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            errorMessage = "Backend returned an invalid response.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -12,9 +12,9 @@
 
         // SubmitSurveyResponse errors
 
-        public static readonly Error InvalidRespondentToken =
-            new("Survey.InvalidRespondentToken",
-                "Respondentens token er ugyldigt.");
+        public static readonly Error InvalidRespondent =
+            new("Survey.InvalidRespondent",
+                "Respondenten kan ikke findes.");
 
         public static readonly Error SurveyAlreadyAnswered =
             new("Survey.AlreadyAnswered",

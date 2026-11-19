@@ -116,8 +116,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Respondents.ExchangeMagicLink
                 };
 
                 var identity = new ClaimsIdentity(
-                    claims,
-                    "RespondentCookie");
+                    claims, "Respondent");
 
                 var principal = new ClaimsPrincipal(identity);
 

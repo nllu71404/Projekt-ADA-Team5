@@ -454,3 +454,29 @@ System.Net.Http.HttpRequestException: An error occurred while sending the reques
 2026-11-18 12:32:57.299 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
 2026-11-18 12:32:57.456 +01:00 [INF] Received HTTP response headers after 156.4929ms - 200
 2026-11-18 12:32:57.456 +01:00 [INF] End processing HTTP request after 157.6044ms - 200
+2026-11-18 13:58:11.931 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 13:58:12.347 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 13:58:12.351 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 13:58:12.494 +01:00 [INF] Received HTTP response headers after 139.4011ms - 200
+2026-11-18 13:58:12.496 +01:00 [INF] End processing HTTP request after 155.6443ms - 200
+2026-11-18 13:59:17.826 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 13:59:17.826 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 13:59:18.339 +01:00 [INF] Received HTTP response headers after 512.6209ms - 200
+2026-11-18 13:59:18.339 +01:00 [INF] End processing HTTP request after 514.1013ms - 200
+2026-11-18 14:02:27.950 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:02:27.950 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:02:28.004 +01:00 [INF] Received HTTP response headers after 53.9681ms - 200
+2026-11-18 14:02:28.005 +01:00 [INF] End processing HTTP request after 54.5412ms - 200
+2026-11-18 14:03:25.688 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:03:25.688 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:03:25.740 +01:00 [INF] Received HTTP response headers after 51.65ms - 200
+2026-11-18 14:03:25.740 +01:00 [INF] End processing HTTP request after 52.4258ms - 200
+2026-11-18 14:13:32.369 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:13:32.369 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:13:32.423 +01:00 [INF] Received HTTP response headers after 54.4381ms - 200
+2026-11-18 14:13:32.423 +01:00 [INF] End processing HTTP request after 54.9037ms - 200
+2026-11-18 14:16:00.193 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-18 14:16:00.653 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:16:00.655 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-18 14:16:00.773 +01:00 [INF] Received HTTP response headers after 114.532ms - 200
+2026-11-18 14:16:00.776 +01:00 [INF] End processing HTTP request after 133.0524ms - 200
