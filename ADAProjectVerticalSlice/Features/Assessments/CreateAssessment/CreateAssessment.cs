@@ -238,7 +238,8 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                   
 
                     //Skal komme fra den autentificerede bruger, som sender requesten. 
-                    //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten (f.eks. via JWT token eller session).
+                    //Dette kræver, at vi har en mekanisme til at hente den aktuelle bruger fra konteksten 
+                    //(f.eks. via JWT token eller session).
                     UserId = currentUser.Id 
                 };
 

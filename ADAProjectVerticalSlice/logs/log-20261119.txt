@@ -1,0 +1,150 @@
+2026-11-19 16:20:39.857 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 17:48:37.339 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 17:49:14.448 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:49:14.452 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:49:15.014 +01:00 [INF] Received HTTP response headers after 558.4403ms - 200
+2026-11-19 17:49:15.016 +01:00 [INF] End processing HTTP request after 581.1829ms - 200
+2026-11-19 17:50:41.267 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 17:50:58.470 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:50:58.474 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:50:58.641 +01:00 [INF] Received HTTP response headers after 163.1744ms - 200
+2026-11-19 17:50:58.644 +01:00 [INF] End processing HTTP request after 184.1426ms - 200
+2026-11-19 17:56:59.293 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:56:59.293 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:56:59.374 +01:00 [INF] Received HTTP response headers after 80.6508ms - 200
+2026-11-19 17:56:59.374 +01:00 [INF] End processing HTTP request after 81.7715ms - 200
+2026-11-19 17:57:25.523 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 17:57:25.524 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 17:57:25.590 +01:00 [INF] Received HTTP response headers after 66.2273ms - 200
+2026-11-19 17:57:25.590 +01:00 [INF] End processing HTTP request after 67.7774ms - 200
+2026-11-19 17:57:28.601 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:28.601 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:28.756 +01:00 [INF] Received HTTP response headers after 155.6351ms - 200
+2026-11-19 17:57:28.757 +01:00 [INF] End processing HTTP request after 156.0897ms - 200
+2026-11-19 17:57:31.187 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:31.188 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:31.240 +01:00 [INF] Received HTTP response headers after 52.1864ms - 200
+2026-11-19 17:57:31.240 +01:00 [INF] End processing HTTP request after 52.6361ms - 200
+2026-11-19 17:57:34.864 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:34.865 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:34.926 +01:00 [INF] Received HTTP response headers after 61.2626ms - 200
+2026-11-19 17:57:34.926 +01:00 [INF] End processing HTTP request after 61.8582ms - 200
+2026-11-19 17:57:37.394 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:37.395 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:37.445 +01:00 [INF] Received HTTP response headers after 50.5655ms - 200
+2026-11-19 17:57:37.446 +01:00 [INF] End processing HTTP request after 51.1507ms - 200
+2026-11-19 17:57:39.936 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:39.936 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:39.994 +01:00 [INF] Received HTTP response headers after 57.7468ms - 200
+2026-11-19 17:57:39.994 +01:00 [INF] End processing HTTP request after 58.3154ms - 200
+2026-11-19 17:57:51.198 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:51.199 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 17:57:51.251 +01:00 [INF] Received HTTP response headers after 52.165ms - 200
+2026-11-19 17:57:51.251 +01:00 [INF] End processing HTTP request after 52.6121ms - 200
+2026-11-19 18:09:42.725 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 18:09:43.279 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:09:43.283 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:09:43.347 +01:00 [INF] Received HTTP response headers after 60.5942ms - 200
+2026-11-19 18:09:43.351 +01:00 [INF] End processing HTTP request after 83.2083ms - 200
+2026-11-19 18:17:53.454 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:17:53.454 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:17:53.511 +01:00 [INF] Received HTTP response headers after 57.1781ms - 200
+2026-11-19 18:17:53.512 +01:00 [INF] End processing HTTP request after 57.6829ms - 200
+2026-11-19 18:19:02.525 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:19:02.525 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:19:02.579 +01:00 [INF] Received HTTP response headers after 53.1315ms - 200
+2026-11-19 18:19:02.579 +01:00 [INF] End processing HTTP request after 54.392ms - 200
+2026-11-19 18:19:50.666 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:19:50.666 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:19:50.726 +01:00 [INF] Received HTTP response headers after 60.4851ms - 200
+2026-11-19 18:19:50.726 +01:00 [INF] End processing HTTP request after 60.9957ms - 200
+2026-11-19 18:23:45.933 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:23:45.933 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:23:46.007 +01:00 [INF] Received HTTP response headers after 74.0439ms - 200
+2026-11-19 18:23:46.007 +01:00 [INF] End processing HTTP request after 74.4509ms - 200
+2026-11-19 18:24:02.225 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:24:02.225 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:24:02.283 +01:00 [INF] Received HTTP response headers after 57.6608ms - 200
+2026-11-19 18:24:02.283 +01:00 [INF] End processing HTTP request after 58.4454ms - 200
+2026-11-19 18:25:08.466 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:25:08.467 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:25:08.523 +01:00 [INF] Received HTTP response headers after 56.006ms - 200
+2026-11-19 18:25:08.523 +01:00 [INF] End processing HTTP request after 56.5834ms - 200
+2026-11-19 18:35:51.066 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 18:35:51.603 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:35:51.608 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:35:51.771 +01:00 [INF] Received HTTP response headers after 157.647ms - 200
+2026-11-19 18:35:51.775 +01:00 [INF] End processing HTTP request after 184.9266ms - 200
+2026-11-19 18:36:03.773 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:36:03.774 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:36:03.938 +01:00 [INF] Received HTTP response headers after 164.1941ms - 200
+2026-11-19 18:36:03.938 +01:00 [INF] End processing HTTP request after 166.0483ms - 200
+2026-11-19 18:36:07.598 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 18:36:07.599 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 18:36:07.658 +01:00 [INF] Received HTTP response headers after 58.9829ms - 200
+2026-11-19 18:36:07.658 +01:00 [INF] End processing HTTP request after 59.4224ms - 200
+2026-11-19 18:36:10.007 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/1c5e4660-c0eb-4835-947b-2476e2c418f2
+2026-11-19 18:36:10.007 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/1c5e4660-c0eb-4835-947b-2476e2c418f2
+2026-11-19 18:36:10.109 +01:00 [INF] Received HTTP response headers after 101.8658ms - 200
+2026-11-19 18:36:10.109 +01:00 [INF] End processing HTTP request after 102.2427ms - 200
+2026-11-19 18:39:04.865 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:04.865 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:04.937 +01:00 [INF] Received HTTP response headers after 71.7451ms - 200
+2026-11-19 18:39:04.937 +01:00 [INF] End processing HTTP request after 72.3096ms - 200
+2026-11-19 18:39:19.266 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:19.267 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:19.325 +01:00 [INF] Received HTTP response headers after 58.3887ms - 200
+2026-11-19 18:39:19.325 +01:00 [INF] End processing HTTP request after 58.9092ms - 200
+2026-11-19 18:39:28.544 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 18:39:28.544 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/2bf53ca2-dc13-4285-94a9-46cd732767a8
+2026-11-19 18:39:28.600 +01:00 [INF] Received HTTP response headers after 56.3535ms - 200
+2026-11-19 18:39:28.601 +01:00 [INF] End processing HTTP request after 56.9629ms - 200
+2026-11-19 18:39:30.913 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/1c5e4660-c0eb-4835-947b-2476e2c418f2
+2026-11-19 18:39:30.913 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/1c5e4660-c0eb-4835-947b-2476e2c418f2
+2026-11-19 18:39:30.994 +01:00 [INF] Received HTTP response headers after 80.7772ms - 200
+2026-11-19 18:39:30.994 +01:00 [INF] End processing HTTP request after 81.2904ms - 200
+2026-11-19 18:39:39.331 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:39.331 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:39.390 +01:00 [INF] Received HTTP response headers after 58.318ms - 200
+2026-11-19 18:39:39.390 +01:00 [INF] End processing HTTP request after 58.869ms - 200
+2026-11-19 18:39:43.733 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:43.734 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:39:43.785 +01:00 [INF] Received HTTP response headers after 51.4176ms - 200
+2026-11-19 18:39:43.785 +01:00 [INF] End processing HTTP request after 51.8234ms - 200
+2026-11-19 18:44:32.765 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis/assessment/bb41afb7-f8ed-4a66-a6ec-eb020213e6e9
+2026-11-19 18:44:32.765 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis/assessment/bb41afb7-f8ed-4a66-a6ec-eb020213e6e9
+2026-11-19 18:44:32.924 +01:00 [INF] Received HTTP response headers after 158.6776ms - 200
+2026-11-19 18:44:32.924 +01:00 [INF] End processing HTTP request after 159.0742ms - 200
+2026-11-19 18:44:34.877 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:44:34.878 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:44:34.926 +01:00 [INF] Received HTTP response headers after 48.5183ms - 200
+2026-11-19 18:44:34.926 +01:00 [INF] End processing HTTP request after 48.8581ms - 200
+2026-11-19 18:50:05.295 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 18:50:05.912 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:50:05.915 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 18:50:06.065 +01:00 [INF] Received HTTP response headers after 146.1143ms - 200
+2026-11-19 18:50:06.067 +01:00 [INF] End processing HTTP request after 167.0784ms - 200
+2026-11-19 18:53:02.360 +01:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Sequence contains more than one element.
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at ADAProjectAPIVerticalSlice.Features.Respondents.ExchangeMagicLink.ExchangeMagicLink.Handler.Handle(Command request, CancellationToken cancellationToken) in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Respondents\ExchangeMagicLink\ExchangeMagicLink.cs:line 70
+   at ADAProjectAPIVerticalSlice.Features.Respondents.ExchangeMagicLink.ExchangeMagicLink.ExchangeMagicLinkEndpoint.<>c.<<AddRoutes>b__0_0>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Features\Respondents\ExchangeMagicLink\ExchangeMagicLink.cs:line 139
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task`1 task, HttpContext httpContext)
+   at Microsoft.AspNetCore.Http.RequestDelegateFactory.<>c__DisplayClass102_2.<<HandleRequestBodyAndCompileRequestDelegateForJson>b__2>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Program.<>c.<<<Main>$>b__0_15>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 379
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Program.<>c.<<<Main>$>b__0_14>d.MoveNext() in C:\Users\ninna\source\repos\Projekt-ADA-Team5\ADAProjectVerticalSlice\Program.cs:line 297
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2026-11-19 19:04:01.625 +01:00 [WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+2026-11-19 19:04:02.216 +01:00 [INF] Start processing HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 19:04:02.219 +01:00 [INF] Sending HTTP request GET http://127.0.0.1:8001/analysis
+2026-11-19 19:04:02.343 +01:00 [INF] Received HTTP response headers after 121.0072ms - 200
+2026-11-19 19:04:02.346 +01:00 [INF] End processing HTTP request after 140.2177ms - 200
