@@ -291,6 +291,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
 
                     // Beskyt det oprindelige token, så Email Service kan åbne det igen.
                     var protectedAccessToken = _tokenProtector.Protect(accessToken);
+
                     var respondent = new Respondent
                     {
                         RespondentId = Guid.NewGuid(),
