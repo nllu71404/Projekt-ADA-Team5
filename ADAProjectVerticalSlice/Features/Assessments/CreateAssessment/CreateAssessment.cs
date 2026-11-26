@@ -284,6 +284,7 @@ namespace ADAProjectAPIVerticalSlice.Features.Assessments.CreateAssessment
                     respondentContracts
                 );
 
+
                 await _publisher.PublishAsync(
                     @event,
                     "assessment-created",
